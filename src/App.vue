@@ -53,7 +53,7 @@
     <v-content>
       <Home v-show="visible === true" v-bind:test="postLists"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
-      <!-- <router-view/> -->
+      <router-view/>
     </v-content>
     <!-- CONTENT ********************************** -->
 
