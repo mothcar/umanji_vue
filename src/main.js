@@ -5,15 +5,20 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+// axios NOT Going *************************************************************
 // import axios from 'axios'
 // Vue.use(axios)
+// axios NOT Going *************************************************************
 
 
+// axios Going *****************************************************************
 window.axios = require('axios');
 // window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 // Vue.prototype.$http = window.axios
+// axios Going *****************************************************************
 
 
+// axios Deep Learn  ***********************************************************
 // axios.interceptors.response.use((response) => {
 //     return response;
 // }, function (error) {
@@ -26,6 +31,7 @@ window.axios = require('axios');
 //     }
 //     return Promise.reject(error.response);
 // });
+// axios Deep Learn  ***********************************************************
 
 Vue.config.productionTip = false
 
