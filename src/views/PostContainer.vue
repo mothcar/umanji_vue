@@ -19,9 +19,14 @@
       <v-flex xs7  @click.stop="dialog = true">
         <div>
           <div class="headline">{{ item.header }}</div>
-          <div>Ellie Goulding</div>
+          <div >Ellie Goulding</div>
+          <div>
+            {{ test[0] }}
+
+          </div>
         </div>
       </v-flex>
+
       <v-flex xs5>
         <v-card-media
           src="/static/doc-images/cards/halcyon.png"
@@ -120,8 +125,16 @@
       </v-dialog>
       </v-layout>
       <!-- v-dialog ******************************************************************************* -->
+      <template>
+        <div v-for="item in test">
+          <p>
+            {{ item.content }}
+          </p>
 
-    <dong></dong>
+        </div>
+
+      </template>
+
   </div>
 </template>
 
@@ -136,6 +149,9 @@ import world from '@/components/world.vue'
 export default {
 
   name: 'home',
+  props: {
+    test: Array
+  },
 
   data: () => ({
     dialog: false,
@@ -154,6 +170,16 @@ export default {
 
 
   }),
+
+  methods: {
+    getdata: function() {
+      console.log(this.passtest)
+    }
+  },
+
+  created: function () {
+    console.log('Props in Post Containser ', this.props)
+  },
 
   components: {
     dong, gugun, sido, country, world

@@ -15,7 +15,7 @@
           <v-icon>map</v-icon>
         </router-link>
 
-        <router-link v-if="visible===false" @click.native='toPost' :to="{ name: 'home', params: {} }">
+        <router-link v-if="visible===false" @click.native='toPost' :to="{ name: 'home', props: { passtest: 'testtest' }}">
           <v-icon>list_alt</v-icon>
         </router-link>
 
@@ -56,7 +56,9 @@
 
     <!-- CONTENT ********************************** -->
     <v-content>
-      <router-view/>
+      <Home v-bind:test="postLists"></Home>
+      <!-- <MyMap></MyMap> -->
+      <!-- <router-view/> -->
 
 
     </v-content>
@@ -110,8 +112,14 @@
 </template>
 
 <script>
+import Home from './views/PostContainer.vue'
+import MyMap from './views/MyMap.vue'
+
 export default {
-  props: {
+
+  components: {
+    Home,
+    MyMap
   },
 
   data () {
@@ -134,6 +142,8 @@ export default {
         'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
         ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       // visible: true
+      postLists: [],
+      passtest: 'Passing String data'
     }
   },
 
@@ -172,12 +182,14 @@ export default {
 
   created: function () {
 
-    axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
+    // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
+    axios.get('http://119.205.233.249:3000/v1/main/posts?portalType=sublocality2&portalName=신길6동')
     .then(res => {
+      this.postLists = res.data.data
       console.log(res.data.data)
-      console.log(res.data.data.portal_name)
+      // console.log(res.data.data.portal_name)
       // this.news = res.data
-      console.log(res)
+      // console.log(res)
     })
 
     // this.$http.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
