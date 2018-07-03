@@ -33,10 +33,19 @@ export default {
 
     axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
     .then(res => {
-      console.log(res.data.data)
-      console.log(res.data.data.portal_name)
+      // console.log(res.data.data)
+      // console.log(res.data.data.portal_name)
       // this.news = res.data
+      console.log(res)
     })
+
+    // this.$http.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
+    // .then(res => {
+    //   console.log(res.data.data)
+    //   console.log(res.data.data.portal_name)
+    //   // this.news = res.data
+    // })
+    // .catch()
 
   }, // fn create
 }
