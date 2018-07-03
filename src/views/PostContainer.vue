@@ -15,28 +15,10 @@
       </v-card-media>
     </v-card>
 
-    <v-layout row>
-      <v-flex xs7  @click.stop="dialog = true">
-        <div>
-          <div class="headline">{{ item.header }}</div>
-          <div >Ellie Goulding</div>
-          <div>
-            {{ test[0] }}
+    <v-layout row class="mt-5">
+      <v-flex xs12 sm6 offset-sm3  @click.stop="dialog = true">
+      <!-- </v-flex> -->
 
-          </div>
-        </div>
-      </v-flex>
-
-      <v-flex xs5>
-        <v-card-media
-          src="/static/doc-images/cards/halcyon.png"
-          height="125px"
-          contain
-        ></v-card-media>
-        <v-list-tile-avatar>
-          <img :src="item.avatar">
-        </v-list-tile-avatar>
-      </v-flex>
 
       <!-- v-dialog ******************************************************************************* -->
       <v-dialog
@@ -123,17 +105,44 @@
           <div style="flex: 1 1 auto;"></div>
         </v-card>
       </v-dialog>
-      </v-layout>
+      <!-- </v-layout> -->
       <!-- v-dialog ******************************************************************************* -->
-      <template>
-        <div v-for="item in test">
-          <p>
-            {{ item.content }}
-          </p>
+      <!-- <template> -->
 
-        </div>
+          <!-- <v-layout row> -->
+            <!-- <v-flex xs12 sm6 offset-sm3> -->
+              <v-card>
 
-      </template>
+                <v-list two-line>
+                  <template v-for="(item, index) in items">
+
+                    <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
+
+                    <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
+                    <v-list-tile v-else :key="item.title" avatar @click="">
+                      <v-list-tile-avatar>
+                        <img :src="item.avatar" >
+                      </v-list-tile-avatar>
+                      <v-list-tile-content>
+                        <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                        <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                      <v-list-tile-avatar>
+                        <img src="../assets/avatar.png" >
+                      </v-list-tile-avatar>
+
+                    </v-list-tile>
+
+                  </template>
+                </v-list>
+
+              </v-card>
+            </v-flex>
+          </v-layout>
+
+      <!-- </template> -->
 
   </div>
 </template>
@@ -162,10 +171,18 @@ export default {
     show: false,
     center_name: "신대방동정보센터",
     imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
-    item: {
-            avatar: '/static/doc-images/lists/1.jpg',
-            title: '동네사람들과 정보를 공유해 보세요'
-          },
+    items: [
+        { header: 'Today' },
+        { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/1.jpg', title: 'Brunch this weekend?', subtitle: "<span class='text--primary'>Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?" },
+        { divider: true, inset: true },
+        { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/2.jpg', title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>', subtitle: "<span class='text--primary'>to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend." },
+        { divider: true, inset: true },
+        { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/3.jpg', title: 'Oui oui', subtitle: "<span class='text--primary'>Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?" },
+        { divider: true, inset: true },
+        { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/4.jpg', title: 'Birthday gift', subtitle: "<span class='text--primary'>Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?" },
+        { divider: true, inset: true },
+        { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
+      ]
 
 
 

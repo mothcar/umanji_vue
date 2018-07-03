@@ -23,6 +23,7 @@
         centered
         color="gray"
         slider-color="red"
+        grow
       >
 
 
@@ -43,8 +44,6 @@
         세계
       </v-tab>
 
-
-
       </v-tabs>
     </v-toolbar>
 
@@ -54,10 +53,7 @@
     <v-content>
       <Home v-show="visible === true" v-bind:test="postLists"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
-
       <!-- <router-view/> -->
-
-
     </v-content>
     <!-- CONTENT ********************************** -->
 
