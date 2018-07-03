@@ -11,13 +11,9 @@
       <!-- <v-btn icon>
         <v-icon>search</v-icon>
       </v-btn> -->
-        <router-link v-if="visible===true" @click.native='toMap' :to="{ name: 'map', params: {} }">
-          <v-icon>map</v-icon>
-        </router-link>
+          <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
 
-        <router-link v-if="visible===false" @click.native='toPost' :to="{ name: 'home', props: { passtest: 'testtest' }}">
-          <v-icon>list_alt</v-icon>
-        </router-link>
+          <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
 
 
 
@@ -56,8 +52,8 @@
 
     <!-- CONTENT ********************************** -->
     <v-content>
-      <Home v-bind:test="postLists"></Home>
-      <MapContainer></MapContainer>
+      <Home v-show="visible === true" v-bind:test="postLists"></Home>
+      <MapContainer v-show="visible === false" ></MapContainer>
 
       <!-- <router-view/> -->
 
@@ -157,10 +153,12 @@ export default {
   methods: {
     toMap: function(){
       this.$store.commit('toMap', false)
+      console.log("toMap", this.$store.state.visible)
     },
 
     toPost: function () {
       this.$store.commit('toPost', true)
+      console.log("toPost", this.$store.state.visible)
     },
 
     changeLevel (current) {
