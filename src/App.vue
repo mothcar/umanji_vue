@@ -57,7 +57,8 @@
     <!-- CONTENT ********************************** -->
     <v-content>
       <Home v-bind:test="postLists"></Home>
-      <!-- <MyMap></MyMap> -->
+      <MapContainer></MapContainer>
+
       <!-- <router-view/> -->
 
 
@@ -113,13 +114,17 @@
 
 <script>
 import Home from './views/PostContainer.vue'
-import MyMap from './views/MyMap.vue'
+// import MyMap from './views/MyMap.vue'
+// import MapProvider from './views/MapProvider.vue'
+// import MapLoader from './views/MapLoader.vue'
+// import ChildMarker from './views/ChildMarker.vue'
+import MapContainer from './views/MapContainer.vue'
 
 export default {
 
   components: {
     Home,
-    MyMap
+    MapContainer
   },
 
   data () {
