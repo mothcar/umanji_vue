@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     visible: true,
-    zoom_level: 18
+    zoom_level: 18,
+    emailentry:''
 
   },
   mutations: {

@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import MainContainer from './views/MainContainer.vue'
 import PostContainer from './views/PostContainer.vue'
-import Login from './views/Login.vue'
+import Login from './components/Login.vue'
 import About from './views/About.vue'
 import GMap from './views/MapContainer.vue'
 import Dong from './components/dong.vue'
@@ -9,6 +10,7 @@ import Sido from './components/sido.vue'
 import Gugun from './components/gugun.vue'
 import Country from './components/country.vue'
 import World from './components/world.vue'
+import MainLogin from './components/MainLogin.vue'
 
 Vue.use(Router)
 
@@ -17,12 +19,12 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: PostContainer
+      component: MainContainer
     },
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: MainLogin
     },
     {
       path: '/about',
