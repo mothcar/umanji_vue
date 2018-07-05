@@ -11,10 +11,14 @@ import Gugun from './components/gugun.vue'
 import Country from './components/country.vue'
 import World from './components/world.vue'
 import MainLogin from './components/MainLogin.vue'
+import Secure from './views/Secure.vue'
+import SecureLogin from './views/SecureLogin.vue'
 
 Vue.use(Router)
 
 export default new Router({
+  // mode: 'history',
+  base: __dirname,
   routes: [
     {
       path: '/',
@@ -60,6 +64,17 @@ export default new Router({
       path: '/world',
       name: 'world',
       component: World
+    },
+    {
+      path: '/secure',
+      name: 'secure',
+      component: Secure
+    },
+    {
+      path: '/secureLogin',
+      name: 'secureLogin',
+      component: SecureLogin
     }
+
   ]
 })

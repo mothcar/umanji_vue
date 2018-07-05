@@ -15,8 +15,13 @@
       </v-card-media>
     </v-card>
 
+    <div>
+      <v-btn color="success" @click="createPost">Write Post</v-btn>
+      <!-- @click.stop="dialog = true" -->
+    </div>
+
     <v-layout row class="mt-5">
-      <v-flex xs12 sm6 offset-sm3  @click.stop="dialog = true">
+      <v-flex xs12 sm6 offset-sm3 >
       <!-- </v-flex> -->
 
 
@@ -28,15 +33,16 @@
         transition="dialog-bottom-transition"
         scrollable
       >
+      <!-- slide-x-transition -->
         <v-card tile>
           <v-toolbar card dark color="primary">
             <v-btn icon dark @click.native="dialog = false">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>Post</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
-              <v-btn dark flat @click.native="dialog = false">Save</v-btn>
+              <v-btn dark flat @click="submitPost">Save</v-btn>
             </v-toolbar-items>
             <v-menu bottom right offset-y>
               <v-btn slot="activator" dark icon>
@@ -50,55 +56,29 @@
             </v-menu>
           </v-toolbar>
           <v-card-text>
-            <v-tooltip right>
-              <v-btn slot="activator">Tool Tip Activator</v-btn>
-              Tool Tip
-            </v-tooltip>
             <v-list three-line subheader>
-              <v-subheader>User Controls</v-subheader>
-              <v-list-tile avatar>
+              <v-subheader>Create Post</v-subheader>
+              <!-- <v-list-tile avatar>
                 <v-list-tile-content>
                   <v-list-tile-title>Content filtering</v-list-tile-title>
                   <v-list-tile-sub-title>Set the content filtering level to restrict apps that can be downloaded</v-list-tile-sub-title>
                 </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title>Password</v-list-tile-title>
-                  <v-list-tile-sub-title>Require password for purchase or use password to restrict purchase</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              </v-list-tile> -->
             </v-list>
             <v-divider></v-divider>
             <v-list three-line subheader>
-              <v-subheader>General</v-subheader>
+              <v-subheader>Write</v-subheader>
               <v-list-tile avatar>
-                <v-list-tile-action>
-                  <v-checkbox v-model="notifications"></v-checkbox>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>Notifications</v-list-tile-title>
-                  <v-list-tile-sub-title>Notify me about updates to apps or games that I downloaded</v-list-tile-sub-title>
-                </v-list-tile-content>
+
+                <!-- <v-list-tile-content> -->
+                  <span>Content:</span>
+                  <!-- <p style="white-space: pre-line;">{{ content }}</p> -->
+                  <br>
+                  <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
+                <!-- </v-list-tile-content> -->
               </v-list-tile>
-              <v-list-tile avatar>
-                <v-list-tile-action>
-                  <v-checkbox v-model="sound"></v-checkbox>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>Sound</v-list-tile-title>
-                  <v-list-tile-sub-title>Auto-update apps at any time. Data charges may apply</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile avatar>
-                <v-list-tile-action>
-                  <v-checkbox v-model="widgets"></v-checkbox>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>Auto-add widgets</v-list-tile-title>
-                  <v-list-tile-sub-title>Automatically add home screen widgets</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+
+
             </v-list>
           </v-card-text>
 
@@ -167,6 +147,7 @@ export default {
     notifications: false,
     sound: true,
     widgets: false,
+    content: '',
 
     show: false,
     center_name: "신대방동정보센터",
@@ -191,12 +172,52 @@ export default {
   methods: {
     getdata: function() {
       console.log(this.passtest)
-    }
-  },
+    },
+    createPost: function() {
+      // @click.stop="dialog = true"
+      if(this.$store.state.authenticated == true) {
+        this.dialog = true
+        console.log("dialog is true")
+      } else {
+        alert(" Please Sign in ")
+      }
+      console.log("Write post clicked...")
+    },
+    submitPost: function() {
+      // @click.native="dialog = false"
+
+      /*
+      content : "이것만 있으면 되나요?"
+      owner_id : %2322%3A0
+      latitude : 37.4995519
+      longitude : 126.9185359
+      country_code : KR
+      location : {\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}
+      */
+
+
+      this.dialog = false;
+
+      // axios.post('http://119.205.233.249:3000/v1/auth/signin', { email:this.input.username, password:this.input.password })
+      //     .then(res => {
+      //         this.$store.commit('saveToken', res.data.data.token)
+      //         this.$store.commit('auth', true)
+      //         console.log(res.data.data.token)
+      //         this.$router.push({name: 'home'})
+      //     }).catch(error => {
+      //         this.input.username = ''
+      //         this.input.password = ''
+      //       console.log(error.message);
+      //     }) // axios
+
+
+    } //submitPost
+
+  }, // methods
 
   created: function () {
     console.log('Props in Post Containser ', this.props)
-  },
+  }, //created
 
   components: {
     dong, gugun, sido, country, world
@@ -205,6 +226,15 @@ export default {
 </script>
 
 <style scoped>
+.p_textarea {
+  margin: 10px;
+  padding: 10px;
+  width: 100%;
+  height: auto;
+  border: 1px solid #333;
+
+}
+
 .headline {
   color: white;
 }

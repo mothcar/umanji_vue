@@ -70,7 +70,7 @@
         <v-list-tile-title>Home</v-list-tile-title>
       </v-list-tile>
 
-      <v-list-tile @click="rightDrawer = !rightDrawer" :to="{ name: 'login', params: {} }" >
+      <v-list-tile @click="rightDrawer = !rightDrawer" :to="{ name: 'secureLogin', params: {} }" >
         <v-list-tile-action>
           <v-icon>perm_identity</v-icon>
         </v-list-tile-action>
@@ -137,7 +137,11 @@ export default {
         ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       // visible: true
       postLists: [],
-      passtest: 'Passing String data'
+      passtest: 'Passing String data',
+      mockAccount: {
+        username: 'mo',
+        password: '111111'
+      }
 
     }
   },
@@ -190,6 +194,8 @@ export default {
       // this.news = res.data
       // console.log(res)
     })
+
+    console.log("AUth : ", this.$store.state.authenticated)
 
     // this.$http.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
     // .then(res => {

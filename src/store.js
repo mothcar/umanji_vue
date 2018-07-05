@@ -7,10 +7,19 @@ export default new Vuex.Store({
   state: {
     visible: true,
     zoom_level: 18,
-    emailentry:''
+    emailentry:'',
+    token:'',
+    authenticated: false
 
   },
   mutations: {
+    saveToken (state, payload) {
+      state.token = payload
+    },
+
+    auth (state, payload) {
+      state.authenticated = payload
+    },
     // toMap: state => state.list_mode = 'map',
     toMap (state, payload) {
       state.visible = payload
