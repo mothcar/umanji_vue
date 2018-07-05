@@ -1,8 +1,8 @@
 <template>
   <!-- <div id="app"> -->
-  <div >
+  <v-container>
     <router-view></router-view>
-  </div>
+  </v-container>
 <!-- </div> -->
 </template>
 
@@ -35,7 +35,6 @@ export default {
 <style>
   /* @import "./assets/css/custom.css";
   @import "./assets/css/combined.min.css"; */
-  /* @import './assets/css/p_style.css'; */
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

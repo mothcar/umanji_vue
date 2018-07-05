@@ -1,63 +1,17 @@
 <template>
-  <div class="my_flex-container">
-    <div >
+  <div class="small-12 medium-8 large-5 small-centered columns bgc-h76b852 border-radius-3 margin-top-20">
+    <div class="row text-align-center font-size-32-s white padding-top-20">
       {{ title }} <i class="material-icons font-size-36-i" v-html="materialIconCode"></i>
     </div>
 
-    <div >
-      <div >
-        <div>&nbsp</div>
-        <component v-bind:is="currentForm" v-bind:emailentry="email" v-on:switchcomponent="switchComponent"></component>
-      </div>
+    <div class="row">
+      <div class="small-11 columns small-centered margin-top-35">
+        <div class="width-93p bgc-white font-size-1 line-height-9 margin-0-auto">&nbsp</div>
+          <component v-bind:is="currentForm" v-bind:emailentry="email" v-on:switchcomponent="switchComponent"></component>
+        </div>
     </div>
-
-    <div class="flex-container">
-      <h1 >Log in Template</h1>
-      <div class="box one">one</div>
-      <div class="box two">two</div>
-      <div class="box three">three</div>
-    </div>
-
-
   </div>
-
-
-
-  <!-- <div>
-    <v-container fill-height>
-      <v-layout row align-center justify-center>
-        <v-flex class="text-xs-center">
-          <div >
-            <h1 >Log in Template</h1>
-            <div class="box one">one</div>
-            <div class="box two">two</div>
-            <div class="box three">three</div>
-            <v-btn>test</v-btn>
-          </div>
-
-        </v-flex>
-      </v-layout>
-
-    </v-container>
-
-      </div> -->
 </template>
-
-<style >
-@import '../assets/css/p_style.css';
-
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-}
-
-.paul-t {
-  margin: 0px;
-}
-
-</style>
 
 <script>
 import Login from '@/components/Login'
