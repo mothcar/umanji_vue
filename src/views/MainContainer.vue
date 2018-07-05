@@ -9,9 +9,9 @@
 
       <v-spacer></v-spacer>
 
-          <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
+          <v-icon v-show="visible===true" @click='toMap'>map</v-icon>
 
-          <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
+          <v-icon v-show="visible===false" @click='toPost'>list_alt</v-icon>
 
       <v-tabs
         slot="extension"
@@ -46,11 +46,17 @@
   </div>
 
     <!-- CONTENT ********************************** -->
-    <v-content>
-      <Home v-show="visible === true" v-bind:test="postLists"></Home>
-      <MapContainer v-show="visible === false" ></MapContainer>
+    <v-container>
+      <v-content>
+        <Home v-show="visible === true" v-bind:test="postLists"></Home>
+        <MapContainer v-show="visible === false" ></MapContainer>
 
-    </v-content>
+      </v-content>
+
+    </v-container>
+
+
+
     <!-- CONTENT ********************************** -->
 
     <!-- RIGHT MENU ********************************** -->
@@ -148,11 +154,13 @@ export default {
     toMap: function(){
       this.$store.commit('toMap', false)
       console.log("toMap", this.$store.state.visible)
+      console.log("visible", this.$store.state.visible)
     },
 
     toPost: function () {
       this.$store.commit('toPost', true)
       console.log("toPost", this.$store.state.visible)
+      console.log("visible", this.$store.state.visible)
     },
 
     changeLevel (current) {
