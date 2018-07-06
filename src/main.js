@@ -4,6 +4,8 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import lang from './plugins/lang.js'
+import VueI18n from 'vue-i18n'
 
 // axios NOT Going *************************************************************
 // import axios from 'axios'
@@ -35,7 +37,18 @@ window.axios = require('axios');
 
 Vue.config.productionTip = false
 
+Vue.use(VueI18n)
+
+const messages = lang
+
+const i18n = new VueI18n({
+  locale: 'kr', // set locale
+  messages, // set locale messages
+})
+
+
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

@@ -10,6 +10,7 @@
     "axios": "^0.18.0",
     "google-maps-api-loader": "^1.1.1",
     "vue": "^2.5.16",
+    "vue-i18n": "^8.0.0",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.19",

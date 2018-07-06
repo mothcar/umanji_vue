@@ -73,49 +73,30 @@
       <!-- create Post v-dialog ******************************************************************************* -->
 
       <!-- content ******************************************************************************** -->
-              <v-card>
-
-                <!-- <v-list two-line>
-                  <template v-for="(item, index) in items">
-
-                    <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
-
-                    <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
-
-                    <v-list-tile v-else :key="item.title" avatar @click="">
-                      <v-list-tile-avatar>
-                        <img :src="item.avatar" >
-                      </v-list-tile-avatar>
-                      <v-list-tile-content>
-                        <v-list-tile-title v-html="item.title"></v-list-tile-title>
-                        <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
+              <v-card v-for="item in postLists"
+                :key="item.content"
+                avatar
+                @click="">
 
 
-                  </template>
-                </v-list> -->
 
-                <v-list>
-                  <v-list-tile
-                    v-for="item in items"
-                    :key="item.title"
-                    avatar
-                    @click=""
-                  >
-                    <v-list-tile-action>
-                      <v-icon v-if="item.icon" color="pink">star</v-icon>
-                    </v-list-tile-action>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title v-text="item.title"></v-list-tile-title>
-                    </v-list-tile-content>
 
+                  <v-card-title primary-title>
                     <v-list-tile-avatar>
-                      <img :src="item.avatar">
+                      <img :src="item.photos">
                     </v-list-tile-avatar>
-                  </v-list-tile>
-                </v-list>
+                    <div>
+
+
+                      <div>{{ item.content }}</div>
+                    </div>
+                  </v-card-title>
+
+                  <!-- <v-card-media
+                      :src="item.photos"
+                      height="200px"
+                    ></v-card-media> -->
 
               </v-card>
         <!-- content ******************************************************************************** -->
@@ -139,7 +120,7 @@ export default {
 
   name: 'home',
   props: {
-    test: Array
+    postLists: Array
   },
 
   data: () => ({

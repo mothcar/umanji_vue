@@ -31,20 +31,19 @@
           {{ item }}
         </v-tab> -->
         <v-tab name="dong" @click="changeLevel('dong')">
-          동네
+          {{ $t("area_name.dong") }}
         </v-tab>
         <v-tab name="gugun" @click="changeLevel('gugun')">
-          구군
+          {{ $t("area_name.gugun") }}
         </v-tab>
-
         <v-tab name="sido" @click="changeLevel('sido')">
-          시도
+          {{ $t("area_name.sido") }}
         </v-tab>
         <v-tab name="country" @click="changeLevel('country')">
-          국가
+          {{ $t("area_name.country") }}
         </v-tab>
         <v-tab name="country" @click="changeLevel('country')">
-          세계
+          {{ $t("area_name.world") }}
         </v-tab>
 
         <!-- upper info center ******************************************************************************** -->
@@ -89,7 +88,7 @@
 
     <!-- CONTENT ********************************** -->
     <div>
-      <Home v-show="visible === true" v-bind:test="postLists"></Home>
+      <Home v-show="visible === true" v-bind:postLists="postLists"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
 
     </div>
