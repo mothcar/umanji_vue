@@ -18,7 +18,7 @@
             <h1>forget password</h1>
         </div>
         <div class="login_box">
-            <button @click="changeNameSetter">{{ money }}</button>
+            <button @click="">submit button</button>
         </div>
         <div class="login_box">
             <h3>create accoutn</h3>
@@ -38,41 +38,18 @@
                     username: "",
                     password: ""
                 },
-                firstName: 'Bo',
-                lastName: 'Andersen',
-                money: 0
+                a: 1
             }
         },
 
         computed: {
-            updatedMoney: {
-        		get: function() {
-                    // alert("Assembling full name...");
-	                //    return this.money -= 50;
 
-        		},
-        		set: function(newValue) {
-                    // alert("Setting new name: " + newValue);
-                	// var parts = newValue.split(' ');
-                	// this.firstName = parts[0];
-                	// this.lastName = parts[parts.length - 1];
-                    this.money = newValue
-
-        		}
-        	}
         },
-
         methods: {
-            changeNameSetter: function() {
-                this.updatedMoney = this.money+500;
-
-	        },
 
             login() {
 
-                // http://119.205.233.249:3000/v1/auth/signin?email=mo@naver.com&password=111111
                 axios.post('http://119.205.233.249:3000/v1/auth/signin', { email:this.input.username, password:this.input.password })
-                // axios.post('http://119.205.233.249:3000/v1/auth/signin?email=mo@naver.com&password=111111')
                     .then(res => {
                         this.$store.commit('saveToken', res.data.data.token)
                         this.$store.commit('auth', true)
@@ -83,30 +60,6 @@
                         this.input.password = ''
                       console.log(error.message);
                     })
-
-
-                  //   axios({
-                  //     url: 'http://119.205.233.249:3000/v1/auth/signin',
-                  //     method: 'post',
-                  //     data: {
-                  //       email: this.input.username,
-                  //       password : this.input.password
-                  //     }
-                  // })
-                  // .then(res => {
-                  //     console.log(res.data)
-                  // })
-
-                // if(this.input.username != "" && this.input.password != "") {
-                //     if(this.input.username == this.$parent.mockAccount.username && this.input.password == this.$parent.mockAccount.password) {
-                //         this.$emit("authenticated", true);
-                //         this.$router.replace({ name: "secure" });
-                //     } else {
-                //         console.log("The username and / or password is incorrect");
-                //     }
-                // } else {
-                //     console.log("A username and password must be present");
-                // }
 
             } //login
         }
