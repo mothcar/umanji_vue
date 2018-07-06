@@ -1,6 +1,8 @@
 <template>
   <v-app>
   <v-layout>
+
+    <div>
     <v-toolbar color="white" tabs :clipped-left="clipped" fixed>
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
 
@@ -81,13 +83,14 @@
         </v-card>
       </v-tab-item>
     </v-tabs-items> -->
+  </div>
 
   </v-layout>
 
     <!-- CONTENT ********************************** -->
     <div>
-      <Home v-show="visible === true" v-bind:postLists="postLists"></Home>
-      <MapContainer v-show="visible === false" v-bind:postLists="postLists"></MapContainer>
+      <Home v-show="visible === true" v-bind:test="postLists"></Home>
+      <MapContainer v-show="visible === false" ></MapContainer>
 
     </div>
     <!-- CONTENT ********************************** -->
@@ -226,12 +229,12 @@ export default {
     },
 
     changeLevel (current) {
-      this.autodetect(current)  // ???
+      this.test(current)
       this.$store.commit('changeZoomLevel', current)
 
     },
 
-    autodetect (area) {
+    test (area) {
       console.log("test : " + area)
       return this.content = area
     }
@@ -289,12 +292,6 @@ export default {
 </script>
 
 <style scoped>
-
-.layout {
-  margin-top: 150px;
-  flex: none;
-}
-
 .v-tabs {
   padding: 0;
   margin-top: 10px;
