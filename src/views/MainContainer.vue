@@ -70,11 +70,25 @@
         <v-list-tile-title>Home</v-list-tile-title>
       </v-list-tile>
 
-      <v-list-tile @click="rightDrawer = !rightDrawer" :to="{ name: 'secureLogin', params: {} }" >
+      <v-list-tile v-show="authenticated === false" @click="rightDrawer = !rightDrawer" :to="{ name: 'secureLogin', params: {} }" >
         <v-list-tile-action>
           <v-icon>perm_identity</v-icon>
         </v-list-tile-action>
         <v-list-tile-title>로그인</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: '', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>account_balance_wallet</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Wallet</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="logout" :to="{ name: '', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>voice_over_off</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Log out</v-list-tile-title>
       </v-list-tile>
 
 
@@ -159,6 +173,11 @@ export default {
       console.log("toPost", this.$store.state.visible)
     },
 
+    logout: function () {
+      this.$store.commit('auth', false)
+      this.rightDrawer = !this.rightDrawer
+    },
+
     changeLevel (current) {
       this.test(current)
       this.$store.commit('changeZoomLevel', current)
@@ -176,6 +195,10 @@ export default {
   computed: {
     visible () {
       return this.$store.state.visible
+    },
+
+    authenticated () {
+      return this.$store.state.authenticated
     },
 
     zoom_level () {

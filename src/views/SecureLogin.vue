@@ -35,8 +35,8 @@
         data() {
             return {
                 input: {
-                    username: "",
-                    password: ""
+                    username: "mo@naver.com",
+                    password: "111111"
                 },
                 a: 1
             }
