@@ -5,7 +5,7 @@
     <v-content>
 
 
-    <v-layout class="mt-5 ma-0">
+    <v-layout class="p_margin_top">
       <v-flex xs12 sm6 offset-lg3 >
 
 
@@ -227,6 +227,11 @@ export default {
 </script>
 
 <style scoped>
+
+.p_margin_top {
+  margin-top: 150px;
+}
+
 .titlebar {
   background-color: blue;
   height: 200px;

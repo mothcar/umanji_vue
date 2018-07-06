@@ -292,6 +292,10 @@ export default {
 </script>
 
 <style scoped>
+.layout {
+  flex:none;
+}
+
 .v-tabs {
   padding: 0;
   margin-top: 10px;
