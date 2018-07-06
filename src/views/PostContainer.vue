@@ -47,7 +47,9 @@
               </v-list>
             </v-menu>
           </v-toolbar>
-          <v-card-text>
+
+
+          <!-- <v-card-text>
             <v-list three-line subheader>
               <v-subheader>Create Post</v-subheader>
             </v-list>
@@ -56,19 +58,34 @@
               <v-subheader>Write</v-subheader>
               <v-list-tile avatar>
 
-                <!-- <v-list-tile-content> -->
                   <span>Content:</span>
-                  <!-- <p style="white-space: pre-line;">{{ content }}</p> -->
                   <br>
                   <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
-                <!-- </v-list-tile-content> -->
               </v-list-tile>
 
             </v-list>
-          </v-card-text>
+          </v-card-text> -->
+          <div>
+            <VuePellEditor
+                :actions="editorOptions"
+                :content="editorContent"
+                :placeholder="editorPlaceholder"
+                v-model="editorContent"
+                :style-with-css="false"
+                :classes="editorClasses"
+                default-paragraph-separator="p"
+                @change="doSomething"
+                @mounted="doSomethingAfterMounted"
+            />
+          </div>
+
+
+
+
 
           <div style="flex: 1 1 auto;"></div>
         </v-card>
+
       </v-dialog>
       <!-- create Post v-dialog ******************************************************************************* -->
 
@@ -77,10 +94,6 @@
                 :key="item.content"
                 avatar
                 @click="">
-
-
-
-
 
                   <v-card-title primary-title>
                     <v-list-tile-avatar>
@@ -92,6 +105,20 @@
                       <div>{{ item.content }}</div>
                     </div>
                   </v-card-title>
+                  <div>
+                    <link-prevue url="https://vuejs.org/">
+                      <template slot-scope="props">
+                        <div class="card" style="width: 2rem;">
+                          <img class="card-img-top" :src="props.img" :alt="props.title">
+                          <div class="card-block">
+                            <h4 class="card-title">{{props.title}}</h4>
+                            <p class="card-text">{{props.description}}</p>
+                            <a v-bind:href="props.url" class="btn btn-primary">More</a>
+                          </div>
+                        </div>
+                      </template>
+                    </link-prevue>
+                  </div>
 
                   <!-- <v-card-media
                       :src="item.photos"
@@ -110,11 +137,15 @@
 
 <script>
 // @ is an alias to /src
+import Vue from 'vue'
 import dong from '@/components/dong.vue'
 import gugun from '@/components/gugun.vue'
 import sido from '@/components/sido.vue'
 import country from '@/components/country.vue'
 import world from '@/components/world.vue'
+import LinkPrevue from 'link-prevue'
+import VuePellEditor from 'vue-pell-editor'
+
 
 export default {
 
@@ -131,7 +162,6 @@ export default {
     widgets: false,
 
     divider: true, inset: true,
-    content: '',
 
     show: false,
     items: [
@@ -145,7 +175,44 @@ export default {
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/4.jpg', title: 'Birthday gift', subtitle: "<span class='text--primary'>Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?" },
         // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
-      ]
+      ],
+      content: '',
+      editorContent: '',
+      editorOptions: [
+        'bold',
+        'underline',
+        {
+          name: 'italic',
+          result: () => window.pell.exec('italic')
+        },
+        {
+          name: 'custom',
+          icon: '<b><u><i>C</i></u></b>',
+          title: 'Custom Action',
+          result: () => console.log('YOLO')
+        },
+        {
+          name: 'image',
+          result: () => {
+            const url = window.prompt('Enter the image URL')
+            if (url) window.pell.exec('insertImage', ensureHTTP(url))
+          }
+        },
+        {
+          name: 'link',
+          result: () => {
+            const url = window.prompt('Enter the link URL')
+            if (url) window.pell.exec('createLink', ensureHTTP(url))
+          }
+        }
+      ],
+      editorPlaceholder: 'Write something amazing...',
+      editorContent: '<div>Predefined Content</div>',
+      editorClasses: {
+        actionbar: 'pell-actionbar-custom-name',
+        button: 'pell-button-custom-name',
+        content: 'pell-content-custom-name'
+      }
 
 
 
@@ -193,7 +260,14 @@ export default {
       //     }) // axios
 
 
-    } //submitPost
+    }, //submitPost
+
+    doSomething() {
+      console.log('Hello')
+    },
+    doSomethingAfterMounted() {
+      console.log('Editor mounted')
+    }
 
   }, // methods
 
@@ -202,12 +276,17 @@ export default {
   }, //created
 
   components: {
-    dong, gugun, sido, country, world
+    dong, gugun, sido, country, world, LinkPrevue, VuePellEditor
+  },
+
+  mounted() {
+    console.log('this is current quill instance object', this.myQuillEditor)
   }
 }
 </script>
 
 <style scoped>
+@import '~vue-pell-editor/dist/vue-pell-editor.css';
 
 .p_margin_top {
   margin-top: 150px;
