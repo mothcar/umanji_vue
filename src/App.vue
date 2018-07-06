@@ -1,8 +1,8 @@
 <template>
   <!-- <div id="app"> -->
-  <v-container>
+  <div>
     <router-view></router-view>
-  </v-container>
+  </div>
 <!-- </div> -->
 </template>
 

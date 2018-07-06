@@ -1,75 +1,89 @@
 <template>
   <v-app>
   <v-layout>
-    <v-toolbar color="gray"  tabs :clipped-left="clipped" fixed>
+
+    <div>
+    <v-toolbar color="white" tabs :clipped-left="clipped" fixed>
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+
       <router-link to="/">
         <v-toolbar-title>umanji</v-toolbar-title>
       </router-link>
 
       <v-spacer></v-spacer>
 
-          <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
-
-          <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
+      <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
+      <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
 
       <v-tabs
         slot="extension"
+        color="white"
         v-model="selec"
         centered
-        color="gray"
-        slider-color="red"
         grow
       >
+        <v-tabs-slider color="red"></v-tabs-slider>
 
+        <!-- <v-tab
+          v-for="item in items"
+          :key="item"
+        >
+          {{ item }}
+        </v-tab> -->
+        <v-tab name="dong" @click="changeLevel('dong')">
+          동네
+        </v-tab>
+        <v-tab name="gugun" @click="changeLevel('gugun')">
+          구군
+        </v-tab>
 
-      <v-tab name="dong" @click="changeLevel('dong')">
-        동네
-      </v-tab>
-      <v-tab name="gugun" @click="changeLevel('gugun')">
-        구군
-      </v-tab>
+        <v-tab name="sido" @click="changeLevel('sido')">
+          시도
+        </v-tab>
+        <v-tab name="country" @click="changeLevel('country')">
+          국가
+        </v-tab>
+        <v-tab name="country" @click="changeLevel('country')">
+          세계
+        </v-tab>
 
-      <v-tab name="sido" @click="changeLevel('sido')">
-        시도
-      </v-tab>
-      <v-tab name="country" @click="changeLevel('country')">
-        국가
-      </v-tab>
-      <v-tab name="country" @click="changeLevel('country')">
-        세계
-      </v-tab>
-
-      <!-- upper info center ******************************************************************************** -->
-      <v-tabs-items v-model="model">
-      <v-tab-item v-for="i in 5"
-        :id="`tab-${i}`"
-        :key="i">
-        <v-card >
-          <v-card-media
-            :src="imageUrl"
-            height="50px"
-          >
-          <v-container fill-height fluid>
-                <!-- <v-layout fill-height> -->
-                  <v-flex xs12 align-end flexbox>
-                    <span class="headline">{{ center_name }}</span>
-                  </v-flex>
-                <!-- </v-layout> -->
-              </v-container>
-          </v-card-media>
-        </v-card>
-      </v-tab-item>
-      </v-tabs-items>
-      <!-- upper info center ******************************************************************************** -->
+        <!-- upper info center ******************************************************************************** -->
+        <v-tabs-items v-model="model">
+        <v-tab-item v-for="i in 5"
+          :id="`tab-${i}`"
+          :key="i">
+          <v-card >
+            <v-card-media
+              :src="imageUrl"
+              height="50px"
+            >
+            <v-container fill-height fluid>
+                  <!-- <v-layout fill-height> -->
+                    <v-flex xs12 align-end flexbox>
+                      <span class="headline">{{ center_name }}</span>
+                    </v-flex>
+                  <!-- </v-layout> -->
+                </v-container>
+            </v-card-media>
+          </v-card>
+        </v-tab-item>
+        </v-tabs-items>
+        <!-- upper info center ******************************************************************************** -->
 
       </v-tabs>
-
-
-
-
     </v-toolbar>
 
+    <!-- <v-tabs-items v-model="tab">
+      <v-tab-item
+        v-for="item in items"
+        :key="item"
+      >
+        <v-card flat>
+          <v-card-text>{{ text }}</v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items> -->
+  </div>
 
   </v-layout>
 
@@ -278,6 +292,11 @@ export default {
 </script>
 
 <style scoped>
+.v-tabs {
+  padding: 0;
+  margin-top: 10px;
+}
+
 .headline {
   color: #fff;
 
