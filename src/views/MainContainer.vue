@@ -1,7 +1,7 @@
 <template>
   <v-app>
-  <div>
-    <v-toolbar app color="gray"  tabs :clipped-left="clipped">
+  <v-layout>
+    <v-toolbar color="gray"  tabs :clipped-left="clipped" fixed>
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
       <router-link to="/">
         <v-toolbar-title>umanji</v-toolbar-title>
@@ -40,17 +40,45 @@
         세계
       </v-tab>
 
+      <!-- upper info center ******************************************************************************** -->
+      <v-tabs-items v-model="model">
+      <v-tab-item v-for="i in 5"
+        :id="`tab-${i}`"
+        :key="i">
+        <v-card >
+          <v-card-media
+            :src="imageUrl"
+            height="50px"
+          >
+          <v-container fill-height fluid>
+                <!-- <v-layout fill-height> -->
+                  <v-flex xs12 align-end flexbox>
+                    <span class="headline">{{ center_name }}</span>
+                  </v-flex>
+                <!-- </v-layout> -->
+              </v-container>
+          </v-card-media>
+        </v-card>
+      </v-tab-item>
+      </v-tabs-items>
+      <!-- upper info center ******************************************************************************** -->
+
       </v-tabs>
+
+
+
+
     </v-toolbar>
 
-  </div>
+
+  </v-layout>
 
     <!-- CONTENT ********************************** -->
-    <v-content>
+    <div>
       <Home v-show="visible === true" v-bind:test="postLists"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
 
-    </v-content>
+    </div>
     <!-- CONTENT ********************************** -->
 
     <!-- RIGHT MENU ********************************** -->
@@ -132,6 +160,14 @@ export default {
 
   data () {
     return {
+      tab: null,
+      tab_items: [
+        'web', 'shopping', 'videos', 'images', 'news'
+      ],
+
+      model: 'tab-2',
+      imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
+      center_name: "신대방동정보센터",
       selec: 'gugun',
       content: 'default',
       clipped: true,
@@ -146,9 +182,9 @@ export default {
       rightDrawer: false,
       model: 'tab-2',
       // title: 'umanji',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
-        'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
-        ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
+      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
+      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       // visible: true
       postLists: [],
       passtest: 'Passing String data',
@@ -241,7 +277,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.headline {
+  color: #fff;
+
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

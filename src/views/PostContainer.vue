@@ -1,31 +1,23 @@
 <template>
   <div class="home">
-    <v-card>
-      <v-card-media
-        :src="imageUrl"
-        height="50px"
-      >
-      <v-container fill-height fluid>
-            <v-layout fill-height>
-              <v-flex xs12 align-end flexbox>
-                <span class="headline">{{ center_name }}</span>
-              </v-flex>
-            </v-layout>
-          </v-container>
-      </v-card-media>
-    </v-card>
 
+
+    <v-content>
+
+
+    <v-layout class="mt-5 ma-0">
+      <v-flex xs12 sm6 offset-lg3 >
+
+
+
+    <!-- create Post Button ******************************************************************************** -->
     <div>
       <v-btn color="success" @click="createPost">Write Post</v-btn>
       <!-- @click.stop="dialog = true" -->
     </div>
+    <!-- create Post Button ******************************************************************************** -->
 
-    <v-layout row class="mt-5">
-      <v-flex xs12 sm6 offset-sm3 >
-      <!-- </v-flex> -->
-
-
-      <!-- v-dialog ******************************************************************************* -->
+    <!-- create Post v-dialog ******************************************************************************* -->
       <v-dialog
         v-model="dialog"
         fullscreen
@@ -58,12 +50,6 @@
           <v-card-text>
             <v-list three-line subheader>
               <v-subheader>Create Post</v-subheader>
-              <!-- <v-list-tile avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title>Content filtering</v-list-tile-title>
-                  <v-list-tile-sub-title>Set the content filtering level to restrict apps that can be downloaded</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile> -->
             </v-list>
             <v-divider></v-divider>
             <v-list three-line subheader>
@@ -78,27 +64,24 @@
                 <!-- </v-list-tile-content> -->
               </v-list-tile>
 
-
             </v-list>
           </v-card-text>
 
           <div style="flex: 1 1 auto;"></div>
         </v-card>
       </v-dialog>
-      <!-- </v-layout> -->
-      <!-- v-dialog ******************************************************************************* -->
-      <!-- <template> -->
+      <!-- create Post v-dialog ******************************************************************************* -->
 
-          <!-- <v-layout row> -->
-            <!-- <v-flex xs12 sm6 offset-sm3> -->
+      <!-- content ******************************************************************************** -->
               <v-card>
 
-                <v-list two-line>
+                <!-- <v-list two-line>
                   <template v-for="(item, index) in items">
 
                     <v-subheader v-if="item.header" :key="item.header">{{ item.header }}</v-subheader>
 
                     <v-divider v-else-if="item.divider" :inset="item.inset" :key="index"></v-divider>
+
                     <v-list-tile v-else :key="item.title" avatar @click="">
                       <v-list-tile-avatar>
                         <img :src="item.avatar" >
@@ -108,21 +91,38 @@
                         <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
                       </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile>
-                      <v-list-tile-avatar>
-                        <img src="../assets/avatar.png" >
-                      </v-list-tile-avatar>
 
-                    </v-list-tile>
 
                   </template>
+                </v-list> -->
+
+                <v-list>
+                  <v-list-tile
+                    v-for="item in items"
+                    :key="item.title"
+                    avatar
+                    @click=""
+                  >
+                    <v-list-tile-action>
+                      <v-icon v-if="item.icon" color="pink">star</v-icon>
+                    </v-list-tile-action>
+
+                    <v-list-tile-content>
+                      <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                    </v-list-tile-content>
+
+                    <v-list-tile-avatar>
+                      <img :src="item.avatar">
+                    </v-list-tile-avatar>
+                  </v-list-tile>
                 </v-list>
 
               </v-card>
+        <!-- content ******************************************************************************** -->
+
             </v-flex>
           </v-layout>
-
-      <!-- </template> -->
+</v-content>
 
   </div>
 </template>
@@ -143,25 +143,26 @@ export default {
   },
 
   data: () => ({
+    clipped: true,
     dialog: false,
     notifications: false,
     sound: true,
     widgets: false,
+
+    divider: true, inset: true,
     content: '',
 
     show: false,
-    center_name: "신대방동정보센터",
-    imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
     items: [
-        { header: 'Today' },
+        // { header: 'Today' },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/1.jpg', title: 'Brunch this weekend?', subtitle: "<span class='text--primary'>Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?" },
-        { divider: true, inset: true },
+        // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/2.jpg', title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>', subtitle: "<span class='text--primary'>to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend." },
-        { divider: true, inset: true },
+        // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/3.jpg', title: 'Oui oui', subtitle: "<span class='text--primary'>Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?" },
-        { divider: true, inset: true },
+        // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/4.jpg', title: 'Birthday gift', subtitle: "<span class='text--primary'>Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?" },
-        { divider: true, inset: true },
+        // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
       ]
 
@@ -226,6 +227,12 @@ export default {
 </script>
 
 <style scoped>
+.titlebar {
+  background-color: blue;
+  height: 200px;
+  flex-shrink: 0;
+}
+
 .p_textarea {
   margin: 10px;
   padding: 10px;
