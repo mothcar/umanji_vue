@@ -1,11 +1,10 @@
 <template>
-  <div class="home">
+  <div class="home"  >
 
 
-    <v-content>
 
 
-    <v-layout class="mt-5 ma-0">
+    <div>
       <v-flex xs12 sm6 offset-lg3 >
 
 
@@ -121,8 +120,8 @@
         <!-- content ******************************************************************************** -->
 
             </v-flex>
-          </v-layout>
-</v-content>
+          </div>
+
 
   </div>
 </template>
@@ -139,7 +138,7 @@ export default {
 
   name: 'home',
   props: {
-    test: Array
+    postLists: Array
   },
 
   data: () => ({
@@ -217,7 +216,7 @@ export default {
   }, // methods
 
   created: function () {
-    console.log('Props in Post Containser ', this.props)
+    // console.log('Props in Post Containser ', this.props)
   }, //created
 
   components: {
@@ -227,10 +226,8 @@ export default {
 </script>
 
 <style scoped>
-.titlebar {
-  background-color: blue;
-  height: 200px;
-  flex-shrink: 0;
+.home {
+  text-align: center;
 }
 
 .p_textarea {
