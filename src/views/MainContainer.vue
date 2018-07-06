@@ -47,7 +47,7 @@
         </v-tab>
 
         <!-- upper info center ******************************************************************************** -->
-        <v-tabs-items v-model="model">
+        <v-tabs-items v-show="visible === true" v-model="model">
         <v-tab-item v-for="i in 5"
           :id="`tab-${i}`"
           :key="i">
@@ -244,6 +244,10 @@ export default {
   computed: {
     visible () {
       return this.$store.state.visible
+    },
+
+    isPost() {
+      return this.$store.state.isPost
     },
 
     authenticated () {

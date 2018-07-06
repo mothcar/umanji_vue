@@ -20,6 +20,7 @@ export default new Vuex.Store({
     auth (state, payload) {
       state.authenticated = payload
     },
+
     // toMap: state => state.list_mode = 'map',
     toMap (state, payload) {
       state.visible = payload

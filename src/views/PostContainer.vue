@@ -17,6 +17,46 @@
     </div>
     <!-- create Post Button ******************************************************************************** -->
 
+    <!-- content ******************************************************************************** -->
+            <v-card class="p_card" v-for="item in postLists"
+              :key="item.content"
+              avatar
+              @click="">
+
+                <v-card-title primary-title>
+                  <v-list-tile-avatar>
+                    <img :src="item.photos">
+                  </v-list-tile-avatar>
+                  <div>
+
+
+                    <div>{{ item.content }}</div>
+                  </div>
+                </v-card-title>
+                <div>
+                  <link-prevue url="https://vuejs.org/">
+                    <template slot-scope="props">
+                      <div class="card" style="width: 2rem;">
+                        <img class="card-img-top" :src="props.img" :alt="props.title">
+                        <div class="card-block">
+                          <h4 class="card-title">{{props.title}}</h4>
+                          <p class="card-text">{{props.description}}</p>
+                          <a v-bind:href="props.url" class="btn btn-primary">More</a>
+                        </div>
+                      </div>
+                    </template>
+                  </link-prevue>
+                </div>
+
+                <!-- <v-card-media
+                    :src="item.photos"
+                    height="200px"
+                  ></v-card-media> -->
+
+            </v-card>
+      <!-- content ******************************************************************************** -->
+
+
     <!-- create Post v-dialog ******************************************************************************* -->
       <v-dialog
         v-model="dialog"
@@ -49,35 +89,28 @@
           </v-toolbar>
 
 
-          <!-- <v-card-text>
+          <div>
             <v-list three-line subheader>
               <v-subheader>Create Post</v-subheader>
             </v-list>
             <v-divider></v-divider>
             <v-list three-line subheader>
               <v-subheader>Write</v-subheader>
+
               <v-list-tile avatar>
 
                   <span>Content:</span>
                   <br>
-                  <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
+                    <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
+                    <p >
+                      {{ result }}
+                    </p>
+
               </v-list-tile>
 
             </v-list>
-          </v-card-text> -->
-          <div>
-            <VuePellEditor
-                :actions="editorOptions"
-                :content="editorContent"
-                :placeholder="editorPlaceholder"
-                v-model="editorContent"
-                :style-with-css="false"
-                :classes="editorClasses"
-                default-paragraph-separator="p"
-                @change="doSomething"
-                @mounted="doSomethingAfterMounted"
-            />
           </div>
+
 
 
 
@@ -89,44 +122,6 @@
       </v-dialog>
       <!-- create Post v-dialog ******************************************************************************* -->
 
-      <!-- content ******************************************************************************** -->
-              <v-card v-for="item in postLists"
-                :key="item.content"
-                avatar
-                @click="">
-
-                  <v-card-title primary-title>
-                    <v-list-tile-avatar>
-                      <img :src="item.photos">
-                    </v-list-tile-avatar>
-                    <div>
-
-
-                      <div>{{ item.content }}</div>
-                    </div>
-                  </v-card-title>
-                  <div>
-                    <link-prevue url="https://vuejs.org/">
-                      <template slot-scope="props">
-                        <div class="card" style="width: 2rem;">
-                          <img class="card-img-top" :src="props.img" :alt="props.title">
-                          <div class="card-block">
-                            <h4 class="card-title">{{props.title}}</h4>
-                            <p class="card-text">{{props.description}}</p>
-                            <a v-bind:href="props.url" class="btn btn-primary">More</a>
-                          </div>
-                        </div>
-                      </template>
-                    </link-prevue>
-                  </div>
-
-                  <!-- <v-card-media
-                      :src="item.photos"
-                      height="200px"
-                    ></v-card-media> -->
-
-              </v-card>
-        <!-- content ******************************************************************************** -->
 
             </v-flex>
           </v-layout>
@@ -144,7 +139,7 @@ import sido from '@/components/sido.vue'
 import country from '@/components/country.vue'
 import world from '@/components/world.vue'
 import LinkPrevue from 'link-prevue'
-import VuePellEditor from 'vue-pell-editor'
+var anchorme = require("anchorme").default
 
 
 export default {
@@ -176,43 +171,7 @@ export default {
         // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
       ],
-      content: '',
-      editorContent: '',
-      editorOptions: [
-        'bold',
-        'underline',
-        {
-          name: 'italic',
-          result: () => window.pell.exec('italic')
-        },
-        {
-          name: 'custom',
-          icon: '<b><u><i>C</i></u></b>',
-          title: 'Custom Action',
-          result: () => console.log('YOLO')
-        },
-        {
-          name: 'image',
-          result: () => {
-            const url = window.prompt('Enter the image URL')
-            if (url) window.pell.exec('insertImage', ensureHTTP(url))
-          }
-        },
-        {
-          name: 'link',
-          result: () => {
-            const url = window.prompt('Enter the link URL')
-            if (url) window.pell.exec('createLink', ensureHTTP(url))
-          }
-        }
-      ],
-      editorPlaceholder: 'Write something amazing...',
-      editorContent: '<div>Predefined Content</div>',
-      editorClasses: {
-        actionbar: 'pell-actionbar-custom-name',
-        button: 'pell-button-custom-name',
-        content: 'pell-content-custom-name'
-      }
+      content: ''
 
 
 
@@ -271,12 +230,36 @@ export default {
 
   }, // methods
 
+  computed: {
+    result:  function() {
+      var my_result = anchorme(this.content,{
+        	attributes:[
+        		{
+        			name:"target",
+        			value:"_blank"
+        		},
+        		function(urlObj){
+              console.log("url : ", urlObj.encoded)
+        			// document.getElementById("urlobj").innerText = JSON.stringify(urlObj,null,4);
+        			// if(urlObj.raw === "mylink.com") {
+        			// 	return {
+        			// 		name:"class",
+        			// 		value:"mylink"
+        			// 	}
+        			// } // if
+        		}
+        	]
+        });
+      return my_result
+    }
+  },
+
   created: function () {
     console.log('Props in Post Containser ', this.props)
   }, //created
 
   components: {
-    dong, gugun, sido, country, world, LinkPrevue, VuePellEditor
+    dong, gugun, sido, country, world, LinkPrevue
   },
 
   mounted() {
@@ -285,8 +268,12 @@ export default {
 }
 </script>
 
-<style scoped>
-@import '~vue-pell-editor/dist/vue-pell-editor.css';
+<style >
+
+.p_card {
+  margin-bottom: 5px;
+  padding: 10px;
+}
 
 .p_margin_top {
   margin-top: 150px;
@@ -298,11 +285,13 @@ export default {
   flex-shrink: 0;
 }
 
+
 .p_textarea {
+  align-self: baseline;
+  width: 100%;
+  height: 250px;
   margin: 10px;
   padding: 10px;
-  width: 100%;
-  height: auto;
   border: 1px solid #333;
 
 }
