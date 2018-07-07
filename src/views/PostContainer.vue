@@ -34,9 +34,9 @@
                   </div>
                 </v-card-title>
                 <div>
-                  <link-prevue url="https://vuejs.org/">
+                  <link-prevue url="https://naver.com/">
                     <template slot-scope="props">
-                      <div class="card" style="width: 2rem;">
+                      <div class="card" style="width: 20rem;">
                         <img class="card-img-top" :src="props.img" :alt="props.title">
                         <div class="card-block">
                           <h4 class="card-title">{{props.title}}</h4>
