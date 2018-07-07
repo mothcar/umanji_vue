@@ -2,7 +2,7 @@
   <div>
     <map-loader
       :map-config="mapConfig"
-      apiKey="AIzaSyAkBtcrL46k0lu2Ab097IbmwyX7arkXkeE"
+      :apiKey="api_key"
     >
       <template v-for="marker in markers">
         <child-marker :position="marker" />
@@ -24,7 +24,8 @@ export default {
       mapConfig: {
         zoom: 12,
         center: this.markers[0]
-      }
+      },
+      api_key: p_env.map_api_key
     }
   },
   components: {
