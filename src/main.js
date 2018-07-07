@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import lang from './plugins/lang.js'
 import VueI18n from 'vue-i18n'
+import env from "../config/env.js"
 
 
 // axios NOT Going *************************************************************
@@ -41,6 +42,8 @@ Vue.config.productionTip = false
 Vue.use(VueI18n)
 
 const messages = lang
+
+window.p_env = env
 
 const i18n = new VueI18n({
   locale: 'kr', // set locale

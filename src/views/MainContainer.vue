@@ -273,6 +273,8 @@ export default {
 
     console.log("AUth : ", this.$store.state.authenticated)
 
+    console.log("My Env : ", p_env.production)  // development
+
     // this.$http.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
     // .then(res => {
     //   console.log(res.data.data)
