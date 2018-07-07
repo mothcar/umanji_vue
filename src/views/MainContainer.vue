@@ -262,7 +262,7 @@ export default {
   created: function () {
 
     // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
-    axios.get('http://119.205.233.249:3000/v1/main/posts?portalType=sublocality2&portalName=신길6동')
+    axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
     .then(res => {
       this.postLists = res.data.data
       console.log(res.data.data)
@@ -288,7 +288,37 @@ export default {
       console.log(location.coords.latitude);
       console.log(location.coords.longitude);
       console.log(location.coords.accuracy);
+      // console.log('CHEck :: ', location.coords);
+      var coords = {}
+      coords.lat = location.coords.latitude
+      coords.lng = location.coords.longitude
+
+      // return only ENGLISH
+      // var google_maps_geocoder = new google.maps.Geocoder();
+      //   google_maps_geocoder.geocode(
+      //       { 'latLng': coords, "language": "ko" },
+      //       function( results, status ) {
+      //           console.log( results[0] );
+      //       }
+      //   );
+      axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+      .then(res => {
+        console.log(res.data.addressInfo.fullAddress)
+      })
+      /*
+      city_do
+      gu_gun
+      legalDong
+      eup_myun
+      ri
+      bunji
+      */
+
     })
+
+
+
+
 
     console.log('a is: ' + this.selec)
     return this.selec = "sido"

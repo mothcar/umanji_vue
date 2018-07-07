@@ -35,8 +35,8 @@
         data() {
             return {
                 input: {
-                    username: "mo@naver.com",
-                    password: "111111"
+                    username: p_env.login_id,
+                    password: p_env.login_pw
                 },
                 a: 1
             }
@@ -49,7 +49,7 @@
 
             login() {
 
-                axios.post('http://119.205.233.249:3000/v1/auth/signin', { email:this.input.username, password:this.input.password })
+                axios.post(p_env.BASE_URL+'/auth/signin', { email:this.input.username, password:this.input.password })
                     .then(res => {
                         this.$store.commit('saveToken', res.data.data.token)
                         this.$store.commit('auth', true)
