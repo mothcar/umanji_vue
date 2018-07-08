@@ -61,7 +61,10 @@
             <v-container fill-height fluid>
                   <!-- <v-layout fill-height> -->
                     <v-flex xs12 align-end flexbox>
-                      <span class="headline">{{ center_name }} 정보센터</span>
+                      <router-link :to="{ name: 'portalPage', params: params }" >
+                        <!-- id: participantUser.user_id / target= '_blank' -->
+                        <span class="headline">{{ center_name }} 정보센터</span>
+                      </router-link>
                     </v-flex>
                   <!-- </v-layout> -->
                 </v-container>
@@ -184,6 +187,7 @@ export default {
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
       center_name: '',
       selec: 'gugun',
+      selected_tab: '',
       content: 'default',
       clipped: true,
       drawer: false,
@@ -208,7 +212,10 @@ export default {
         password: '111111'
       },
       address: {},
-      legalDong: ''
+      legalDong: '',
+      params: {
+        id: 'init'
+      }
 
     }
   },
@@ -245,6 +252,7 @@ export default {
     changeLevel (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
+      console.log("MainContainer - current : ", current)
 
     },
 
@@ -259,12 +267,15 @@ export default {
           break;
         case 'city_do':
           this.center_name = this.$store.state.city_do
+          this.params.id = this.$store.state.city_do
           break;
         case 'gu_gun':
           this.center_name = this.$store.state.gu_gun
+          this.params.id = this.$store.state.gu_gun
           break;
         case 'legalDong':
           this.center_name = this.$store.state.legalDong
+          this.params.id = this.$store.state.legalDong
           break;
         case 'eup_myun':
           this.center_name = this.$store.state.eup_myun
@@ -346,6 +357,7 @@ export default {
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
         _this.center_name = res.data.addressInfo.legalDong
+        _this.params.id = res.data.addressInfo.legalDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
         console.log('MainContainer : ',res.data.addressInfo)
       })

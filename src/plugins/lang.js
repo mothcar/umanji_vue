@@ -9,6 +9,9 @@ const messages = {
       city_do: '시도',
       country: '국가',
       world: '세계'
+    },
+    portal_page: {
+      title: '정보센터'
     }
   },
 

@@ -13,6 +13,7 @@ import World from './components/world.vue'
 import MainLogin from './components/MainLogin.vue'
 import Secure from './views/Secure.vue'
 import SecureLogin from './views/SecureLogin.vue'
+import PortalPage from './views/PortalPage.vue'
 
 Vue.use(Router)
 
@@ -74,6 +75,11 @@ export default new Router({
       path: '/secureLogin',
       name: 'secureLogin',
       component: SecureLogin
+    },
+    {
+      path: '/portalPage/:id',
+      name: 'portalPage',
+      component: PortalPage
     }
 
   ]
