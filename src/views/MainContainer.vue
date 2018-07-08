@@ -214,12 +214,12 @@ export default {
   },
 
   updated: function() {
-    console.log("updated............")
+    console.log("MainContainer : updated............")
   },
 
   watch: {
     legalDong: function (some) {
-      console.log("Triggered ........")
+      console.log("MainContainer : watch -Triggered ........")
 
     }
   },
@@ -229,12 +229,12 @@ export default {
   methods: {
     toMap: function(){
       this.$store.commit('toMap', false)
-      console.log("toMap", this.$store.state.visible)
+      // console.log("MainContainer : toMap", this.$store.state.visible)
     },
 
     toPost: function () {
       this.$store.commit('toPost', true)
-      console.log("toPost", this.$store.state.visible)
+      // console.log("MainContainer : toPost", this.$store.state.visible)
     },
 
     logout: function () {
@@ -249,7 +249,7 @@ export default {
     },
 
     autoDetectArea (area) {
-      console.log("autoDetectArea : " + area)
+      console.log("MainContainer : autoDetectArea : " + area)
       switch(area) {
         case 'world':
           this.center_name = '세계'
@@ -317,21 +317,18 @@ export default {
     axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
     .then(res => {
       this.postLists = res.data.data
-      console.log(res.data.data)
-      // console.log(res.data.data.portal_name)
-      // this.news = res.data
-      // console.log(res)
+      // console.log('MainContainer : ',res.data.data)
+
     })
 
-    console.log("AUth : ", this.$store.state.authenticated) // For Test
-    console.log("My Env : ", p_env.production)  // For Test : development
+    // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
+    // console.log("MainContainer : My Env : ", p_env.production)  // ENV
 
     //*** Get Coords from Google
     navigator.geolocation.getCurrentPosition(function(location) {
-      console.log(location.coords.latitude);
-      console.log(location.coords.longitude);
-      console.log(location.coords.accuracy);
-      // console.log('CHEck :: ', location.coords);
+      // console.log('MainContainer : ',location.coords.latitude);
+      // console.log('MainContainer : ',location.coords.longitude);
+      // console.log('MainContainer : ',location.coords.accuracy);
       var coords = {}
       coords.lat = location.coords.latitude
       coords.lng = location.coords.longitude
@@ -350,7 +347,7 @@ export default {
       .then(res => {
         _this.center_name = res.data.addressInfo.legalDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-        console.log(res.data.addressInfo)
+        console.log('MainContainer : ',res.data.addressInfo)
       })
       // res.data.addressInfo.fullAddress
       // res.data.addressInfo.city_do 서울특별시
@@ -362,7 +359,7 @@ export default {
 
 
 
-    console.log('a is: ' + this.selec)
+    // console.log('MainContainer : Select is: ' + this.selec)
     this.selec = "city_do"
   }
 }

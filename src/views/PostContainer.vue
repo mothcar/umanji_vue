@@ -180,17 +180,17 @@ export default {
 
   methods: {
     getdata: function() {
-      console.log(this.passtest)
+      console.log('PostContainer : ',this.passtest)
     },
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
         this.dialog = true
-        console.log("dialog is true")
+        console.log("PostContainer : dialog is true")
       } else {
         alert(" Please Sign in ")
       }
-      console.log("Write post clicked...")
+      console.log("PostContainer : Write post clicked...")
     },
     submitPost: function() {
       // @click.native="dialog = false"
@@ -223,10 +223,10 @@ export default {
     }, //submitPost
 
     doSomething() {
-      console.log('Hello')
+      console.log('PostContainer : Hello')
     },
     doSomethingAfterMounted() {
-      console.log('Editor mounted')
+      console.log('PostContainer : Editor mounted')
     }
 
   }, // methods
@@ -240,7 +240,7 @@ export default {
         			value:"_blank"
         		},
         		function(urlObj){
-              console.log("url : ", urlObj.encoded)
+              console.log("PostContainer : url : ", urlObj.encoded)
         			// document.getElementById("urlobj").innerText = JSON.stringify(urlObj,null,4);
         			// if(urlObj.raw === "mylink.com") {
         			// 	return {
@@ -256,7 +256,7 @@ export default {
   },
 
   created: function () {
-    console.log('Props in Post Containser ', this.props)
+    console.log('PostContainer : Props in Post Containser ', this.props)
   }, //created
 
   components: {
@@ -264,7 +264,7 @@ export default {
   },
 
   mounted() {
-    console.log('this is current quill instance object', this.myQuillEditor)
+
   }
 }
 </script>

@@ -47,7 +47,7 @@ export default new Vuex.Store({
       state.legalDong = payload.legalDong
       state.eup_myun = payload.eup_myun
       state.ri = payload.ri
-      console.log("I'm Store and legalDong is : " , payload.legalDong)
+      // console.log("Store.js : " , payload.legalDong)
     }
 
   },  // mutations
