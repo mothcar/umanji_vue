@@ -30,14 +30,14 @@
         >
           {{ item }}
         </v-tab> -->
-        <v-tab name="dong" @click="changeLevel('dong')">
-          {{ $t("area_name.dong") }}
+        <v-tab name="legalDong" @click="changeLevel('legalDong')">
+          {{ $t("area_name.legalDong") }}
         </v-tab>
-        <v-tab name="gugun" @click="changeLevel('gugun')">
-          {{ $t("area_name.gugun") }}
+        <v-tab name="gu_gun" @click="changeLevel('gu_gun')">
+          {{ $t("area_name.gu_gun") }}
         </v-tab>
-        <v-tab name="sido" @click="changeLevel('sido')">
-          {{ $t("area_name.sido") }}
+        <v-tab name="city_do" @click="changeLevel('city_do')">
+          {{ $t("area_name.city_do") }}
         </v-tab>
         <v-tab name="country" @click="changeLevel('country')">
           {{ $t("area_name.country") }}
@@ -45,7 +45,6 @@
         <v-tab name="world" @click="changeLevel('world')">
           {{ $t("area_name.world") }}
         </v-tab>
-
 
 
 
@@ -258,13 +257,13 @@ export default {
         case 'country':
           this.center_name = '대한민국'
           break;
-        case 'sido':
+        case 'city_do':
           this.center_name = this.$store.state.city_do
           break;
-        case 'gugun':
+        case 'gu_gun':
           this.center_name = this.$store.state.gu_gun
           break;
-        case 'dong':
+        case 'legalDong':
           this.center_name = this.$store.state.legalDong
           break;
         case 'eup_myun':
@@ -364,7 +363,7 @@ export default {
 
 
     console.log('a is: ' + this.selec)
-    return this.selec = "sido"
+    this.selec = "city_do"
   }
 }
 </script>
