@@ -30,21 +30,23 @@
         >
           {{ item }}
         </v-tab> -->
-        <v-tab name="dong" @click="changeLevel('dong')">
-          {{ $t("area_name.dong") }}
+        <v-tab name="legalDong" @click="changeLevel('legalDong')">
+          {{ $t("area_name.legalDong") }}
         </v-tab>
-        <v-tab name="gugun" @click="changeLevel('gugun')">
-          {{ $t("area_name.gugun") }}
+        <v-tab name="gu_gun" @click="changeLevel('gu_gun')">
+          {{ $t("area_name.gu_gun") }}
         </v-tab>
-        <v-tab name="sido" @click="changeLevel('sido')">
-          {{ $t("area_name.sido") }}
+        <v-tab name="city_do" @click="changeLevel('city_do')">
+          {{ $t("area_name.city_do") }}
         </v-tab>
         <v-tab name="country" @click="changeLevel('country')">
           {{ $t("area_name.country") }}
         </v-tab>
-        <v-tab name="country" @click="changeLevel('country')">
+        <v-tab name="world" @click="changeLevel('world')">
           {{ $t("area_name.world") }}
         </v-tab>
+
+
 
         <!-- upper info center ******************************************************************************** -->
         <v-tabs-items v-show="visible === true" v-model="model">
@@ -59,7 +61,7 @@
             <v-container fill-height fluid>
                   <!-- <v-layout fill-height> -->
                     <v-flex xs12 align-end flexbox>
-                      <span class="headline">{{ legalDong }} 정보센터</span>
+                      <span class="headline">{{ center_name }} 정보센터</span>
                     </v-flex>
                   <!-- </v-layout> -->
                 </v-container>
@@ -180,7 +182,7 @@ export default {
 
       model: 'tab-2',
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
-      center_name: 'test',//this.$store.state.legalDong+' 정보센터',
+      center_name: '',
       selec: 'gugun',
       content: 'default',
       clipped: true,
@@ -241,14 +243,45 @@ export default {
     },
 
     changeLevel (current) {
-      this.test(current)
+      this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
 
     },
 
-    test (area) {
-      console.log("test : " + area)
-      return this.content = area
+    autoDetectArea (area) {
+      console.log("autoDetectArea : " + area)
+      switch(area) {
+        case 'world':
+          this.center_name = '세계'
+          break;
+        case 'country':
+          this.center_name = '대한민국'
+          break;
+        case 'city_do':
+          this.center_name = this.$store.state.city_do
+          break;
+        case 'gu_gun':
+          this.center_name = this.$store.state.gu_gun
+          break;
+        case 'legalDong':
+          this.center_name = this.$store.state.legalDong
+          break;
+        case 'eup_myun':
+          this.center_name = this.$store.state.eup_myun
+          break;
+        case 'ri':
+          this.center_name = this.$store.state.ri
+          break;
+        /*
+        city_do
+        gu_gun
+        legalDong
+        eup_myun
+        ri
+        bunji
+        */
+
+      }
     }
 
 
@@ -315,20 +348,13 @@ export default {
       //*** Reversegeocoding from SKTelecom
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        _this.legalDong = res.data.addressInfo.legalDong
+        _this.center_name = res.data.addressInfo.legalDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
         console.log(res.data.addressInfo)
       })
       // res.data.addressInfo.fullAddress
       // res.data.addressInfo.city_do 서울특별시
-      /*
-      city_do
-      gu_gun
-      legalDong
-      eup_myun
-      ri
-      bunji
-      */
+
 
     }) //google
 
@@ -337,7 +363,7 @@ export default {
 
 
     console.log('a is: ' + this.selec)
-    return this.selec = "sido"
+    this.selec = "city_do"
   }
 }
 </script>
