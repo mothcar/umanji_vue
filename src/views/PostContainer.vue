@@ -37,11 +37,12 @@
                   <link-prevue url="https://naver.com/">
                     <template slot-scope="props">
                       <div class="card" style="width: 20rem;">
-                        <img class="card-img-top" :src="props.img" :alt="props.title">
+
                         <div class="card-block">
                           <h4 class="card-title">{{props.title}}</h4>
                           <p class="card-text">{{props.description}}</p>
                           <a v-bind:href="props.url" class="btn btn-primary">More</a>
+                          <img class="card-img-top" :src="props.img" :alt="props.title">
                         </div>
                       </div>
                     </template>

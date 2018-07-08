@@ -7,7 +7,7 @@
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
 
       <router-link to="/">
-        <v-toolbar-title>umanji</v-toolbar-title>
+        <v-toolbar-title>Tojinara</v-toolbar-title>
       </router-link>
 
       <v-spacer></v-spacer>
@@ -59,7 +59,7 @@
             <v-container fill-height fluid>
                   <!-- <v-layout fill-height> -->
                     <v-flex xs12 align-end flexbox>
-                      <span class="headline">{{ center_name }}</span>
+                      <span class="headline">{{ legalDong }} 정보센터</span>
                     </v-flex>
                   <!-- </v-layout> -->
                 </v-container>
@@ -180,7 +180,7 @@ export default {
 
       model: 'tab-2',
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
-      center_name: "신대방동정보센터",
+      center_name: 'test',//this.$store.state.legalDong+' 정보센터',
       selec: 'gugun',
       content: 'default',
       clipped: true,
@@ -204,7 +204,20 @@ export default {
       mockAccount: {
         username: 'mo',
         password: '111111'
-      }
+      },
+      address: {},
+      legalDong: ''
+
+    }
+  },
+
+  updated: function() {
+    console.log("updated............")
+  },
+
+  watch: {
+    legalDong: function (some) {
+      console.log("Triggered ........")
 
     }
   },
@@ -256,10 +269,16 @@ export default {
 
     zoom_level () {
       return this.$store.state.zoom_level
+    },
+
+    setAddress () {
+      return this.$store.commit('setCurrentPosition', this.address)
     }
   }, // computed
 
   created: function () {
+
+    var _this = this
 
     // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
     axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
@@ -271,19 +290,10 @@ export default {
       // console.log(res)
     })
 
-    console.log("AUth : ", this.$store.state.authenticated)
+    console.log("AUth : ", this.$store.state.authenticated) // For Test
+    console.log("My Env : ", p_env.production)  // For Test : development
 
-    console.log("My Env : ", p_env.production)  // development
-
-    // this.$http.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
-    // .then(res => {
-    //   console.log(res.data.data)
-    //   console.log(res.data.data.portal_name)
-    //   // this.news = res.data
-    // })
-    // .catch()
-
-    // `this` points to the vm instance
+    //*** Get Coords from Google
     navigator.geolocation.getCurrentPosition(function(location) {
       console.log(location.coords.latitude);
       console.log(location.coords.longitude);
@@ -293,7 +303,7 @@ export default {
       coords.lat = location.coords.latitude
       coords.lng = location.coords.longitude
 
-      // return only ENGLISH
+      //***  Get Address from Google : return only ENGLISH
       // var google_maps_geocoder = new google.maps.Geocoder();
       //   google_maps_geocoder.geocode(
       //       { 'latLng': coords, "language": "ko" },
@@ -301,10 +311,16 @@ export default {
       //           console.log( results[0] );
       //       }
       //   );
+
+      //*** Reversegeocoding from SKTelecom
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        console.log(res.data.addressInfo.fullAddress)
+        _this.legalDong = res.data.addressInfo.legalDong
+        _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+        console.log(res.data.addressInfo)
       })
+      // res.data.addressInfo.fullAddress
+      // res.data.addressInfo.city_do 서울특별시
       /*
       city_do
       gu_gun
@@ -314,7 +330,7 @@ export default {
       bunji
       */
 
-    })
+    }) //google
 
 
 

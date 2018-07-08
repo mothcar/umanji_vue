@@ -9,9 +9,16 @@ export default new Vuex.Store({
     zoom_level: 18,
     emailentry:'',
     token:'',
-    authenticated: false
-
+    authenticated: false,
+    country: '',
+    city_do: '',
+    gu_gun: '',
+    legalDong: '',
+    eup_myun: '',
+    ri: '',
+    bunji: ''
   },
+
   mutations: {
     saveToken (state, payload) {
       state.token = payload
@@ -32,11 +39,32 @@ export default new Vuex.Store({
 
     changeZoomLevel (state, payload) {
       state.zoom_level = payload
+    },
+
+    setCurrentPosition (state, payload) {
+      state.city_do = payload.city_do
+      state.gu_gun = payload.gu_gun
+      state.legalDong = payload.legalDong
+      state.eup_myun = payload.eup_myun
+      state.ri = payload.ri
+      console.log("I'm Store and legalDong is : " , payload.legalDong)
     }
 
   },  // mutations
 
-  actions: {
+  /*
+  city_do
+  gu_gun
+  legalDong
+  eup_myun
+  ri
+  bunji
+  */
 
-  }
+  actions: {
+    setCurrentPosition (context) {
+      context.commit('setCurrentPosition')
+    }
+  } //action
+
 })

@@ -50,10 +50,15 @@ const i18n = new VueI18n({
   messages, // set locale messages
 })
 
+let address
+
 
 new Vue({
   i18n,
   router,
   store,
+  data: {
+    legalDong: address
+  },
   render: h => h(App)
 }).$mount('#app')
