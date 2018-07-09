@@ -181,36 +181,7 @@ export default {
       }
       console.log("PostContainer : Write post clicked...")
     },
-    submitPost: function() {
-      // @click.native="dialog = false"
-
-      /*
-      content : "이것만 있으면 되나요?"
-      owner_id : %2322%3A0
-      latitude : 37.4995519
-      longitude : 126.9185359
-      country_code : KR
-      location : {\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}
-      */
-
-
-      // this.dialog = false;
-
-      // axios.post('http://119.205.233.249:3000/v1/auth/signin', { email:this.input.username, password:this.input.password })
-      //     .then(res => {
-      //         this.$store.commit('saveToken', res.data.data.token)
-      //         this.$store.commit('auth', true)
-      //         console.log(res.data.data.token)
-      //         this.$router.push({name: 'home'})
-      //     }).catch(error => {
-      //         this.input.username = ''
-      //         this.input.password = ''
-      //       console.log(error.message);
-      //     }) // axios
-
-
-    }, //submitPost
-
+    
     doSomething() {
       console.log('PostContainer : Hello')
     },
