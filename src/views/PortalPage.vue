@@ -175,17 +175,16 @@ export default {
            // do stuff
            switch(val.id){
              case 'tab-Post':
-              console.log("switch Post")
+              // console.log("switch Post")
              break;
                case 'tab-Person':
-               // this.model.lists = ['aaa', 'bbb']
-              console.log("switch Person")
+              // console.log("switch Person")
              break;
              case 'tab-Some':
-              console.log("switch Some")
+              // console.log("switch Some")
              break;
            }
-           console.log('watch - model check : ', val)
+           // console.log('watch - model check : ', val)
          },
          deep: true
         }
@@ -204,12 +203,12 @@ export default {
       createPost: function() {
         // @click.stop="dialog = true"
         if(this.$store.state.authenticated == true) {
-          // this.dialog = true
-          console.log("PostContainer : dialog is true")
+          this.$router.push({name: 'postEditor'})
+          // console.log("PostContainer : dialog is true")
         } else {
           this.dialog = true
         }
-        console.log("PostContainer : Write post clicked...")
+        // console.log("PostContainer : Write post clicked...")
       },
 
       login: function() {
