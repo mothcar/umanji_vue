@@ -59,14 +59,13 @@
 
 
     <!-- create Post v-dialog ******************************************************************************* -->
-      <v-dialog
+      <!-- <v-dialog
         v-model="dialog"
         fullscreen
         hide-overlay
         transition="dialog-bottom-transition"
         scrollable
       >
-      <!-- slide-x-transition -->
         <v-card tile>
           <v-toolbar card dark color="primary">
             <v-btn icon dark @click.native="dialog = false">
@@ -81,11 +80,6 @@
               <v-btn slot="activator" dark icon>
                 <v-icon>more_vert</v-icon>
               </v-btn>
-              <v-list>
-                <!-- <v-list-tile v-for="(item, i) in items" :key="i" @click="">
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile> -->
-              </v-list>
             </v-menu>
           </v-toolbar>
 
@@ -120,7 +114,7 @@
           <div style="flex: 1 1 auto;"></div>
         </v-card>
 
-      </v-dialog>
+      </v-dialog> -->
       <!-- create Post v-dialog ******************************************************************************* -->
 
 
@@ -147,7 +141,7 @@ export default {
 
   data: () => ({
     clipped: true,
-    dialog: false,
+    // dialog: false,
     notifications: false,
     sound: true,
     widgets: false,
@@ -180,8 +174,8 @@ export default {
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
-        this.dialog = true
-        console.log("PostContainer : dialog is true")
+        // this.dialog = true
+        this.$router.push({name:'postEditor'})
       } else {
         alert(" Please Sign in ")
       }
@@ -200,7 +194,7 @@ export default {
       */
 
 
-      this.dialog = false;
+      // this.dialog = false;
 
       // axios.post('http://119.205.233.249:3000/v1/auth/signin', { email:this.input.username, password:this.input.password })
       //     .then(res => {
