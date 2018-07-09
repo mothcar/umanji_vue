@@ -134,11 +134,6 @@
 <script>
 // @ is an alias to /src
 import Vue from 'vue'
-import dong from '@/components/dong.vue'
-import gugun from '@/components/gugun.vue'
-import sido from '@/components/sido.vue'
-import country from '@/components/country.vue'
-import world from '@/components/world.vue'
 import LinkPrevue from 'link-prevue'
 var anchorme = require("anchorme").default
 
@@ -260,7 +255,7 @@ export default {
   }, //created
 
   components: {
-    dong, gugun, sido, country, world, LinkPrevue
+    LinkPrevue
   },
 
   mounted() {

@@ -54,7 +54,8 @@
                         this.$store.commit('saveToken', res.data.data.token)
                         this.$store.commit('auth', true)
                         console.log(res.data.data.token)
-                        this.$router.push({name: 'home'})
+                        // this.$router.push({name: 'home'})
+                        window.history.back()
                     }).catch(error => {
                         this.input.username = ''
                         this.input.password = ''

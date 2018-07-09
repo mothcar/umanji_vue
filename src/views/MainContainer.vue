@@ -12,6 +12,10 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn icon>
+        <v-icon>search</v-icon>
+      </v-btn>
+
       <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
       <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
 
