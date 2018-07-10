@@ -332,6 +332,7 @@ export default {
       })
       .then(
         // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
+        // this api will move to PostContainer
         axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=대방동')
         .then(res => {
           _this.postLists = res.data.data
