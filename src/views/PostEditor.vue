@@ -97,6 +97,8 @@ export default {
         console.log("save to server")
 
         axios.post(p_env.BASE_URL+'/geo/createPost', {
+          create_type: 'exist',
+          // portalRid: '',
           content: regContent,
           latitude: this.latitude,
           longitude: this.longitude,
