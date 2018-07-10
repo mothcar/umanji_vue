@@ -84,9 +84,8 @@
         </v-tab-item>
       </v-tabs-items>
 
-
-
     </div>
+
     <!-- Dialog ******************************************************************************** -->
     <v-layout row justify-center>
       <v-dialog
@@ -212,7 +211,6 @@ export default {
       },
 
       login: function() {
-
         this.dialog = false
       }
 

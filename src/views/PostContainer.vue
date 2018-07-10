@@ -34,7 +34,7 @@
                   </div>
                 </v-card-title>
                 <div>
-                  <link-prevue url="https://naver.com/">
+                  <link-prevue v-show="hasUrl" url="https://naver.com/">
                     <template slot-scope="props">
                       <div class="card" style="width: 20rem;">
 
@@ -141,7 +141,7 @@ export default {
 
   data: () => ({
     clipped: true,
-    // dialog: false,
+    hasUrl: false,
     notifications: false,
     sound: true,
     widgets: false,

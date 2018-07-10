@@ -49,9 +49,7 @@
   <!-- file select *********************************************************************** -->
   <div>
       <div class="file-upload-form">
-          Upload an image file: <br />
-          new line <br />
-          3 line <br />
+          Upload an image file:
           <input type="file" @change="previewImage" accept="image/*">
       </div>
       <div class="image-preview" v-if="imageData.length > 0">
@@ -87,42 +85,34 @@ export default {
 
     submitPost: function() {
 
+      var checkNull = this.content.replace(/\s|\r?\n|\r/g, '')
 
-      // var owner_id = '#22:0'
-      // var latitude = 37.4995519
-      // var longitude = 126.9185359
-      var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+      if(checkNull.length < 1) {
+        alert("내용을 입력해 주세요")
+      } else {
+        var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
 
-      var regContent = this.content
-      regContent = regContent.replace(/\r?\n/g, '<br />');
+        var regContent = this.content
+        regContent = regContent.replace(/\r?\n/g, '<br />');
+        console.log("save to server")
 
+        axios.post(p_env.BASE_URL+'/geo/createPost', {
+          content: regContent,
+          latitude: this.latitude,
+          longitude: this.longitude,
+          country_code: this.country_code,
+          location: location })
+          .then(res => {
+              window.history.back()
+          }).catch(error => {
+            console.log(error.message);
+        }) // axios
+      } // end of if
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
 
-
-      axios.post(p_env.BASE_URL+'/geo/createPost', {
-        content: regContent,
-        latitude: this.latitude,
-        longitude: this.longitude,
-        country_code: this.country_code,
-        location: location })
-        .then(res => {
-            // this.$store.commit('saveToken', res.data.data.token)
-            // this.$store.commit('auth', true)
-            // this.$router.push({name: 'home'})
-            window.history.back()
-        }).catch(error => {
-            this.input.username = ''
-            this.input.password = ''
-          console.log(error.message);
-      }) // axios
-
-
       // image upload
       // axios.post(p_env.BASE_URL+'/geo/createPost', this.selectedFile)
-
-
-
 
     }, //submitPost
 
