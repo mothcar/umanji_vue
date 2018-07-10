@@ -81,16 +81,6 @@
       </v-tabs>
     </v-toolbar>
 
-    <!-- <v-tabs-items v-model="tab">
-      <v-tab-item
-        v-for="item in items"
-        :key="item"
-      >
-        <v-card flat>
-          <v-card-text>{{ text }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items> -->
   </div>
 
   </v-layout>
@@ -166,10 +156,6 @@
 
 <script>
 import Home from './PostContainer.vue'
-// import MyMap from './views/MyMap.vue'
-// import MapProvider from './views/MapProvider.vue'
-// import MapLoader from './views/MapLoader.vue'
-// import ChildMarker from './views/ChildMarker.vue'
 import MapContainer from './MapContainer.vue'
 
 
@@ -183,39 +169,23 @@ export default {
   data () {
     return {
       tab: null,
-      tab_items: [
-        'web', 'shopping', 'videos', 'images', 'news'
-      ],
-
-      model: 'tab-2',
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
       center_name: '',
       selec: 'gugun',
-      selected_tab: '',
       content: 'default',
       clipped: true,
-      drawer: false,
       fixed: true,
       items: [{
         icon: 'bubble_chart',
         title: 'Inspire'
       }],
-      miniVariant: false,
       left: true,
       rightDrawer: false,
       model: 'tab-2',
-      // title: 'umanji',
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
       'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
       ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      // visible: true
       postLists: [],
-      passtest: 'Passing String data',
-      mockAccount: {
-        username: 'mo',
-        password: '111111'
-      },
-      address: {},
       adminDong: '',
       params: {
         id: 'init'
@@ -317,11 +287,12 @@ export default {
 
     zoom_level () {
       return this.$store.state.zoom_level
-    },
-
-    setAddress () {
-      return this.$store.commit('setCurrentPosition', this.address)
     }
+
+    // setAddress () {
+    //   return this.$store.commit('setCurrentPosition', this.address)
+    // }
+
   }, // computed
 
   created: function () {
@@ -335,12 +306,6 @@ export default {
     navigator.geolocation.getCurrentPosition(function(location) {
       _this.$store.commit('setCoords', location.coords)
       console.log("MainContainer : lacation. ", location)
-      // console.log('MainContainer : ',location.coords.latitude);
-      // console.log('MainContainer : ',location.coords.longitude);
-      // console.log('MainContainer : ',location.coords.accuracy);
-      var coords = {}
-      coords.lat = location.coords.latitude
-      coords.lng = location.coords.longitude
 
       //***  Get Address from Google : return only ENGLISH
       // var google_maps_geocoder = new google.maps.Geocoder();
@@ -350,6 +315,10 @@ export default {
       //           console.log( results[0] );
       //       }
       //   );
+
+      var coords = {}
+      coords.lat = location.coords.latitude
+      coords.lng = location.coords.longitude
 
       //*** Reversegeocoding from SKTelecom
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -363,24 +332,17 @@ export default {
       })
       .then(
         // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
-        axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
+        axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=대방동')
         .then(res => {
           _this.postLists = res.data.data
-          // console.log('MainContainer : ',res.data.data)
+          console.log('MainContainer - Post Lists : ',res.data.data)
 
         })
       )
-      // res.data.addressInfo.fullAddress
-      // res.data.addressInfo.city_do 서울특별시
 
 
     }) //google
 
-
-
-
-
-    // console.log('MainContainer : Select is: ' + this.selec)
     this.selec = "city_do"
   }
 }

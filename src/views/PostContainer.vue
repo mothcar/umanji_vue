@@ -19,7 +19,7 @@
 
     <!-- content ******************************************************************************** -->
             <v-card class="p_card" v-for="item in postLists"
-              :key="item.content"
+              :key="item.id"
               avatar
               @click="">
 
@@ -30,7 +30,7 @@
                   <div>
 
 
-                    <div v-html="item.content">{{ }}</div>
+                    <div v-html="item.content"></div>
                   </div>
                 </v-card-title>
                 <div>
