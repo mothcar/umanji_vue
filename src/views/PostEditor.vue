@@ -49,7 +49,9 @@
   <!-- file select *********************************************************************** -->
   <div>
       <div class="file-upload-form">
-          Upload an image file:
+          Upload an image file: <br />
+          new line <br />
+          3 line <br />
           <input type="file" @change="previewImage" accept="image/*">
       </div>
       <div class="image-preview" v-if="imageData.length > 0">
@@ -66,6 +68,10 @@
 export default {
   data () {
     return {
+      country_code : 'KR',
+      latitude: this.$store.state.latitude,
+      longitude: this.$store.state.longitude,
+      location: '',
       content: '',
       result: '',
       imageData: ''
@@ -82,21 +88,27 @@ export default {
     submitPost: function() {
 
 
-      var content = "no owner id....."
-      var owner_id = '#22:0'
-      var latitude = 37.4995519
-      var longitude = 126.9185359
-      var country_code = 'KR'
-      var location = '{"@class":"OPoint","coordinates":[126.9194521,37.4997197]}'
+      // var owner_id = '#22:0'
+      // var latitude = 37.4995519
+      // var longitude = 126.9185359
+      var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+
+      var regContent = this.content
+      regContent = regContent.replace(/\r?\n/g, '<br />');
+
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
 
 
-      axios.post(p_env.BASE_URL+'/geo/createPost', { content: content, latitude: latitude, longitude: longitude, country_code: country_code, location: location })
+      axios.post(p_env.BASE_URL+'/geo/createPost', {
+        content: regContent,
+        latitude: this.latitude,
+        longitude: this.longitude,
+        country_code: this.country_code,
+        location: location })
         .then(res => {
             // this.$store.commit('saveToken', res.data.data.token)
             // this.$store.commit('auth', true)
-            console.log("post created.... location : ", location)
             // this.$router.push({name: 'home'})
             window.history.back()
         }).catch(error => {

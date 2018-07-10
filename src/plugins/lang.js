@@ -5,6 +5,7 @@ const messages = {
     },
     area_name: {
       legalDong: '동네',
+      adminDong: '동네',
       gu_gun: '구군',
       city_do: '시도',
       country: '국가',
@@ -21,6 +22,7 @@ const messages = {
     },
     area_name: {
       legalDong: 'Town',
+      adminDong: 'Town',
       gu_gun: 'Gugun',
       city_do: 'City',
       country: 'Country',
@@ -33,6 +35,7 @@ const messages = {
     },
     area_name: {
       legalDong: '동네',
+      adminDong: '동네',
       gu_gun: '구군',
       city_do: '시도',
       country: '국가',

@@ -34,8 +34,8 @@
         >
           {{ item }}
         </v-tab> -->
-        <v-tab name="legalDong" @click="changeLevel('legalDong')">
-          {{ $t("area_name.legalDong") }}
+        <v-tab name="adminDong" @click="changeLevel('adminDong')">
+          {{ $t("area_name.adminDong") }}
         </v-tab>
         <v-tab name="gu_gun" @click="changeLevel('gu_gun')">
           {{ $t("area_name.gu_gun") }}
@@ -216,7 +216,7 @@ export default {
         password: '111111'
       },
       address: {},
-      legalDong: '',
+      adminDong: '',
       params: {
         id: 'init'
       }
@@ -229,7 +229,7 @@ export default {
   },
 
   watch: {
-    legalDong: function (some) {
+    adminDong: function (some) {
       console.log("MainContainer : watch -Triggered ........")
 
     }
@@ -277,9 +277,9 @@ export default {
           this.center_name = this.$store.state.gu_gun
           this.params.id = this.$store.state.gu_gun
           break;
-        case 'legalDong':
-          this.center_name = this.$store.state.legalDong
-          this.params.id = this.$store.state.legalDong
+        case 'adminDong':
+          this.center_name = this.$store.state.adminDong
+          this.params.id = this.$store.state.adminDong
           break;
         case 'eup_myun':
           this.center_name = this.$store.state.eup_myun
@@ -290,7 +290,7 @@ export default {
         /*
         city_do
         gu_gun
-        legalDong
+        adminDong
         eup_myun
         ri
         bunji
@@ -328,19 +328,13 @@ export default {
 
     var _this = this
 
-    // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
-    axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
-    .then(res => {
-      this.postLists = res.data.data
-      // console.log('MainContainer : ',res.data.data)
-
-    })
-
     // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
     // console.log("MainContainer : My Env : ", p_env.production)  // ENV
 
     //*** Get Coords from Google
     navigator.geolocation.getCurrentPosition(function(location) {
+      _this.$store.commit('setCoords', location.coords)
+      console.log("MainContainer : lacation. ", location)
       // console.log('MainContainer : ',location.coords.latitude);
       // console.log('MainContainer : ',location.coords.longitude);
       // console.log('MainContainer : ',location.coords.accuracy);
@@ -360,13 +354,22 @@ export default {
       //*** Reversegeocoding from SKTelecom
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        _this.center_name = res.data.addressInfo.legalDong
-        _this.params.id = res.data.addressInfo.legalDong
+        _this.center_name = res.data.addressInfo.adminDong
+        _this.params.id = res.data.addressInfo.adminDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
         console.log('MainContainer : ',res.data.addressInfo)
 
         console.log('MainContainer - store info : ', _this.$store.state)
       })
+      .then(
+        // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
+        axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
+        .then(res => {
+          _this.postLists = res.data.data
+          // console.log('MainContainer : ',res.data.data)
+
+        })
+      )
       // res.data.addressInfo.fullAddress
       // res.data.addressInfo.city_do 서울특별시
 

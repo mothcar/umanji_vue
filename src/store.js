@@ -18,9 +18,12 @@ export default new Vuex.Store({
     photos: '',
     money: 0,
     // Current position Data
+    latitude: '',
+    longitude: '',
     country: '',
     city_do: '',
     gu_gun: '',
+    adminDong: '',
     legalDong: '',
     eup_myun: '',
     ri: '',
@@ -52,10 +55,15 @@ export default new Vuex.Store({
     setCurrentPosition (state, payload) {
       state.city_do = payload.city_do
       state.gu_gun = payload.gu_gun
-      state.legalDong = payload.legalDong
+      state.adminDong = payload.adminDong
       state.eup_myun = payload.eup_myun
       state.ri = payload.ri
       // console.log("Store.js : " , payload.legalDong)
+    },
+
+    setCoords (state, payload) {
+      state.latitude = payload.latitude
+      state.longitude = payload.longitude
     },
 
     setUserInfo (state, payload) {

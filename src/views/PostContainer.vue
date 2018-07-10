@@ -30,7 +30,7 @@
                   <div>
 
 
-                    <div>{{ item.content }}</div>
+                    <div v-html="item.content">{{ }}</div>
                   </div>
                 </v-card-title>
                 <div>
@@ -181,7 +181,7 @@ export default {
       }
       console.log("PostContainer : Write post clicked...")
     },
-    
+
     doSomething() {
       console.log('PostContainer : Hello')
     },
@@ -216,7 +216,7 @@ export default {
   },
 
   created: function () {
-    console.log('PostContainer : Props in Post Containser ', this.props)
+    // console.log('PostContainer : Props in Post Containser ', this.props)
   }, //created
 
   components: {
