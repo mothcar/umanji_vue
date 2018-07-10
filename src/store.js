@@ -8,8 +8,16 @@ export default new Vuex.Store({
     visible: true,
     zoom_level: 18,
     emailentry:'',
-    token:'',
     authenticated: false,
+    // user Data
+    id: '',
+    token:'',
+    email: '',
+    phone: '',
+    user_name: '',
+    photos: '',
+    money: 0,
+    // Current position Data
     country: '',
     city_do: '',
     gu_gun: '',
@@ -20,9 +28,9 @@ export default new Vuex.Store({
   },
 
   mutations: {
-    saveToken (state, payload) {
-      state.token = payload
-    },
+    // saveToken (state, payload) {
+    //   state.token = payload
+    // },
 
     auth (state, payload) {
       state.authenticated = payload
@@ -48,6 +56,16 @@ export default new Vuex.Store({
       state.eup_myun = payload.eup_myun
       state.ri = payload.ri
       // console.log("Store.js : " , payload.legalDong)
+    },
+
+    setUserInfo (state, payload) {
+      state.id = payload.user.id
+      state.email = payload.user.email
+      state.phone = payload.user.phone
+      state.user_name = payload.user.user_name
+      state.photos = payload.user.photos
+      state.money = payload.user.money
+      state.token = payload.token
     }
 
   },  // mutations

@@ -364,6 +364,8 @@ export default {
         _this.params.id = res.data.addressInfo.legalDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
         console.log('MainContainer : ',res.data.addressInfo)
+
+        console.log('MainContainer - store info : ', _this.$store.state)
       })
       // res.data.addressInfo.fullAddress
       // res.data.addressInfo.city_do 서울특별시

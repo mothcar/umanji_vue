@@ -36,7 +36,14 @@
             return {
                 input: {
                     username: p_env.login_id,
-                    password: p_env.login_pw
+                    password: p_env.login_pw,
+                    // down below Data from Server DB
+                    id: '',
+                    email: '',
+                    phone: '',
+                    user_name: '',
+                    photos: '',
+                    money: 0
                 },
                 a: 1
             }
@@ -51,15 +58,15 @@
 
                 axios.post(p_env.BASE_URL+'/auth/signin', { email:this.input.username, password:this.input.password })
                     .then(res => {
-                        this.$store.commit('saveToken', res.data.data.token)
+                        this.$store.commit('setUserInfo', res.data.data)
                         this.$store.commit('auth', true)
-                        console.log(res.data.data.token)
+                        console.log('SecureLogin - login : ', res.data.data)
                         // this.$router.push({name: 'home'})
                         window.history.back()
                     }).catch(error => {
                         this.input.username = ''
                         this.input.password = ''
-                      console.log(error.message);
+                      console.log('SecureLogin - login : ', error.message);
                     })
 
             } //login
