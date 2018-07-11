@@ -97,13 +97,14 @@ export default {
         console.log("save to server")
 
         axios.post(p_env.BASE_URL+'/geo/createPost', {
-          create_type: 'exist',
+          // create_type: 'exist',
           // portalRid: '',
           content: regContent,
           latitude: this.latitude,
           longitude: this.longitude,
           country_code: this.country_code,
-          location: location })
+          location: location
+        })
           .then(res => {
               window.history.back()
           }).catch(error => {

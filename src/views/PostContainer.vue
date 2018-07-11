@@ -4,7 +4,6 @@
 
     <v-content>
 
-
     <v-layout class="p_margin_top">
       <v-flex xs12 sm6 offset-lg3 >
 
@@ -58,66 +57,6 @@
       <!-- content ******************************************************************************** -->
 
 
-    <!-- create Post v-dialog ******************************************************************************* -->
-      <!-- <v-dialog
-        v-model="dialog"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-        scrollable
-      >
-        <v-card tile>
-          <v-toolbar card dark color="primary">
-            <v-btn icon dark @click.native="dialog = false">
-              <v-icon>close</v-icon>
-            </v-btn>
-            <v-toolbar-title>Post</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark flat @click="submitPost">Save</v-btn>
-            </v-toolbar-items>
-            <v-menu bottom right offset-y>
-              <v-btn slot="activator" dark icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-            </v-menu>
-          </v-toolbar>
-
-
-          <div>
-            <v-list three-line subheader>
-              <v-subheader>Create Post</v-subheader>
-            </v-list>
-            <v-divider></v-divider>
-            <v-list three-line subheader>
-              <v-subheader>Write</v-subheader>
-
-              <v-list-tile avatar>
-
-                  <span>Content:</span>
-                  <br>
-                    <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
-                    <p >
-                      {{ result }}
-                    </p>
-
-              </v-list-tile>
-
-            </v-list>
-          </div>
-
-
-
-
-
-
-          <div style="flex: 1 1 auto;"></div>
-        </v-card>
-
-      </v-dialog> -->
-      <!-- create Post v-dialog ******************************************************************************* -->
-
-
             </v-flex>
           </v-layout>
 </v-content>
@@ -130,14 +69,15 @@
 import Vue from 'vue'
 import LinkPrevue from 'link-prevue'
 var anchorme = require("anchorme").default
+import { mapGetters } from 'vuex'
 
 
 export default {
 
   name: 'home',
-  props: {
-    postLists: Array
-  },
+  // props: {
+  //   postLists: Array
+  // },
 
   data: () => ({
     clipped: true,
@@ -145,9 +85,8 @@ export default {
     notifications: false,
     sound: true,
     widgets: false,
-
+    postLists: [],
     divider: true, inset: true,
-
     show: false,
     items: [
         // { header: 'Today' },
@@ -164,13 +103,9 @@ export default {
       content: ''
 
 
-
   }),
 
   methods: {
-    getdata: function() {
-      console.log('PostContainer : ',this.passtest)
-    },
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
@@ -192,6 +127,7 @@ export default {
   }, // methods
 
   computed: {
+
     result:  function() {
       var my_result = anchorme(this.content,{
         	attributes:[
@@ -215,15 +151,85 @@ export default {
     }
   },
 
+  watch: {
+
+  },
+
   created: function () {
+
     // console.log('PostContainer : Props in Post Containser ', this.props)
   }, //created
+
+  updated: function() {
+    console.log("PostContainer : updated............")
+  },
 
   components: {
     LinkPrevue
   },
 
   mounted() {
+
+    // setInterval(() => { this.$store.state.n++ }, 1000)
+    this.postLists = []
+
+    let portal_type = this.$store.state.tabState
+    let portal_name = this.$store.state.adminDong
+
+    // world|country|locality|sublocality1|sublocality2
+
+    switch(portal_type){
+      case 'country':
+        portal_type = 'country'
+        portal_name = this.$store.state.country
+      break;
+      case 'city_do':
+        portal_type = 'locality'
+        portal_name = this.$store.state.city_do
+      break;
+      case 'gu_gun':
+        portal_type = 'sublocality1'
+        portal_name = this.$store.state.gu_gun
+      break;
+      case 'adminDong':
+        portal_type = 'sublocality2'
+        portal_name = this.$store.state.adminDong
+      break;
+
+    }
+
+    this.$store.watch(this.$store.getters.firstCheck, admindong => {
+      console.log('watched: ddddddd', admindong)
+      let portal_name = this.$store.state.adminDong
+
+      axios.get(p_env.BASE_URL+'/main/posts', { params: {
+        portalType: 'sublocality2', //sublocality2
+        portalName: portal_name // 대방동
+        }
+      })
+      .then(res => {
+        this.postLists = res.data.data
+        console.log('PostContainer -First  Post Lists : ',res.data.data)
+
+      })
+    })
+
+    this.$store.watch(this.$store.getters.getN, tabState => {
+      // console.log('watched: ddddddd', tabState)
+      // console.log('Order CHECK : PostContainer created .............')
+      // let portal_name = this.$store.state.adminDong
+
+      axios.get(p_env.BASE_URL+'/main/posts', { params: {
+        portalType: portal_type, //sublocality2
+        portalName: portal_name // 대방동
+        }
+      })
+      .then(res => {
+        this.postLists = res.data.data
+        console.log('PostContainer - Continue Post Lists : ',res.data.data)
+
+      })
+    })
 
   }
 }

@@ -27,13 +27,26 @@ export default new Vuex.Store({
     legalDong: '',
     eup_myun: '',
     ri: '',
-    bunji: ''
+    bunji: '',
+    tabState: ''
+  },
+
+  getters: {
+    changeDong: state => {
+      console.log("Here is store.........")
+      return state.tabState
+    },
+
+    getN: state => () => state.tabState,
+
+    firstCheck: state => () => state.adminDong
   },
 
   mutations: {
     // saveToken (state, payload) {
     //   state.token = payload
     // },
+
 
     auth (state, payload) {
       state.authenticated = payload
@@ -74,6 +87,10 @@ export default new Vuex.Store({
       state.photos = payload.user.photos
       state.money = payload.user.money
       state.token = payload.token
+    },
+
+    changeTabState(state, payload) {
+      state.tabState = payload
     }
 
   },  // mutations

@@ -34,19 +34,19 @@
         >
           {{ item }}
         </v-tab> -->
-        <v-tab name="adminDong" @click="changeLevel('adminDong')">
+        <v-tab name="adminDong" @click="changeTab('adminDong')">
           {{ $t("area_name.adminDong") }}
         </v-tab>
-        <v-tab name="gu_gun" @click="changeLevel('gu_gun')">
+        <v-tab name="gu_gun" @click="changeTab('gu_gun')">
           {{ $t("area_name.gu_gun") }}
         </v-tab>
-        <v-tab name="city_do" @click="changeLevel('city_do')">
+        <v-tab name="city_do" @click="changeTab('city_do')">
           {{ $t("area_name.city_do") }}
         </v-tab>
-        <v-tab name="country" @click="changeLevel('country')">
+        <v-tab name="country" @click="changeTab('country')">
           {{ $t("area_name.country") }}
         </v-tab>
-        <v-tab name="world" @click="changeLevel('world')">
+        <v-tab name="world" @click="changeTab('world')">
           {{ $t("area_name.world") }}
         </v-tab>
 
@@ -87,7 +87,8 @@
 
     <!-- CONTENT ********************************** -->
     <div>
-      <Home v-show="visible === true" v-bind:postLists="postLists"></Home>
+      <!-- <Home v-show="visible === true" v-bind:postLists="postLists"></Home> -->
+      <Home v-show="visible === true"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
 
     </div>
@@ -185,17 +186,29 @@ export default {
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
       'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
       ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      postLists: [],
+      // postLists: [],
       adminDong: '',
       params: {
         id: 'init'
       }
+      // passingData: {
+      //   political_type: '',
+      //   portal_name: ''
+      // }
 
     }
   },
 
   updated: function() {
-    console.log("MainContainer : updated............")
+    if(this.$store.state.adminDong.length > 1){
+      console.log(" MainContainer - : Store data adminDong updated............")
+      console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
+      console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
+    } else {
+      console.log("MainContainer : updated............")
+    }
+
+    // passingData
   },
 
   watch: {
@@ -203,6 +216,13 @@ export default {
       console.log("MainContainer : watch -Triggered ........")
 
     }
+  },
+
+  beforecreated() {
+    // axios.get('/getContacts/')
+    //   .then(response => {
+    //     this.organisation = response.data;
+    //   })
   },
 
   name: 'App',
@@ -223,7 +243,7 @@ export default {
       this.rightDrawer = !this.rightDrawer
     },
 
-    changeLevel (current) {
+    changeTab (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
       console.log("MainContainer - current : ", current)
@@ -234,28 +254,42 @@ export default {
       console.log("MainContainer : autoDetectArea : " + area)
       switch(area) {
         case 'world':
+          this.$store.commit('changeTabState','world')
           this.center_name = '세계'
+          this.getPortalData('world')
           break;
         case 'country':
+          this.$store.commit('changeTabState','country')
           this.center_name = '대한민국'
+          this.getPortalData('country')
           break;
         case 'city_do':
+          this.$store.commit('changeTabState','city_do')
           this.center_name = this.$store.state.city_do
           this.params.id = this.$store.state.city_do
+          this.getPortalData('city_do')
           break;
         case 'gu_gun':
+          this.$store.commit('changeTabState','gu_gun')
           this.center_name = this.$store.state.gu_gun
           this.params.id = this.$store.state.gu_gun
+          this.getPortalData('gu_gun')
           break;
         case 'adminDong':
+          this.$store.commit('changeTabState','adminDong')
           this.center_name = this.$store.state.adminDong
           this.params.id = this.$store.state.adminDong
+          this.getPortalData('adminDong')
           break;
         case 'eup_myun':
+          this.$store.commit('changeTabState','eup_myun')
           this.center_name = this.$store.state.eup_myun
+          this.getPortalData('eup_myun')
           break;
         case 'ri':
+          this.$store.commit('changeTabState','ri')
           this.center_name = this.$store.state.ri
+          this.getPortalData('ri')
           break;
         /*
         city_do
@@ -267,6 +301,41 @@ export default {
         */
 
       }
+    }, // autoDetectArea
+    getPortalData: function(area) {
+      console.log('area : ', area)
+
+      // let param = ''
+      //
+      // switch(area){
+      //   case 'world':
+      //     param = 'world'
+      //   break;
+      //   case 'country':
+      //     param = 'country'
+      //   break;
+      //   case 'city_do':
+      //     param = 'locality'
+      //   break;
+      //   case 'gu_gun':
+      //     param = 'locality'
+      //   break;
+      //   case 'adminDong':
+      //     param = 'sublocality2'
+      //   break;
+      //
+      // }
+
+      axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
+        latitude: this.$store.state.latitude,
+        longitude: this.$store.state.longitude,
+        portal_name: this.center_name+' 정보센터',
+        political_type: area
+        }
+      })
+      .then(res => {
+        console.log('getPortalData - Get info center : ', res.data.data.id)
+      }) // end of axios
     }
 
 
@@ -305,7 +374,7 @@ export default {
     //*** Get Coords from Google
     navigator.geolocation.getCurrentPosition(function(location) {
       _this.$store.commit('setCoords', location.coords)
-      console.log("MainContainer : lacation. ", location)
+      // console.log("MainContainer : lacation. ", location)
 
       //***  Get Address from Google : return only ENGLISH
       // var google_maps_geocoder = new google.maps.Geocoder();
@@ -326,20 +395,25 @@ export default {
         _this.center_name = res.data.addressInfo.adminDong
         _this.params.id = res.data.addressInfo.adminDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-        console.log('MainContainer : ',res.data.addressInfo)
+        // console.log('MainContainer : ',res.data.addressInfo)
+
+        axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
+          latitude: _this.$store.state.latitude,
+          longitude: _this.$store.state.longitude,
+          portal_name: res.data.addressInfo.adminDong +' 정보센터',
+          political_type: 'adminDong'
+          }
+        })
+        .then(res => {
+          // _this.passingData = res.data.data.political_type
+          // _this.portal_name = res.data.data.portal_name
+          console.log('Get info center : ', res.data.data)
+        }) // end of axios
+
+        console.log('Order CHECK : MainContainer created .............')
 
         console.log('MainContainer - store info : ', _this.$store.state)
       })
-      .then(
-        // axios.get('http://119.205.233.249:3000/v1/geo/getPortalInfo?latitude=37.4918325&longitude=126.9233221')
-        // this api will move to PostContainer
-        axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=대방동')
-        .then(res => {
-          _this.postLists = res.data.data
-          console.log('MainContainer - Post Lists : ',res.data.data)
-
-        })
-      )
 
 
     }) //google
