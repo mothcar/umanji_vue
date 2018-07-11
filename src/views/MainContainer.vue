@@ -187,7 +187,6 @@ export default {
       'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
       ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       // postLists: [],
-      adminDong: '',
       params: {
         id: 'init'
       }
@@ -212,10 +211,7 @@ export default {
   },
 
   watch: {
-    adminDong: function (some) {
-      console.log("MainContainer : watch -Triggered ........")
 
-    }
   },
 
   beforecreated() {
@@ -246,12 +242,12 @@ export default {
     changeTab (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
-      console.log("MainContainer - current : ", current)
+      // console.log("MainContainer - current : ", current)
 
     },
 
     autoDetectArea (area) {
-      console.log("MainContainer : autoDetectArea : " + area)
+      // console.log("MainContainer : autoDetectArea : " + area)
       switch(area) {
         case 'world':
           this.$store.commit('changeTabState','world')
@@ -303,28 +299,7 @@ export default {
       }
     }, // autoDetectArea
     getPortalData: function(area) {
-      console.log('area : ', area)
-
-      // let param = ''
-      //
-      // switch(area){
-      //   case 'world':
-      //     param = 'world'
-      //   break;
-      //   case 'country':
-      //     param = 'country'
-      //   break;
-      //   case 'city_do':
-      //     param = 'locality'
-      //   break;
-      //   case 'gu_gun':
-      //     param = 'locality'
-      //   break;
-      //   case 'adminDong':
-      //     param = 'sublocality2'
-      //   break;
-      //
-      // }
+      // console.log('area : ', area)
 
       axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
         latitude: this.$store.state.latitude,
@@ -334,7 +309,9 @@ export default {
         }
       })
       .then(res => {
-        console.log('getPortalData - Get info center : ', res.data.data.id)
+        // currentId
+        this.$store.commit('setCurrentId', res.data.data.id)
+        console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
       }) // end of axios
     }
 
@@ -407,10 +384,8 @@ export default {
         .then(res => {
           // _this.passingData = res.data.data.political_type
           // _this.portal_name = res.data.data.portal_name
-          console.log('Get info center : ', res.data.data)
+          // console.log('MainContainer, Get info center : ', res.data.data)
         }) // end of axios
-
-        console.log('Order CHECK : MainContainer created .............')
 
         console.log('MainContainer - store info : ', _this.$store.state)
       })

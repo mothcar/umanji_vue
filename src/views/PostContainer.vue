@@ -171,32 +171,6 @@ export default {
   mounted() {
 
     // setInterval(() => { this.$store.state.n++ }, 1000)
-    this.postLists = []
-
-    let portal_type = this.$store.state.tabState
-    let portal_name = this.$store.state.adminDong
-
-    // world|country|locality|sublocality1|sublocality2
-
-    switch(portal_type){
-      case 'country':
-        portal_type = 'country'
-        portal_name = this.$store.state.country
-      break;
-      case 'city_do':
-        portal_type = 'locality'
-        portal_name = this.$store.state.city_do
-      break;
-      case 'gu_gun':
-        portal_type = 'sublocality1'
-        portal_name = this.$store.state.gu_gun
-      break;
-      case 'adminDong':
-        portal_type = 'sublocality2'
-        portal_name = this.$store.state.adminDong
-      break;
-
-    }
 
     this.$store.watch(this.$store.getters.firstCheck, admindong => {
       console.log('watched: ddddddd', admindong)
@@ -218,6 +192,35 @@ export default {
       // console.log('watched: ddddddd', tabState)
       // console.log('Order CHECK : PostContainer created .............')
       // let portal_name = this.$store.state.adminDong
+
+      this.postLists = []
+
+      let portal_type = this.$store.state.tabState
+      let portal_name = this.$store.state.adminDong
+
+      // world|country|locality|sublocality1|sublocality2
+
+      switch(portal_type){
+        case 'country':
+          portal_type = 'country'
+          portal_name = this.$store.state.country
+        break;
+        case 'city_do':
+          portal_type = 'locality'
+          portal_name = this.$store.state.city_do
+        break;
+        case 'gu_gun':
+          portal_type = 'sublocality1'
+          portal_name = this.$store.state.gu_gun
+        break;
+        case 'adminDong':
+          portal_type = 'sublocality2'
+          portal_name = this.$store.state.adminDong
+        break;
+
+      }
+      
+      console.log("Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
       axios.get(p_env.BASE_URL+'/main/posts', { params: {
         portalType: portal_type, //sublocality2

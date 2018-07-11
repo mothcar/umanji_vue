@@ -94,11 +94,30 @@ export default {
 
         var regContent = this.content
         regContent = regContent.replace(/\r?\n/g, '<br />');
-        console.log("save to server")
+
+        let portal_rid = ''
+        let place_rid = ''
+        let exist_type = ''
+
+        // portal check ; Info or Map -> visible
+        // if place DO commit place to 'cuttentId' in store
+        console.log("visible : ", this.$store.state.visible)
+        if(this.$store.state.visible) {
+          portal_rid = this.$store.state.currentId
+          exist_type = 'exist'
+          console.log("LOGIC PASS HERE..........")
+        } else {
+          place_rid = this.$store.state.currentId
+        }
 
         axios.post(p_env.BASE_URL+'/geo/createPost', {
           // create_type: 'exist',
           // portalRid: '',
+          create_type: exist_type,
+          portal_rid: portal_rid,
+          place_rid: place_rid,
+          owner_id: this.$store.state.id,
+          owner_name: this.$store.state.user_name,
           content: regContent,
           latitude: this.latitude,
           longitude: this.longitude,

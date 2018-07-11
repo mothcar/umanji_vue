@@ -18,9 +18,11 @@ export default new Vuex.Store({
     photos: '',
     money: 0,
     // Current position Data
+    currentId: '',
     latitude: '',
     longitude: '',
-    country: '',
+    world: '세계',
+    country: '대한민국',
     city_do: '',
     gu_gun: '',
     adminDong: '',
@@ -39,7 +41,16 @@ export default new Vuex.Store({
 
     getN: state => () => state.tabState,
 
-    firstCheck: state => () => state.adminDong
+    // firstCheck: state => () => state.adminDong
+
+    firstCheck: state => {
+      return () => {
+        console.log("THE STRE......., : ", state)
+        return state.adminDong
+      }
+    }
+
+
   },
 
   mutations: {
@@ -91,6 +102,10 @@ export default new Vuex.Store({
 
     changeTabState(state, payload) {
       state.tabState = payload
+    },
+
+    setCurrentId(state, payload) {
+      state.currentId = payload
     }
 
   },  // mutations
