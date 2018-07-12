@@ -61,6 +61,46 @@
           </v-layout>
 </v-content>
 
+<!-- Dialog ******************************************************************************** -->
+<v-layout row justify-center>
+  <v-dialog
+    v-model="dialog"
+    max-width="290"
+  >
+    <v-card>
+      <v-card-title class="headline">로그인 하시겠습니까?</v-card-title>
+
+      <v-card-text class="p_portal_page">
+        동네사람들에게 좋은 정보를 제공하시면 계급이 승급됩니다.
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+
+        <v-btn
+          color="green darken-1"
+          flat="flat"
+          @click="dialog = false"
+        >
+          아니오
+        </v-btn>
+
+        <router-link :to="{ name: 'secureLogin', params: {} }">
+          <v-btn
+            color="green darken-1"
+            flat="flat"
+            @click="login"
+          >
+            예
+          </v-btn>
+        </router-link>
+
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</v-layout>
+<!-- Dialog ******************************************************************************** -->
+
   </div>
 </template>
 
@@ -100,21 +140,37 @@ export default {
         // { divider: true, inset: true },
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
       ],
-      content: ''
+      content: '',
+      dialog: false
 
 
   }),
 
   methods: {
+    // createPost: function() {
+    //   // @click.stop="dialog = true"
+    //   if(this.$store.state.authenticated == true) {
+    //     // this.dialog = true
+    //     this.$router.push({name:'postEditor'})
+    //   } else {
+    //     // alert(" Please Sign in ")
+    //   }
+    //   console.log("PostContainer : Write post clicked...")
+    // },
+
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
-        // this.dialog = true
-        this.$router.push({name:'postEditor'})
+        this.$router.push({name: 'postEditor'})
+        // console.log("PostContainer : dialog is true")
       } else {
-        alert(" Please Sign in ")
+        this.dialog = true
       }
-      console.log("PostContainer : Write post clicked...")
+      // console.log("PostContainer : Write post clicked...")
+    },
+
+    login: function() {
+      this.dialog = false
     },
 
     doSomething() {
@@ -219,7 +275,7 @@ export default {
         break;
 
       }
-      
+
       console.log("Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
       axios.get(p_env.BASE_URL+'/main/posts', { params: {
@@ -269,5 +325,18 @@ export default {
 .headline {
   color: white;
 }
+
+.p_portal_container {
+  vertical-align: center;
+  margin-top: 20%;
+  text-align: center;
+  color: white;
+  text-shadow: 0 0 3px #111111;
+}
+
+.headline{
+  color: #333;
+}
+
 
 </style>

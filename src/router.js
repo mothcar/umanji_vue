@@ -9,6 +9,7 @@ import MainLogin from './components/MainLogin.vue'
 import SecureLogin from './views/SecureLogin.vue'
 import PortalPage from './views/PortalPage.vue'
 import PostEditor from './views/PostEditor.vue'
+import Profile from './views/Profile.vue'
 
 Vue.use(Router)
 
@@ -50,6 +51,11 @@ export default new Router({
       path: '/postEditor',
       name: 'postEditor',
       component: PostEditor
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     }
 
   ]

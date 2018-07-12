@@ -50,7 +50,7 @@
 
         <!-- content ******************************************************************************** -->
         <v-card class="p_card" v-for="item in model.lists"
-          :key="item.content"
+          :key="item.id"
           avatar
           @click="">
 

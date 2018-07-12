@@ -125,6 +125,13 @@
         <v-list-tile-title>Wallet</v-list-tile-title>
       </v-list-tile>
 
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'profile', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>account_box</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Setting</v-list-tile-title>
+      </v-list-tile>
+
       <v-list-tile v-show="authenticated === true" @click="logout" :to="{ name: '', params: {} }" >
         <v-list-tile-action>
           <v-icon>voice_over_off</v-icon>
