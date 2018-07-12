@@ -30,7 +30,7 @@ export default new Vuex.Store({
     eup_myun: '',
     ri: '',
     bunji: '',
-    tabState: ''
+    tabState: 'adminDong'
   },
 
   getters: {

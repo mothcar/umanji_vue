@@ -115,9 +115,9 @@ import { mapGetters } from 'vuex'
 export default {
 
   name: 'home',
-  // props: {
-  //   postLists: Array
-  // },
+  props: {
+    postLists: Array
+  },
 
   data: () => ({
     clipped: true,
@@ -125,7 +125,7 @@ export default {
     notifications: false,
     sound: true,
     widgets: false,
-    postLists: [],
+    // postLists: [],
     divider: true, inset: true,
     show: false,
     items: [
@@ -147,7 +147,7 @@ export default {
   }),
 
   methods: {
-    
+
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
@@ -216,61 +216,61 @@ export default {
 
   mounted() {
 
-    this.$store.watch(this.$store.getters.firstCheck, admindong => {
-      console.log('watched: ddddddd', admindong)
-      let portal_name = this.$store.state.adminDong
-
-      axios.get(p_env.BASE_URL+'/main/posts', { params: {
-        portalType: 'sublocality2', //sublocality2
-        portalName: portal_name // 대방동
-        }
-      })
-      .then(res => {
-        this.postLists = res.data.data
-        console.log('PostContainer -First  Post Lists : ',res.data.data)
-
-      })
-    }) // this.$store.watch
+    // this.$store.watch(this.$store.getters.firstCheck, admindong => {
+    //   console.log('watched: ddddddd', admindong)
+    //   let portal_name = this.$store.state.adminDong
+    //
+    //   axios.get(p_env.BASE_URL+'/main/posts', { params: {
+    //     portalType: 'sublocality2', //sublocality2
+    //     portalName: portal_name // 대방동
+    //     }
+    //   })
+    //   .then(res => {
+    //     this.postLists = res.data.data
+    //     console.log('PostContainer -First  Post Lists : ',res.data.data)
+    //
+    //   })
+    // }) // this.$store.watch
 
     this.$store.watch(this.$store.getters.getN, tabState => {
 
-      this.postLists = []
-
-      let portal_type = this.$store.state.tabState
-      let portal_name = this.$store.state.adminDong
-
-      switch(portal_type){
-        case 'country':
-          portal_type = 'country'
-          portal_name = this.$store.state.country
-        break;
-        case 'city_do':
-          portal_type = 'locality'
-          portal_name = this.$store.state.city_do
-        break;
-        case 'gu_gun':
-          portal_type = 'sublocality1'
-          portal_name = this.$store.state.gu_gun
-        break;
-        case 'adminDong':
-          portal_type = 'sublocality2'
-          portal_name = this.$store.state.adminDong
-        break;
-
-      }
-
-      console.log("Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
-
-      axios.get(p_env.BASE_URL+'/main/posts', { params: {
-        portalType: portal_type, //sublocality2
-        portalName: portal_name // 대방동
-        }
-      })
-      .then(res => {
-        this.postLists = res.data.data
-        console.log('PostContainer - Continue Post Lists : ',res.data.data)
-
-      }) // axios then
+      // this.postLists = []
+      //
+      // let portal_type = this.$store.state.tabState
+      // let portal_name = this.$store.state.adminDong
+      //
+      // switch(portal_type){
+      //   case 'country':
+      //     portal_type = 'country'
+      //     portal_name = this.$store.state.country
+      //   break;
+      //   case 'city_do':
+      //     portal_type = 'locality'
+      //     portal_name = this.$store.state.city_do
+      //   break;
+      //   case 'gu_gun':
+      //     portal_type = 'sublocality1'
+      //     portal_name = this.$store.state.gu_gun
+      //   break;
+      //   case 'adminDong':
+      //     portal_type = 'sublocality2'
+      //     portal_name = this.$store.state.adminDong
+      //   break;
+      //
+      // }
+      //
+      // console.log("Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+      //
+      // axios.get(p_env.BASE_URL+'/main/posts', { params: {
+      //   portalType: portal_type, //sublocality2
+      //   portalName: portal_name // 대방동
+      //   }
+      // })
+      // .then(res => {
+      //   this.postLists = res.data.data
+      //   console.log('PostContainer - Continue Post Lists : ',res.data.data)
+      //
+      // }) // axios then
 
     }) // this.$store.watch
 

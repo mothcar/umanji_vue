@@ -87,8 +87,7 @@
 
     <!-- CONTENT ********************************** -->
     <div>
-      <!-- <Home v-show="visible === true" v-bind:postLists="postLists"></Home> -->
-      <Home v-show="visible === true"></Home>
+      <Home v-show="visible === true" v-bind:postLists="postLists"></Home>
       <MapContainer v-show="visible === false" ></MapContainer>
 
     </div>
@@ -193,17 +192,13 @@ export default {
       text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
       'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
       ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      // postLists: [],
+      postLists: [],
       params: {
         id: 'init'
       }
-      // passingData: {
-      //   political_type: '',
-      //   portal_name: ''
-      // }
 
-    }
-  },
+    } // end of return
+  }, // data
 
   updated: function() {
     if(this.$store.state.adminDong.length > 1){
@@ -379,8 +374,9 @@ export default {
         _this.center_name = res.data.addressInfo.adminDong
         _this.params.id = res.data.addressInfo.adminDong
         _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-        // console.log('MainContainer : ',res.data.addressInfo)
+        console.log('MainContainer 1: ',res.data.addressInfo)
 
+        // Get Postal Basic Info
         axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
           latitude: _this.$store.state.latitude,
           longitude: _this.$store.state.longitude,
@@ -389,13 +385,53 @@ export default {
           }
         })
         .then(res => {
-          // _this.passingData = res.data.data.political_type
-          // _this.portal_name = res.data.data.portal_name
-          // console.log('MainContainer, Get info center : ', res.data.data)
-        }) // end of axios
+          _this.$store.commit('setCurrentId', res.data.data.id)
+          console.log('MainContainer 2, Get info center : ', res.data.data.id)
+        }) // end of axios vue/getPortalInfo
+        .then(res => {
+          // Get Post Lists
+          // this.postLists = []
 
-        console.log('MainContainer - store info : ', _this.$store.state)
-      })
+          let portal_type = _this.$store.state.tabState
+          let portal_name = _this.$store.state.adminDong
+
+          switch(portal_type){
+            case 'country':
+              portal_type = 'country'
+              portal_name = _this.$store.state.country
+            break;
+            case 'city_do':
+              portal_type = 'locality'
+              portal_name = _this.$store.state.city_do
+            break;
+            case 'gu_gun':
+              portal_type = 'sublocality1'
+              portal_name = _this.$store.state.gu_gun
+            break;
+            case 'adminDong':
+              portal_type = 'sublocality2'
+              portal_name = _this.$store.state.adminDong
+            break;
+
+          }
+
+          console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+          axios.get(p_env.BASE_URL+'/main/posts', { params: {
+            portalType: portal_type, //sublocality2
+            portalName: portal_name // 대방동
+            }
+          })
+          .then(res => {
+            _this.postLists = res.data.data
+            console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+
+          }) // axios then
+
+        }) // second then
+
+        console.log('MainContainer 5 :: store info : ', _this.$store.state)
+      }) // axios SKT
 
 
     }) //google
