@@ -187,11 +187,7 @@ export default {
          },
          deep: true
         }
-      // model: function(some) {
-      //
 
-      //   console.log("watch - model changes and key", some +" "+this.model)
-      // }
     },
 
     components: {
