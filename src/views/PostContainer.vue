@@ -147,17 +147,7 @@ export default {
   }),
 
   methods: {
-    // createPost: function() {
-    //   // @click.stop="dialog = true"
-    //   if(this.$store.state.authenticated == true) {
-    //     // this.dialog = true
-    //     this.$router.push({name:'postEditor'})
-    //   } else {
-    //     // alert(" Please Sign in ")
-    //   }
-    //   console.log("PostContainer : Write post clicked...")
-    // },
-
+    
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
@@ -226,8 +216,6 @@ export default {
 
   mounted() {
 
-    // setInterval(() => { this.$store.state.n++ }, 1000)
-
     this.$store.watch(this.$store.getters.firstCheck, admindong => {
       console.log('watched: ddddddd', admindong)
       let portal_name = this.$store.state.adminDong
@@ -242,19 +230,14 @@ export default {
         console.log('PostContainer -First  Post Lists : ',res.data.data)
 
       })
-    })
+    }) // this.$store.watch
 
     this.$store.watch(this.$store.getters.getN, tabState => {
-      // console.log('watched: ddddddd', tabState)
-      // console.log('Order CHECK : PostContainer created .............')
-      // let portal_name = this.$store.state.adminDong
 
       this.postLists = []
 
       let portal_type = this.$store.state.tabState
       let portal_name = this.$store.state.adminDong
-
-      // world|country|locality|sublocality1|sublocality2
 
       switch(portal_type){
         case 'country':
@@ -287,10 +270,11 @@ export default {
         this.postLists = res.data.data
         console.log('PostContainer - Continue Post Lists : ',res.data.data)
 
-      })
-    })
+      }) // axios then
 
-  }
+    }) // this.$store.watch
+
+  } // mount
 }
 </script>
 
