@@ -20,6 +20,7 @@ export default new Vuex.Store({
     money: 0,
     // Current position Data
     currentId: '',
+    currentName: '',
     latitude: '',
     longitude: '',
     world: '세계',
@@ -117,7 +118,8 @@ export default new Vuex.Store({
     },
 
     setCurrentId(state, payload) {
-      state.currentId = payload
+      state.currentId = payload.id
+      state.currentName = payload.name
     },
 
     setMarkers(state, payload) {

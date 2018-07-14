@@ -203,7 +203,7 @@ export default {
       params: {
         id: 'init'
       },
-      markers: {}
+      markers: []
 
     } // end of return
   }, // data
@@ -321,7 +321,7 @@ export default {
       })
       .then(res => {
         // currentId
-        _this.$store.commit('setCurrentId', res.data.data.id)
+        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:this.center_name})
         // console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
 
         // Get Post Lists
@@ -486,9 +486,11 @@ export default {
               _this.markers = []
               for (var i = 0, len = res.data.data.length; i < len; i++) {
 
-                let obj = { position:[]}
+                let obj = { position:{}, info:{}}
                 obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
                 obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+                obj.info.portal_rid = res.data.data[i].portal_rid
+                obj.info.position_name = res.data.data[i].place_name
                 _this.markers[i] = obj
                 // console.log("content lat lng : ", _this.markers)
               } // for

@@ -1,6 +1,6 @@
 <template>
   <GmapMap id="map"
-    :center="markers[0].position"
+    :center="centerMarker"
     :zoom="18"
     map-type-id="roadmap"
   >
@@ -14,9 +14,10 @@
       v-for="(m, index) in markers"
       :position="m.position"
       :clickable="true"
-      :draggable="true"
-      @click="center=m.position"
+      :draggable="false"
+      @click="test(index)"
     />
+    <!-- @click="center=m.position" -->
   </GmapMap>
 </template>
 <script>
@@ -24,14 +25,22 @@ export default {
   name: "PMap",
 
   props: {
-    markers: Object
+    markers: Array
   },
 
   data() {
     return{
       // markers : []
+      centerMarker: {}
     }
   },
+
+  methods: {
+    test: function(index) {
+      let info = this.markers[index]
+      console.log("Marker Clicked .....", info)
+    }
+  }, // methods
 
   mounted () {
     // At this point, the child GmapMap has been mounted, but
@@ -41,6 +50,10 @@ export default {
     // this.$refs.mapRef.$mapPromise.then((map) => {
     //   map.panTo({lat: 1.38, lng: 103.80})
     // })
+
+    this.centerMarker.lat = this.markers[0].position.lat
+    this.centerMarker.lng = this.markers[0].position.lng
+    console.log("PMAP...... data type : ", this.centerMarker)
 
     // this.markers = this.$store.state.markers
     // this.markets = this.$store.state.markers
