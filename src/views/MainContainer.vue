@@ -315,6 +315,7 @@ export default {
         latitude: this.$store.state.latitude,
         longitude: this.$store.state.longitude,
         portal_name: this.center_name+' 정보센터',
+        countryCode: 'KR',
         political_type: area
         }
       })
@@ -435,6 +436,7 @@ export default {
             latitude: _this.$store.state.latitude,
             longitude: _this.$store.state.longitude,
             portal_name: res.data.addressInfo.adminDong +' 정보센터',
+            countryCode: 'KR',
             political_type: 'adminDong'
             }
           })
