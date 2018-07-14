@@ -87,8 +87,9 @@
 
     <!-- CONTENT ********************************** -->
     <div>
-      <Home v-show="visible === true" v-bind:postLists="postLists"></Home>
-      <MapContainer v-show="visible === false" ></MapContainer>
+      <Home v-if="visible === true" v-bind:postLists="postLists"></Home>
+      <!-- <MapContainer v-show="visible === false" ></MapContainer> -->
+      <PMap v-if="visible === false" v-bind:markers="markers"></PMap>
 
     </div>
     <!-- CONTENT ********************************** -->
@@ -164,13 +165,19 @@
 <script>
 import Home from './PostContainer.vue'
 import MapContainer from './MapContainer.vue'
+import PMap from './PMap.vue'
 
 
 export default {
 
   components: {
     Home,
-    MapContainer
+    MapContainer,
+    PMap
+  },
+
+  provide: {
+    // markers: []
   },
 
   data () {
@@ -195,16 +202,16 @@ export default {
       postLists: [],
       params: {
         id: 'init'
-      }
+      },
+      markers: {}
 
     } // end of return
   }, // data
 
   updated: function() {
     if(this.$store.state.adminDong.length > 1){
-      console.log(" MainContainer - : Store data adminDong updated............")
-      console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
-      console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
+      // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
+      // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
     } else {
       console.log("MainContainer : updated............")
     }
@@ -314,7 +321,7 @@ export default {
       .then(res => {
         // currentId
         _this.$store.commit('setCurrentId', res.data.data.id)
-        console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
+        // console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
 
         // Get Post Lists
         // this.postLists = []
@@ -351,7 +358,9 @@ export default {
         })
         .then(res => {
           _this.postLists = res.data.data
-          console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+          // _this.markers = res.data.Data
+
+          console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
 
         }) // axios then
       }) // end of axios
@@ -389,7 +398,7 @@ export default {
     console.log("init : ", this.$store.state.init )
     if(init) {
       this.$store.commit('setInit', false)
-      
+
       var _this = this
 
       // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
@@ -471,6 +480,25 @@ export default {
               _this.postLists = res.data.data
               console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
 
+
+              _this.markers = []
+              for (var i = 0, len = res.data.data.length; i < len; i++) {
+
+                let obj = { position:[]}
+                obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+                obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+                _this.markers[i] = obj
+                // console.log("content lat lng : ", _this.markers)
+              } // for
+              _this.$store.commit('setMarkers', _this.markers)
+              // mounted() {
+              //   this.$store.watch(this.$store.getters.markerCheck, markers => {
+              //     console.log('watched: ddddddd', markers)
+              //     this.markers = this.$store.state.markers
+              //
+              //   }) // this.$store.watch
+              // },
+
             }) // axios then
 
           }) // second then
@@ -523,8 +551,19 @@ export default {
 
 
 
+
+
     this.selec = "city_do"
-  } // created
+
+  }, // created
+
+  mounted: function(){
+
+
+
+  } // monunted
+
+
 } // export default
 </script>
 

@@ -31,7 +31,8 @@ export default new Vuex.Store({
     eup_myun: '',
     ri: '',
     bunji: '',
-    tabState: 'adminDong'
+    tabState: 'adminDong',
+    markers: []
   },
 
   getters: {
@@ -49,6 +50,13 @@ export default new Vuex.Store({
         console.log("THE STRE......., : ", state)
         return state.adminDong
       }
+    },
+    //
+    markerCheck: state => {
+      return () => {
+        console.log("THE STORE......., : ", state)
+        return state.markers
+      }
     }
 
 
@@ -62,7 +70,7 @@ export default new Vuex.Store({
     setInit(state, payload) {
       state.init = payload
     },
-    
+
     auth (state, payload) {
       state.authenticated = payload
     },
@@ -110,6 +118,16 @@ export default new Vuex.Store({
 
     setCurrentId(state, payload) {
       state.currentId = payload
+    },
+
+    setMarkers(state, payload) {
+
+      for(var i=0; payload.length > i; i++) {
+        state.markers[i] = payload[i]
+        // console.log('Store markers save: ',state.markers)
+      }
+      // this.getters.markerCheck()
+      // state.makers
     }
 
   },  // mutations
