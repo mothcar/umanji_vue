@@ -176,8 +176,10 @@ export default {
     PMap
   },
 
-  provide: {
-    // markers: []
+  provide: function () {
+    return {
+      changeTab: this.changeTab
+    }
   },
 
   data () {
@@ -251,6 +253,7 @@ export default {
     changeTab (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
+      console.log("on Map tab clicked....")
       // console.log("MainContainer - current : ", current)
 
     },
@@ -360,6 +363,19 @@ export default {
         .then(res => {
           _this.postLists = res.data.data
           // _this.markers = res.data.Data
+          _this.markers = []
+          for (var i = 0, len = res.data.data.length; i < len; i++) {
+
+            let obj = { position:{}, info:{}}
+            obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+            obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+            obj.info.portal_rid = res.data.data[i].portal_rid
+            obj.info.position_name = res.data.data[i].place_name
+            obj.info.zoom_level = _this.$store.state.zoom_level
+            _this.markers[i] = obj
+            // console.log("content lat lng : ", _this.markers)
+          } // for
+          _this.$store.commit('setMarkers', _this.markers)
 
           console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
 
@@ -491,6 +507,7 @@ export default {
                 obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
                 obj.info.portal_rid = res.data.data[i].portal_rid
                 obj.info.position_name = res.data.data[i].place_name
+                obj.info.zoom_level = _this.$store.state.zoom_level
                 _this.markers[i] = obj
                 // console.log("content lat lng : ", _this.markers)
               } // for
@@ -548,6 +565,21 @@ export default {
       })
       .then(res => {
         this.postLists = res.data.data
+
+        _this.markers = []
+        for (var i = 0, len = res.data.data.length; i < len; i++) {
+
+          let obj = { position:{}, info:{}}
+          obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+          obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+          obj.info.portal_rid = res.data.data[i].portal_rid
+          obj.info.position_name = res.data.data[i].place_name
+          obj.info.zoom_level = _this.$store.state.zoom_level
+          _this.markers[i] = obj
+          // console.log("content lat lng : ", _this.markers)
+        } // for
+        _this.$store.commit('setMarkers', _this.markers)
+
         console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
 
       }) // axios then

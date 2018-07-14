@@ -234,6 +234,8 @@ export default {
 
     this.$store.watch(this.$store.getters.getN, tabState => {
 
+      console.log(".........When this triggered.........")
+
       // this.postLists = []
       //
       // let portal_type = this.$store.state.tabState

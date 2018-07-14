@@ -58,6 +58,13 @@ export default new Vuex.Store({
         console.log("THE STORE......., : ", state)
         return state.markers
       }
+    },
+
+    watchZoom: state => {
+      return () => {
+        console.log("THE STORE.......Zoom, : ", state.zoom_level)
+        return state.zoom_level
+      }
     }
 
 
