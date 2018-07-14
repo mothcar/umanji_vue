@@ -302,6 +302,7 @@ export default {
     }, // autoDetectArea
     getPortalData: function(area) {
       // console.log('area : ', area)
+      var _this = this
 
       axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
         latitude: this.$store.state.latitude,
@@ -312,8 +313,47 @@ export default {
       })
       .then(res => {
         // currentId
-        this.$store.commit('setCurrentId', res.data.data.id)
+        _this.$store.commit('setCurrentId', res.data.data.id)
         console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
+
+        // Get Post Lists
+        // this.postLists = []
+
+        let portal_type = area
+        let portal_name = ''
+
+        switch(portal_type){
+          case 'country':
+            portal_type = 'country'
+            portal_name = _this.$store.state.country
+          break;
+          case 'city_do':
+            portal_type = 'locality'
+            portal_name = _this.$store.state.city_do
+          break;
+          case 'gu_gun':
+            portal_type = 'sublocality1'
+            portal_name = _this.$store.state.gu_gun
+          break;
+          case 'adminDong':
+            portal_type = 'sublocality2'
+            portal_name = _this.$store.state.adminDong
+          break;
+
+        }
+
+        console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+        axios.get(p_env.BASE_URL+'/main/posts', { params: {
+          portalType: portal_type, //sublocality2
+          portalName: portal_name // 대방동
+          }
+        })
+        .then(res => {
+          _this.postLists = res.data.data
+          console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+
+        }) // axios then
       }) // end of axios
     }
 
@@ -345,100 +385,146 @@ export default {
 
   created: function () {
 
-    var _this = this
+    let init = this.$store.state.init
+    console.log("init : ", this.$store.state.init )
+    if(init) {
+      this.$store.commit('setInit', false)
+      var _this = this
 
-    // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
-    // console.log("MainContainer : My Env : ", p_env.production)  // ENV
+      // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
+      // console.log("MainContainer : My Env : ", p_env.production)  // ENV
 
-    //*** Get Coords from Google
-    navigator.geolocation.getCurrentPosition(function(location) {
-      _this.$store.commit('setCoords', location.coords)
-      // console.log("MainContainer : lacation. ", location)
+      //*** Get Coords from Google
+      navigator.geolocation.getCurrentPosition(function(location) {
+        _this.$store.commit('setCoords', location.coords)
+        // console.log("MainContainer : lacation. ", location)
 
-      //***  Get Address from Google : return only ENGLISH
-      // var google_maps_geocoder = new google.maps.Geocoder();
-      //   google_maps_geocoder.geocode(
-      //       { 'latLng': coords, "language": "ko" },
-      //       function( results, status ) {
-      //           console.log( results[0] );
-      //       }
-      //   );
+        //***  Get Address from Google : return only ENGLISH
+        // var google_maps_geocoder = new google.maps.Geocoder();
+        //   google_maps_geocoder.geocode(
+        //       { 'latLng': coords, "language": "ko" },
+        //       function( results, status ) {
+        //           console.log( results[0] );
+        //       }
+        //   );
 
-      var coords = {}
-      coords.lat = location.coords.latitude
-      coords.lng = location.coords.longitude
+        var coords = {}
+        coords.lat = location.coords.latitude
+        coords.lng = location.coords.longitude
 
-      //*** Reversegeocoding from SKTelecom
-      axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
-      .then(res => {
-        _this.center_name = res.data.addressInfo.adminDong
-        _this.params.id = res.data.addressInfo.adminDong
-        _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-        console.log('MainContainer 1: ',res.data.addressInfo)
-
-        // Get Postal Basic Info
-        axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
-          latitude: _this.$store.state.latitude,
-          longitude: _this.$store.state.longitude,
-          portal_name: res.data.addressInfo.adminDong +' 정보센터',
-          political_type: 'adminDong'
-          }
-        })
+        //*** Reversegeocoding from SKTelecom
+        axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
         .then(res => {
-          _this.$store.commit('setCurrentId', res.data.data.id)
-          console.log('MainContainer 2, Get info center : ', res.data.data.id)
-        }) // end of axios vue/getPortalInfo
-        .then(res => {
-          // Get Post Lists
-          // this.postLists = []
+          _this.center_name = res.data.addressInfo.adminDong
+          _this.params.id = res.data.addressInfo.adminDong
+          _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+          console.log('MainContainer 1: ',res.data.addressInfo)
 
-          let portal_type = _this.$store.state.tabState
-          let portal_name = _this.$store.state.adminDong
-
-          switch(portal_type){
-            case 'country':
-              portal_type = 'country'
-              portal_name = _this.$store.state.country
-            break;
-            case 'city_do':
-              portal_type = 'locality'
-              portal_name = _this.$store.state.city_do
-            break;
-            case 'gu_gun':
-              portal_type = 'sublocality1'
-              portal_name = _this.$store.state.gu_gun
-            break;
-            case 'adminDong':
-              portal_type = 'sublocality2'
-              portal_name = _this.$store.state.adminDong
-            break;
-
-          }
-
-          console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
-
-          axios.get(p_env.BASE_URL+'/main/posts', { params: {
-            portalType: portal_type, //sublocality2
-            portalName: portal_name // 대방동
+          // Get Postal Basic Info
+          axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
+            latitude: _this.$store.state.latitude,
+            longitude: _this.$store.state.longitude,
+            portal_name: res.data.addressInfo.adminDong +' 정보센터',
+            political_type: 'adminDong'
             }
           })
           .then(res => {
-            _this.postLists = res.data.data
-            console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+            _this.$store.commit('setCurrentId', res.data.data.id)
+            console.log('MainContainer 2, Get info center : ', res.data.data.id)
+          }) // end of axios vue/getPortalInfo
+          .then(res => {
+            // Get Post Lists
+            // this.postLists = []
 
-          }) // axios then
+            let portal_type = _this.$store.state.tabState
+            let portal_name = _this.$store.state.adminDong
 
-        }) // second then
+            switch(portal_type){
+              case 'country':
+                portal_type = 'country'
+                portal_name = _this.$store.state.country
+              break;
+              case 'city_do':
+                portal_type = 'locality'
+                portal_name = _this.$store.state.city_do
+              break;
+              case 'gu_gun':
+                portal_type = 'sublocality1'
+                portal_name = _this.$store.state.gu_gun
+              break;
+              case 'adminDong':
+                portal_type = 'sublocality2'
+                portal_name = _this.$store.state.adminDong
+              break;
 
-        console.log('MainContainer 5 :: store info : ', _this.$store.state)
-      }) // axios SKT
+            }
+
+            console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+            axios.get(p_env.BASE_URL+'/main/posts', { params: {
+              portalType: portal_type, //sublocality2
+              portalName: portal_name // 대방동
+              }
+            })
+            .then(res => {
+              _this.postLists = res.data.data
+              console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+
+            }) // axios then
+
+          }) // second then
+
+          console.log('MainContainer 5 :: store info : ', _this.$store.state)
+        }) // axios SKT
 
 
-    }) //google
+      }) //google
+    } else {
+
+      this.center_name = this.$store.state.adminDong
+
+      let portal_type = this.$store.state.tabState
+      let portal_name = this.$store.state.adminDong
+
+      switch(portal_type){
+        case 'country':
+          portal_type = 'country'
+          portal_name = this.$store.state.country
+        break;
+        case 'city_do':
+          portal_type = 'locality'
+          portal_name = this.$store.state.city_do
+        break;
+        case 'gu_gun':
+          portal_type = 'sublocality1'
+          portal_name = this.$store.state.gu_gun
+        break;
+        case 'adminDong':
+          portal_type = 'sublocality2'
+          portal_name = this.$store.state.adminDong
+        break;
+
+      }
+
+      console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+      axios.get(p_env.BASE_URL+'/main/posts', { params: {
+        portalType: portal_type, //sublocality2
+        portalName: portal_name // 대방동
+        }
+      })
+      .then(res => {
+        this.postLists = res.data.data
+        console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+
+      }) // axios then
+    }
+
+
 
     this.selec = "city_do"
-  }
-}
+  } // created
+} // export default
 </script>
 
 <style scoped>

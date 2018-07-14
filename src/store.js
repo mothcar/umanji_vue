@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    init: true,
     visible: true,
     zoom_level: 18,
     emailentry:'',
@@ -58,7 +59,10 @@ export default new Vuex.Store({
     //   state.token = payload
     // },
 
-
+    setInit(state, payload) {
+      state.init = payload
+    },
+    
     auth (state, payload) {
       state.authenticated = payload
     },
