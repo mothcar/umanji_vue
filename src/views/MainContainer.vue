@@ -389,6 +389,7 @@ export default {
     console.log("init : ", this.$store.state.init )
     if(init) {
       this.$store.commit('setInit', false)
+      
       var _this = this
 
       // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
