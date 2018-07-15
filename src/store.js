@@ -48,14 +48,14 @@ export default new Vuex.Store({
 
     firstCheck: state => {
       return () => {
-        console.log("THE STRE......., : ", state)
+        // console.log("THE STRE......., : ", state)
         return state.adminDong
       }
     },
     //
     markerCheck: state => {
       return () => {
-        console.log("THE STORE......., : ", state)
+        // console.log("THE STORE......., : ", state)
         return state.markers
       }
     },

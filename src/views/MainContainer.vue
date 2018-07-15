@@ -353,7 +353,7 @@ export default {
 
         }
 
-        console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+        // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
         axios.get(p_env.BASE_URL+'/main/posts', { params: {
           portalType: portal_type, //sublocality2
@@ -377,7 +377,7 @@ export default {
           } // for
           _this.$store.commit('setMarkers', _this.markers)
 
-          console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
+          // console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
 
         }) // axios then
       }) // end of axios
@@ -412,7 +412,7 @@ export default {
   created: function () {
 
     let init = this.$store.state.init
-    console.log("init : ", this.$store.state.init )
+    // console.log("init : ", this.$store.state.init )
     if(init) {
       this.$store.commit('setInit', false)
 
@@ -445,7 +445,7 @@ export default {
           _this.center_name = res.data.addressInfo.adminDong
           _this.params.id = res.data.addressInfo.adminDong
           _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-          console.log('MainContainer 1: ',res.data.addressInfo)
+          // console.log('MainContainer 1: ',res.data.addressInfo)
 
           // Get Postal Basic Info
           axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
@@ -458,7 +458,7 @@ export default {
           })
           .then(res => {
             _this.$store.commit('setCurrentId', res.data.data.id)
-            console.log('MainContainer 2, Get info center : ', res.data.data.id)
+            // console.log('MainContainer 2, Get info center : ', res.data.data.id)
           }) // end of axios vue/getPortalInfo
           .then(res => {
             // Get Post Lists
@@ -487,7 +487,7 @@ export default {
 
             }
 
-            console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+            // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
             axios.get(p_env.BASE_URL+'/main/posts', { params: {
               portalType: portal_type, //sublocality2
@@ -496,7 +496,7 @@ export default {
             })
             .then(res => {
               _this.postLists = res.data.data
-              console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+              // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
 
 
               _this.markers = []
@@ -524,7 +524,7 @@ export default {
 
           }) // second then
 
-          console.log('MainContainer 5 :: store info : ', _this.$store.state)
+          // console.log('MainContainer 5 :: store info : ', _this.$store.state)
         }) // axios SKT
 
 
@@ -556,7 +556,7 @@ export default {
 
       }
 
-      console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+      // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
       axios.get(p_env.BASE_URL+'/main/posts', { params: {
         portalType: portal_type, //sublocality2
@@ -566,21 +566,21 @@ export default {
       .then(res => {
         this.postLists = res.data.data
 
-        _this.markers = []
-        for (var i = 0, len = res.data.data.length; i < len; i++) {
+        this.markers = this.$store.state.markers
+        // for (var i = 0, len = res.data.data.length; i < len; i++) {
+        //
+        //   let obj = { position:{}, info:{}}
+        //   obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+        //   obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+        //   obj.info.portal_rid = res.data.data[i].portal_rid
+        //   obj.info.position_name = res.data.data[i].place_name
+        //   obj.info.zoom_level = _this.$store.state.zoom_level
+        //   _this.markers[i] = obj
+        //   // console.log("content lat lng : ", _this.markers)
+        // } // for
+        // _this.$store.commit('setMarkers', _this.markers)
 
-          let obj = { position:{}, info:{}}
-          obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-          obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
-          obj.info.portal_rid = res.data.data[i].portal_rid
-          obj.info.position_name = res.data.data[i].place_name
-          obj.info.zoom_level = _this.$store.state.zoom_level
-          _this.markers[i] = obj
-          // console.log("content lat lng : ", _this.markers)
-        } // for
-        _this.$store.commit('setMarkers', _this.markers)
-
-        console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data)
+        // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
 
       }) // axios then
     }
