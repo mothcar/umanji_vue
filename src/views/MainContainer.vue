@@ -314,7 +314,7 @@ export default {
       // console.log('area : ', area)
       var _this = this
 
-      axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
+      axios.get(p_env.BASE_URL+'/vue/getInfoCenter', { params: {
         latitude: this.$store.state.latitude,
         longitude: this.$store.state.longitude
         // portal_name: this.center_name+' 정보센터',
@@ -412,7 +412,7 @@ export default {
   created: function () {
 
     let init = this.$store.state.init
-    // console.log("init : ", this.$store.state.init )
+    console.log("20180716 - MainController - init : ", this.$store.state.init )
     if(init) {
       this.$store.commit('setInit', false)
 
@@ -421,112 +421,155 @@ export default {
       // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
       // console.log("MainContainer : My Env : ", p_env.production)  // ENV
 
+      // *** First API call
       //*** Get Coords from Google
       navigator.geolocation.getCurrentPosition(function(location) {
         _this.$store.commit('setCoords', location.coords)
-        // console.log("MainContainer : lacation. ", location)
+        console.log("20180716 - MainContainer : lacation. ", location)
 
-        //***  Get Address from Google : return only ENGLISH
+        // ***  Get Address from Google : return only ENGLISH
+        // *** Needs : rc="https://maps.googleapis.com/maps/api/js?sensor=false" async defer
+        // *** API KEY
         // var google_maps_geocoder = new google.maps.Geocoder();
         //   google_maps_geocoder.geocode(
-        //       { 'latLng': coords, "language": "ko" },
+        //       { 'latLng': coords},
         //       function( results, status ) {
-        //           console.log( results[0] );
+        //           console.log('20180716- Address from Google : ', results[0] );
         //       }
         //   );
 
-        var coords = {}
-        coords.lat = location.coords.latitude
-        coords.lng = location.coords.longitude
+        axios.get('https://ipinfo.io')
+        .then(resCountry=> {
+          console.log('20180716 - Country Code compare : ', resCountry.data)
 
-        //*** Reversegeocoding from SKTelecom
-        axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
-        .then(res => {
-          _this.center_name = res.data.addressInfo.adminDong
-          _this.params.id = res.data.addressInfo.adminDong
-          _this.$store.commit('setCurrentPosition', res.data.addressInfo)
-          // console.log('MainContainer 1: ',res.data.addressInfo)
+          let payloadCountry = resCountry.data.country
+          _this.$store.commit('setCountryCode', payloadCountry)
 
-          // Get Postal Basic Info
-          axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
-            latitude: _this.$store.state.latitude,
-            longitude: _this.$store.state.longitude
-            // portal_name: res.data.addressInfo.adminDong +' 정보센터',
-            // countryCode: 'KR',
-            // political_type: 'adminDong'
-            }
-          })
-          .then(res => {
-            _this.$store.commit('setCurrentId', res.data.data.id)
-            // console.log('MainContainer 2, Get info center : ', res.data.data.id)
-          }) // end of axios vue/getPortalInfo
-          .then(res => {
-            // Get Post Lists
-            // this.postLists = []
+          if(payloadCountry == 'KR'){
 
-            let portal_type = _this.$store.state.tabState
-            let portal_name = _this.$store.state.adminDong
+            // For Test Coords
+            let testCoords = {}
+            // testCoords.latitude = 37.3927368
+            // testCoords.longitude = 126.9523922
+            testCoords.latitude = 37.4759804
+            testCoords.longitude = 126.6254886
+            // 37.7045232
+            // 126.6954045
 
-            switch(portal_type){
-              case 'country':
-                portal_type = 'country'
-                portal_name = _this.$store.state.country
-              break;
-              case 'city_do':
-                portal_type = 'locality'
-                portal_name = _this.$store.state.city_do
-              break;
-              case 'gu_gun':
-                portal_type = 'sublocality1'
-                portal_name = _this.$store.state.gu_gun
-              break;
-              case 'adminDong':
-                portal_type = 'sublocality2'
-                portal_name = _this.$store.state.adminDong
-              break;
-
-            }
-
-            // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
-
-            axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
-              portalType: portal_type, //sublocality2
-              portalName: portal_name // 대방동
-              }
-            })
+            //*** Reversegeocoding from SKTelecom
+            // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+            // Test
+            axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
             .then(res => {
-              _this.postLists = res.data.data
-              // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
+              _this.center_name = res.data.addressInfo.adminDong
+              _this.params.id = res.data.addressInfo.adminDong
+              _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+              console.log('20180716 - MainContainer SKT DATA : ',res.data.addressInfo)
+
+              let st_country_code = payloadCountry
+              let sk_city_do = res.data.addressInfo.city_do
+              let sk_gu_gun = res.data.addressInfo.gu_gun
+              let sk_adminDong = res.data.addressInfo.adminDong
+              let sk_eup_myun = res.data.addressInfo.eup_myun
+              let sk_ri = res.data.addressInfo.ri
+              let sk_building_name = res.data.addressInfo.buildingName
+
+              // Get Postal Basic Info
+              axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+                params: {
+                  latitude: _this.$store.state.latitude,
+                  longitude: _this.$store.state.longitude,
+                  country_code: st_country_code,
+                  city_do: sk_city_do,
+                  gu_gun: sk_gu_gun,
+                  adminDong: sk_adminDong,
+                  eup_myun: sk_eup_myun,
+                  ri: sk_ri,
+                  building_name: sk_building_name
+                  // portal_name: res.data.addressInfo.adminDong +' 정보센터',
+                  // countryCode: 'KR',
+                  // political_type: 'adminDong'
+                }
+                // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
+              })
+              .then(res => {
+                _this.$store.commit('setCurrentId', res.data.data.id)
+                console.log ('Skt send request and get data below')
+                console.log('MainContainer 2, Get info center : ', res.data.data.id)
+              }) // end of axios vue/getInfoCenter
+              .then(res => {
+                // Get Post Lists
+                // this.postLists = []
+
+                let portal_type = _this.$store.state.tabState
+                let portal_name = _this.$store.state.adminDong
+
+                switch(portal_type){
+                  case 'country':
+                    portal_type = 'country'
+                    portal_name = _this.$store.state.country
+                  break;
+                  case 'city_do':
+                    portal_type = 'locality'
+                    portal_name = _this.$store.state.city_do
+                  break;
+                  case 'gu_gun':
+                    portal_type = 'sublocality1'
+                    portal_name = _this.$store.state.gu_gun
+                  break;
+                  case 'adminDong':
+                    portal_type = 'sublocality2'
+                    portal_name = _this.$store.state.adminDong
+                  break;
+
+                }
+
+                // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+                axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
+                  portalType: portal_type, //sublocality2
+                  portalName: portal_name // 대방동
+                  }
+                })
+                .then(res => {
+                  _this.postLists = res.data.data
+                  // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
 
 
-              _this.markers = []
-              for (var i = 0, len = res.data.data.length; i < len; i++) {
+                  _this.markers = []
+                  for (var i = 0, len = res.data.data.length; i < len; i++) {
 
-                let obj = { position:{}, info:{}}
-                obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-                obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
-                obj.info.portal_rid = res.data.data[i].portal_rid
-                obj.info.position_name = res.data.data[i].place_name
-                obj.info.zoom_level = _this.$store.state.zoom_level
-                _this.markers[i] = obj
-                // console.log("content lat lng : ", _this.markers)
-              } // for
-              _this.$store.commit('setMarkers', _this.markers)
-              // mounted() {
-              //   this.$store.watch(this.$store.getters.markerCheck, markers => {
-              //     console.log('watched: ddddddd', markers)
-              //     this.markers = this.$store.state.markers
-              //
-              //   }) // this.$store.watch
-              // },
+                    let obj = { position:{}, info:{}}
+                    obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+                    obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+                    obj.info.portal_rid = res.data.data[i].portal_rid
+                    obj.info.position_name = res.data.data[i].place_name
+                    obj.info.zoom_level = _this.$store.state.zoom_level
+                    _this.markers[i] = obj
+                    // console.log("content lat lng : ", _this.markers)
+                  } // for
+                  _this.$store.commit('setMarkers', _this.markers)
+                  // mounted() {
+                  //   this.$store.watch(this.$store.getters.markerCheck, markers => {
+                  //     console.log('watched: ddddddd', markers)
+                  //     this.markers = this.$store.state.markers
+                  //
+                  //   }) // this.$store.watch
+                  // },
 
-            }) // axios then
+                }) // axios then
 
-          }) // second then
+              }) // second then
 
-          // console.log('MainContainer 5 :: store info : ', _this.$store.state)
-        }) // axios SKT
+              // console.log('MainContainer 5 :: store info : ', _this.$store.state)
+            }) // axios SKT
 
+
+          } else {
+            console.log( ' Sorry Coming Soon ...............')
+          }
+
+        }) // get Country Code
 
       }) //google
     } else {
@@ -584,10 +627,6 @@ export default {
 
       }) // axios then
     }
-
-
-
-
 
     this.selec = "city_do"
 

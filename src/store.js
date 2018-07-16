@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     init: true,
     visible: true,
+    country_code: '',
     zoom_level: 18,
     emailentry:'',
     authenticated: false,
@@ -137,6 +138,10 @@ export default new Vuex.Store({
       }
       // this.getters.markerCheck()
       // state.makers
+    },
+
+    setCountryCode(state, payload) {
+      state.country_code = payload
     }
 
   },  // mutations
