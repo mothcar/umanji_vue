@@ -110,7 +110,7 @@ export default {
           place_rid = this.$store.state.currentId
         }
 
-        axios.post(p_env.BASE_URL+'/geo/createPost', {
+        axios.post(p_env.BASE_URL+'/vue/createPost', {
           // create_type: 'exist',
           // portalRid: '',
           create_type: exist_type,
@@ -134,7 +134,7 @@ export default {
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
 
       // image upload
-      // axios.post(p_env.BASE_URL+'/geo/createPost', this.selectedFile)
+      // axios.post(p_env.BASE_URL+'/vue/createPost', this.selectedFile)
 
     }, //submitPost
 

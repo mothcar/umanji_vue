@@ -156,7 +156,18 @@ export default {
         // _this.center_name = res.data.addressInfo.adminDong
         // _this.params.id = res.data.addressInfo.adminDong
         // _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+
         console.log('P Map Data from skt : ',res.data.addressInfo)
+        
+        axios.post(p_env.BASE_URL+'/vue/createPost', {
+
+        })
+        .then(res=>{
+
+        })
+        .catch(error => {
+          console.log(error.message);
+        }) // axios
 
       }) // then
 

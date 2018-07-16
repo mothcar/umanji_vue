@@ -316,10 +316,10 @@ export default {
 
       axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
         latitude: this.$store.state.latitude,
-        longitude: this.$store.state.longitude,
-        portal_name: this.center_name+' 정보센터',
-        countryCode: 'KR',
-        political_type: area
+        longitude: this.$store.state.longitude
+        // portal_name: this.center_name+' 정보센터',
+        // countryCode: 'KR'
+        // political_type: area
         }
       })
       .then(res => {
@@ -355,7 +355,7 @@ export default {
 
         // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
-        axios.get(p_env.BASE_URL+'/main/posts', { params: {
+        axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
           portalType: portal_type, //sublocality2
           portalName: portal_name // 대방동
           }
@@ -450,10 +450,10 @@ export default {
           // Get Postal Basic Info
           axios.get(p_env.BASE_URL+'/vue/getPortalInfo', { params: {
             latitude: _this.$store.state.latitude,
-            longitude: _this.$store.state.longitude,
-            portal_name: res.data.addressInfo.adminDong +' 정보센터',
-            countryCode: 'KR',
-            political_type: 'adminDong'
+            longitude: _this.$store.state.longitude
+            // portal_name: res.data.addressInfo.adminDong +' 정보센터',
+            // countryCode: 'KR',
+            // political_type: 'adminDong'
             }
           })
           .then(res => {
@@ -489,7 +489,7 @@ export default {
 
             // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
-            axios.get(p_env.BASE_URL+'/main/posts', { params: {
+            axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
               portalType: portal_type, //sublocality2
               portalName: portal_name // 대방동
               }
@@ -558,7 +558,7 @@ export default {
 
       // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
-      axios.get(p_env.BASE_URL+'/main/posts', { params: {
+      axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
         portalType: portal_type, //sublocality2
         portalName: portal_name // 대방동
         }
