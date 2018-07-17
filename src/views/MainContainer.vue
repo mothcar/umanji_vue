@@ -168,6 +168,7 @@ import MapContainer from './MapContainer.vue'
 import PMap from './PMap.vue'
 
 
+
 export default {
 
   components: {
@@ -253,8 +254,8 @@ export default {
     changeTab (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
-      console.log("on Map tab clicked....")
-      // console.log("MainContainer - current : ", current)
+      console.log("on Tab clicked....")
+      console.log("MainContainer - Stored Data : ", this.$store.state)
 
     },
 
@@ -290,24 +291,7 @@ export default {
           this.params.id = this.$store.state.adminDong
           this.getPortalData(this.$store.state.adminDong, 'adminDong')
           break;
-        // case 'eup_myun':
-        //   this.$store.commit('changeTabState','eup_myun')
-        //   this.center_name = this.$store.state.eup_myun
-        //   this.getPortalData('eup_myun')
-        //   break;
-        // case 'ri':
-        //   this.$store.commit('changeTabState','ri')
-        //   this.center_name = this.$store.state.ri
-        //   this.getPortalData('ri')
-        //   break;
-        /*
-        city_do
-        gu_gun
-        adminDong
-        eup_myun
-        ri
-        bunji
-        */
+
 
       }
     }, // autoDetectArea
@@ -334,11 +318,6 @@ export default {
         _this.params.id = areaType
 
 
-        // console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
-
-        // Get Post Lists
-        // this.postLists = []
-
         let portal_type = areaType
         let portal_name = areaName
 
@@ -364,10 +343,11 @@ export default {
 
         // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
+        //getInfodata
         axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
           portalType: portal_type, //sublocality2
           portalName: portal_name, // 대방동
-          view_level: this.$store.state.tabState
+          view_level: this.$store.state.zoom_level
           }
         })
         .then(res => {
@@ -416,9 +396,6 @@ export default {
       return this.$store.state.zoom_level
     }
 
-    // setAddress () {
-    //   return this.$store.commit('setCurrentPosition', this.address)
-    // }
 
   }, // computed
 
@@ -438,7 +415,7 @@ export default {
       //*** Get Coords from Google
       navigator.geolocation.getCurrentPosition(function(location) {
         _this.$store.commit('setCoords', location.coords)
-        console.log("20180716 - MainContainer : lacation. ", location)
+        console.log("20180716 - MainContainer : location. ", location)
 
         // ***  Get Address from Google : return only ENGLISH
         // *** Needs : rc="https://maps.googleapis.com/maps/api/js?sensor=false" async defer
@@ -464,8 +441,8 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 34.4568033
-            testCoords.longitude = 127.1734377
+            testCoords.latitude = 37.5222712
+            testCoords.longitude = 126.8545651
 
             //*** Reversegeocoding from SKTelecom
             // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -515,37 +492,15 @@ export default {
                 // console.log('MainContainer 2, Get info center : ', res.data.data.id)
               }) // end of axios vue/getInfoCenter
               .then(res => {
-                // Get Post Lists
-                // this.postLists = []
 
-                // let portal_type = _this.$store.state.tabState
-                // let portal_name = _this.$store.state.adminDong
-                //
-                // switch(portal_type){
-                //   case 'country':
-                //     portal_type = 'country'
-                //     portal_name = _this.$store.state.country
-                //   break;
-                //   case 'city_do':
-                //     portal_type = 'locality'
-                //     portal_name = _this.$store.state.city_do
-                //   break;
-                //   case 'gu_gun':
-                //     portal_type = 'sublocality1'
-                //     portal_name = _this.$store.state.gu_gun
-                //   break;
-                //   case 'adminDong':
-                //     portal_type = 'sublocality2'
-                //     portal_name = _this.$store.state.adminDong
-                //   break;
-                // } // switch
 
                 // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
+                // created
                 axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
                   portalType: 'sublocality2', //sublocality2
                   portalName: _this.$store.state.adminDong, // 대방동
-                  view_level: _this.$store.state.tabState
+                  view_level: _this.$store.state.zoom_level
                   }
                 })
                 .then(res => {
@@ -558,7 +513,7 @@ export default {
                   // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
 
                   console.log('20180718 - position type : ', res.data.data)
-                  console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+                  // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
 
                   for (var i = 0, len = res.data.data.length; i < len; i++) {
@@ -575,15 +530,6 @@ export default {
                     // console.log("content lat lng : ", _this.markers)
                   } // for
                   _this.$store.commit('setMarkers', _this.markers)
-
-
-                  // mounted() {
-                  //   this.$store.watch(this.$store.getters.markerCheck, markers => {
-                  //     console.log('watched: ddddddd', markers)
-                  //     this.markers = this.$store.state.markers
-                  //
-                  //   }) // this.$store.watch
-                  // },
 
                 }) // axios then
 
@@ -631,30 +577,18 @@ export default {
 
       // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
+      // middle of Service
       axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
         portalType: portal_type, //sublocality2
         portalName: portal_name, // 대방동
-        view_level: this.$store.state.tabState
+        view_level: this.$store.state.zoom_level
         }
       })
       .then(res => {
         this.postLists = res.data.data
 
         this.markers = this.$store.state.markers
-        // for (var i = 0, len = res.data.data.length; i < len; i++) {
-        //
-        //   let obj = { position:{}, info:{}}
-        //   obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-        //   obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
-        //   obj.info.portal_rid = res.data.data[i].portal_rid
-        //   obj.info.position_name = res.data.data[i].place_name
-        //   obj.info.zoom_level = _this.$store.state.zoom_level
-        //   _this.markers[i] = obj
-        //   // console.log("content lat lng : ", _this.markers)
-        // } // for
-        // _this.$store.commit('setMarkers', _this.markers)
 
-        // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
 
       }) // axios then
     }

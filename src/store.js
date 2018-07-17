@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import util from './plugins/levels'
 
 Vue.use(Vuex)
 
@@ -9,7 +10,6 @@ export default new Vuex.Store({
     visible: true,
     country_code: '',
     zoom_level: 18,
-    view_level: 5,
     emailentry:'',
     authenticated: false,
     // user Data
@@ -95,11 +95,7 @@ export default new Vuex.Store({
     },
 
     changeZoomLevel (state, payload) {
-      state.zoom_level = payload
-    },
-
-    setViewLevel (state, payload) {
-      state.view_level = payload
+      state.zoom_level = util.areaToLevel(payload)
     },
 
     setCurrentPosition (state, payload) {
