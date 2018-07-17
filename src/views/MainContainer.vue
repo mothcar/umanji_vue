@@ -264,41 +264,41 @@ export default {
         case 'world':
           this.$store.commit('changeTabState','world')
           this.center_name = '세계'
-          this.getPortalData('world')
+          this.getPortalData('세계', 'world')
           break;
         case 'country':
           this.$store.commit('changeTabState','country')
           this.center_name = '대한민국'
-          this.getPortalData('country')
+          this.getPortalData('대한민국', 'country')
           break;
         case 'city_do':
           this.$store.commit('changeTabState','city_do')
           this.center_name = this.$store.state.city_do
           this.params.id = this.$store.state.city_do
-          this.getPortalData('city_do')
+          this.getPortalData(this.$store.state.city_do, 'city_do')
           break;
         case 'gu_gun':
           this.$store.commit('changeTabState','gu_gun')
           this.center_name = this.$store.state.gu_gun
           this.params.id = this.$store.state.gu_gun
-          this.getPortalData('gu_gun')
+          this.getPortalData(this.$store.state.gu_gun, 'gu_gun')
           break;
         case 'adminDong':
           this.$store.commit('changeTabState','adminDong')
           this.center_name = this.$store.state.adminDong
           this.params.id = this.$store.state.adminDong
-          this.getPortalData('adminDong')
+          this.getPortalData(this.$store.state.adminDong, 'adminDong')
           break;
-        case 'eup_myun':
-          this.$store.commit('changeTabState','eup_myun')
-          this.center_name = this.$store.state.eup_myun
-          this.getPortalData('eup_myun')
-          break;
-        case 'ri':
-          this.$store.commit('changeTabState','ri')
-          this.center_name = this.$store.state.ri
-          this.getPortalData('ri')
-          break;
+        // case 'eup_myun':
+        //   this.$store.commit('changeTabState','eup_myun')
+        //   this.center_name = this.$store.state.eup_myun
+        //   this.getPortalData('eup_myun')
+        //   break;
+        // case 'ri':
+        //   this.$store.commit('changeTabState','ri')
+        //   this.center_name = this.$store.state.ri
+        //   this.getPortalData('ri')
+        //   break;
         /*
         city_do
         gu_gun
@@ -310,45 +310,52 @@ export default {
 
       }
     }, // autoDetectArea
-    getPortalData: function(area) {
+    getPortalData: function(areaName, areaType) {
       // console.log('area : ', area)
       var _this = this
 
-      axios.get(p_env.BASE_URL+'/vue/getInfoCenter', { params: {
-        latitude: this.$store.state.latitude,
-        longitude: this.$store.state.longitude
-        // portal_name: this.center_name+' 정보센터',
+      // New api
+      axios.get(p_env.BASE_URL+'/vue/getTabInfoCenter', { params: {
+        // latitude: this.$store.state.latitude,
+        // longitude: this.$store.state.longitude
+        // areaType Later query for detail ............
+        portal_name: areaName
         // countryCode: 'KR'
         // political_type: area
         }
       })
       .then(res => {
         // currentId
-        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:this.center_name})
+        console.log('20180718 - get from Server tab info center : ',res.data.data)
+        _this.center_name = res.data.data.portal_name
+        _this.params.id = res.data.data.id
+        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:res.data.data.portal_name})
+
+
         // console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
 
         // Get Post Lists
         // this.postLists = []
 
-        let portal_type = area
-        let portal_name = ''
+        let portal_type = areaType
+        let portal_name = areaName
 
         switch(portal_type){
           case 'country':
             portal_type = 'country'
-            portal_name = _this.$store.state.country
+            // portal_name = _this.$store.state.country
           break;
           case 'city_do':
             portal_type = 'locality'
-            portal_name = _this.$store.state.city_do
+            // portal_name = _this.$store.state.city_do
           break;
           case 'gu_gun':
             portal_type = 'sublocality1'
-            portal_name = _this.$store.state.gu_gun
+            // portal_name = _this.$store.state.gu_gun
           break;
           case 'adminDong':
             portal_type = 'sublocality2'
-            portal_name = _this.$store.state.adminDong
+            // portal_name = _this.$store.state.adminDong
           break;
 
         }
@@ -358,6 +365,7 @@ export default {
         axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
           portalType: portal_type, //sublocality2
           portalName: portal_name // 대방동
+          // portal_rid: _this.$store.state.currentId
           }
         })
         .then(res => {
@@ -367,8 +375,10 @@ export default {
           for (var i = 0, len = res.data.data.length; i < len; i++) {
 
             let obj = { position:{}, info:{}}
-            obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-            obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+            // obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+            // obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+            obj.position.lat = res.data.data[i].location.coordinates[1]
+            obj.position.lng = res.data.data[i].location.coordinates[0]
             obj.info.portal_rid = res.data.data[i].portal_rid
             obj.info.position_name = res.data.data[i].place_name
             obj.info.zoom_level = _this.$store.state.zoom_level
@@ -451,10 +461,8 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 37.4759804
-            testCoords.longitude = 126.6254886
-            // 37.7045232
-            // 126.6954045
+            testCoords.latitude = 34.4568033
+            testCoords.longitude = 127.1734377
 
             //*** Reversegeocoding from SKTelecom
             // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -493,42 +501,47 @@ export default {
                 // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
               })
               .then(res => {
-                _this.$store.commit('setCurrentId', res.data.data.id)
-                console.log ('Skt send request and get data below')
+                let currentInfo = {}
+                currentInfo.id = res.data.data.id
+                currentInfo.name = res.data.data.portal_name
+                _this.$store.commit('setCurrentId', currentInfo)
+                console.log ('Skt send request and get data below ************************************************')
+                console.log('MainContainer 2, Get info center : ', res.data.data)
                 console.log('MainContainer 2, Get info center : ', res.data.data.id)
+                console.log('MainContainer 2, Get info center : ', _this.$store.state.currentName)
+                // console.log('MainContainer 2, Get info center : ', res.data.data.id)
               }) // end of axios vue/getInfoCenter
               .then(res => {
                 // Get Post Lists
                 // this.postLists = []
 
-                let portal_type = _this.$store.state.tabState
-                let portal_name = _this.$store.state.adminDong
-
-                switch(portal_type){
-                  case 'country':
-                    portal_type = 'country'
-                    portal_name = _this.$store.state.country
-                  break;
-                  case 'city_do':
-                    portal_type = 'locality'
-                    portal_name = _this.$store.state.city_do
-                  break;
-                  case 'gu_gun':
-                    portal_type = 'sublocality1'
-                    portal_name = _this.$store.state.gu_gun
-                  break;
-                  case 'adminDong':
-                    portal_type = 'sublocality2'
-                    portal_name = _this.$store.state.adminDong
-                  break;
-
-                }
+                // let portal_type = _this.$store.state.tabState
+                // let portal_name = _this.$store.state.adminDong
+                //
+                // switch(portal_type){
+                //   case 'country':
+                //     portal_type = 'country'
+                //     portal_name = _this.$store.state.country
+                //   break;
+                //   case 'city_do':
+                //     portal_type = 'locality'
+                //     portal_name = _this.$store.state.city_do
+                //   break;
+                //   case 'gu_gun':
+                //     portal_type = 'sublocality1'
+                //     portal_name = _this.$store.state.gu_gun
+                //   break;
+                //   case 'adminDong':
+                //     portal_type = 'sublocality2'
+                //     portal_name = _this.$store.state.adminDong
+                //   break;
+                // } // switch
 
                 // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
                 axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
-                  portalType: portal_type, //sublocality2
-                  portalName: portal_name // 대방동
+                  portalType: 'sublocality2', //sublocality2
+                  portalName: _this.$store.state.adminDong // 대방동
                   }
                 })
                 .then(res => {
@@ -537,11 +550,20 @@ export default {
 
 
                   _this.markers = []
+
+                  // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
+
+                  console.log('20180718 - position type : ', res.data.data)
+                  console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+
+
                   for (var i = 0, len = res.data.data.length; i < len; i++) {
 
+                    // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+
                     let obj = { position:{}, info:{}}
-                    obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-                    obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+                    obj.position.lat = res.data.data[i].location.coordinates[1]
+                    obj.position.lng = res.data.data[i].location.coordinates[0]
                     obj.info.portal_rid = res.data.data[i].portal_rid
                     obj.info.position_name = res.data.data[i].place_name
                     obj.info.zoom_level = _this.$store.state.zoom_level
@@ -549,6 +571,8 @@ export default {
                     // console.log("content lat lng : ", _this.markers)
                   } // for
                   _this.$store.commit('setMarkers', _this.markers)
+
+
                   // mounted() {
                   //   this.$store.watch(this.$store.getters.markerCheck, markers => {
                   //     console.log('watched: ddddddd', markers)
@@ -573,6 +597,8 @@ export default {
 
       }) //google
     } else {
+      // init : false middle of Service
+      console.log('20180718 - CHECK ME .... WHEN I CALLED WHEN??? MAY BE RETURN FROM MAP???')
 
       this.center_name = this.$store.state.adminDong
 

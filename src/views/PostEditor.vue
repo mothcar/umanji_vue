@@ -90,21 +90,25 @@ export default {
       if(checkNull.length < 1) {
         alert("내용을 입력해 주세요")
       } else {
-        var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+        // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+        // var location = '{\"@class\":\"OPoint\",\"coordinates\":['+this.longitude+','+this.latitude+']}'
+        var location = {}
+        location['@class'] = 'OPoint'
+        location.coordinates = [this.longitude, this.latitude]
+
+        console.log('20180718 - Opoint type : ', JSON.stringify(location))
 
         var regContent = this.content
         regContent = regContent.replace(/\r?\n/g, '<br />');
 
         let portal_rid = ''
         let place_rid = ''
-        let exist_type = ''
 
         // portal check ; Info or Map -> visible
         // if place DO commit place to 'cuttentId' in store
         console.log("visible : ", this.$store.state.visible)
         if(this.$store.state.visible) {
           portal_rid = this.$store.state.currentId
-          exist_type = 'exist'
           console.log("LOGIC PASS HERE..........")
         } else {
           place_rid = this.$store.state.currentId
@@ -113,7 +117,6 @@ export default {
         axios.post(p_env.BASE_URL+'/vue/createPost', {
           // create_type: 'exist',
           // portalRid: '',
-          create_type: exist_type,
           portal_rid: portal_rid,
           place_rid: place_rid,
           owner_id: this.$store.state.id,
@@ -122,16 +125,23 @@ export default {
           latitude: this.latitude,
           longitude: this.longitude,
           country_code: this.country_code,
-          location: location
+          location: location,
+          country: this.$store.state.country,
+          locality: this.$store.state.city_do,
+          sublocality_level_1: this.$store.state.gu_gun,
+          sublocality_level_2: this.$store.state.adminDong,
+          place_name: this.$store.state.currentName
         })
           .then(res => {
               window.history.back()
           }).catch(error => {
             console.log(error.message);
         }) // axios
+
       } // end of if
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
+      var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
 
       // image upload
       // axios.post(p_env.BASE_URL+'/vue/createPost', this.selectedFile)
