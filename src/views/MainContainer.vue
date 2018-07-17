@@ -263,6 +263,7 @@ export default {
       switch(area) {
         case 'world':
           this.$store.commit('changeTabState','world')
+          // this.$store.commit('setViewLevel',)
           this.center_name = '세계'
           this.getPortalData('세계', 'world')
           break;
@@ -311,7 +312,7 @@ export default {
       }
     }, // autoDetectArea
     getPortalData: function(areaName, areaType) {
-      // console.log('area : ', area)
+      console.log('20180718 - Check area type : ', areaName)
       var _this = this
 
       // New api
@@ -327,9 +328,10 @@ export default {
       .then(res => {
         // currentId
         console.log('20180718 - get from Server tab info center : ',res.data.data)
-        _this.center_name = res.data.data.portal_name
+        _this.center_name = areaName
         _this.params.id = res.data.data.id
         _this.$store.commit('setCurrentId', {id:res.data.data.id, name:res.data.data.portal_name})
+        _this.params.id = areaType
 
 
         // console.log('MainContainer, getPortalData - Get info center ID : ', res.data.data.id)
@@ -364,8 +366,8 @@ export default {
 
         axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
           portalType: portal_type, //sublocality2
-          portalName: portal_name // 대방동
-          // portal_rid: _this.$store.state.currentId
+          portalName: portal_name, // 대방동
+          view_level: this.$store.state.tabState
           }
         })
         .then(res => {
@@ -384,6 +386,7 @@ export default {
             obj.info.zoom_level = _this.$store.state.zoom_level
             _this.markers[i] = obj
             // console.log("content lat lng : ", _this.markers)
+             _this.params.id = areaType
           } // for
           _this.$store.commit('setMarkers', _this.markers)
 
@@ -541,7 +544,8 @@ export default {
 
                 axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
                   portalType: 'sublocality2', //sublocality2
-                  portalName: _this.$store.state.adminDong // 대방동
+                  portalName: _this.$store.state.adminDong, // 대방동
+                  view_level: _this.$store.state.tabState
                   }
                 })
                 .then(res => {
@@ -629,7 +633,8 @@ export default {
 
       axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
         portalType: portal_type, //sublocality2
-        portalName: portal_name // 대방동
+        portalName: portal_name, // 대방동
+        view_level: this.$store.state.tabState
         }
       })
       .then(res => {

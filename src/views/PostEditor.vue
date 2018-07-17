@@ -117,6 +117,7 @@ export default {
         axios.post(p_env.BASE_URL+'/vue/createPost', {
           // create_type: 'exist',
           // portalRid: '',
+          view_level: this.$store.state.tabState,
           portal_rid: portal_rid,
           place_rid: place_rid,
           owner_id: this.$store.state.id,
