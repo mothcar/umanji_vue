@@ -98,6 +98,10 @@ export default new Vuex.Store({
       state.zoom_level = util.areaToLevel(payload)
     },
 
+    setZoomLevel (state, payload) {
+      state.zoom_level = payload
+    },
+
     setCurrentPosition (state, payload) {
       state.city_do = payload.city_do
       state.gu_gun = payload.gu_gun

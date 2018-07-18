@@ -3,12 +3,15 @@
     :center="centerMarker"
     :zoom="zoom_level"
     map-type-id="roadmap"
-    @zoom_changed="zoomChanged"
+    @dragstart="dragStart"
+    @dragend="dragEnd"
     ref="mapRef"
     @click="createSpace"
   >
   <!-- style="width: 500px; height: 300px" -->
   <!--
+  @idle="onIdle"
+  @zoom_changed="zoomChanged"
   https://developers.google.com/maps/documentation/javascript/maptypes
   map-type-id="terrain" /roadmap / satellite / hybrid
   -->
@@ -98,6 +101,7 @@
 </style>
 
 <script>
+import isPlace from '../plugins/placeDictionary'
 // import mapSettings from '../plugins/mapSettings';
 
 export default {
@@ -140,15 +144,37 @@ export default {
 
     zoomChanged: function(){
       console.log("zoom changed..........")
+      this.subSetCoords()
 
+      this.$refs.mapRef.$mapPromise.then((map) => {
+        this.$store.commit('setZoomLevel', map.zoom)
+        console.log('This Store zoom level is : ', this.$store.state.zoom_level)
+      })
     },
+
+    dragStart: function (){
+      console.log("dragStart ..........")
+    },
+
+    dragEnd: function() {
+      console.log("drag End ..........")
+      this.subSetCoords()
+    },
+
+    subSetCoords: function() {
+      this.$refs.mapRef.$mapPromise.then((map) => {
+        let map_coords = {}
+        map_coords.latitude = map.center.lat()
+        map_coords.longitue = map.center.lng()
+        this.$store.commit('setCoords', map_coords)
+        // console.log("Map ref : ", map)
+        console.log('get CENTER : ',  JSON.stringify(map_coords))
+      })
+     },
 
     createSpace: function(e) {
       console.log("Map clicked.........: ", e.latLng.lat())
-
-      // var coords = {}
-      // coords.lat = e.latLng.lat()
-      // coords.lng = e.latLng.lng()
+      let clickedZoom = this.$store.state.zoom_level
 
       //*** Reversegeocoding from SKTelecom
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+e.latLng.lng()+"&lat=" +e.latLng.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -156,22 +182,41 @@ export default {
         // _this.center_name = res.data.addressInfo.adminDong
         // _this.params.id = res.data.addressInfo.adminDong
         // _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+        let buildingName = res.data.addressInfo.buildingName
 
         console.log('P Map Data from skt : ',res.data.addressInfo)
-        
-        axios.post(p_env.BASE_URL+'/vue/createPost', {
+        console.log('P Map Data from skt : ',res.data.addressInfo.buildingName)
 
-        })
-        .then(res=>{
+        // give word and zoom level  to Dic then return true or false : res is Building of University or Golf useing Ditionary
+        // is not in Dic find Info Center
+        console.log('WHAT IS IT????....................', isPlace.getPlace(clickedZoom, buildingName))
 
-        })
-        .catch(error => {
-          console.log(error.message);
-        }) // axios
+        if(isPlace.getPlace(clickedZoom, buildingName)) {
+          // big Place
+          console.log('This is BUILDING  .........................')
+        } else {
+          // info center
+          console.log('This is INFO CENTER .........................')
+        }
+
+        // axios.get()
+        // .then(res =>{
+        //   // give params as zoom level
+        // }) // axios's then
+
+
+        // This axios Does Not Need Here ##########################
+        // axios.post(p_env.BASE_URL+'/vue/createPost', {
+        // })
+        // .then(res=>{
+        // })
+        // .catch(error => {
+        //   console.log(error.message);
+        // }) // axios
 
       }) // then
 
-      this.createPost()
+      // this.createPost()
     },
 
     createPost: function() {
@@ -207,13 +252,9 @@ export default {
     // its map has not been initialized.
     // Therefore we need to write mapRef.$mapPromise.then(() => ...)
 
-    // this.$refs.mapRef.$mapPromise.then((map) => {
-    //   map.panTo({lat: 1.38, lng: 103.80})
-    // })
+   console.log('20180718 - mapref : ', this.$refs.mapRef)
 
-   //  this.$refs.mapRef.$mapPromise.then((map) => {
-   //    console.log("Map ref : ", map)
-   // })
+   this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
 
    let init=this.$store.state.init
 
@@ -222,46 +263,41 @@ export default {
      this.centerMarker.lng = this.markers[0].position.lng
 
    } else {
+     this.zoom_level = this.$store.state.zoom_level
      this.after_init_markers = this.$store.state.markers
 
      this.centerMarker.lat = this.after_init_markers[0].position.lat
      this.centerMarker.lng = this.after_init_markers[0].position.lng
    }
 
-
-
-
-
-
-
     this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
       // console.log('watched: ddddddd : ' , zoom_level)
 
-      let e = zoom_level
-      switch(e){
-        case 'adminDong':
-          this.zoom_level = 16
-        break;
-        case 'gu_gun':
-          this.zoom_level = 14
-        break;
-        case 'city_do':
-          this.zoom_level = 11
-        break;
-        case 'country':
-          this.zoom_level = 7
-        break;
-        case 'world':
-          this.zoom_level = 3
-        break;
-      }
+      this.zoom_level = zoom_level
+
+      // let e = zoom_level
+      // switch(e){
+      //   case 'adminDong':
+      //     this.zoom_level = 16
+      //   break;
+      //   case 'gu_gun':
+      //     this.zoom_level = 14
+      //   break;
+      //   case 'city_do':
+      //     this.zoom_level = 11
+      //   break;
+      //   case 'country':
+      //     this.zoom_level = 7
+      //   break;
+      //   case 'world':
+      //     this.zoom_level = 3
+      //   break;
+      // }
+
       // this.markers = this.$store.state.markers
       // return this.$store.state.visible
+
     }) // this.$store.watch
-
-
-
-
 
     // console.log("Check ..... markers : ", this.markers)
     // console.log("PMAP...... data type : ", this.centerMarker)
@@ -269,8 +305,6 @@ export default {
     // this.markers = this.$store.state.markers
     // this.markets = this.$store.state.markers
     // console.log("Map markers  : ", this.markers)
-
-
 
     // console.log("Map ref : ", this.$refs)
 

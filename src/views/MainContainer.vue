@@ -238,7 +238,7 @@ export default {
   methods: {
     toMap: function(){
       this.$store.commit('toMap', false)
-      // console.log("MainContainer : toMap", this.$store.state.visible)
+      console.log("MainContainer : toMap Clicked ")
     },
 
     toPost: function () {
