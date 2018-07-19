@@ -79,15 +79,23 @@ export default {
         } else {
           return false
         }
-      } else if(/삼성에버랜드/.exec(word)){
-        let centerName = word.substring(endPosition-6, endPosition+1)
-        if(centerName == '삼성에버랜드'){
+      } else if(/에버랜드/.exec(word)){
+        let centerName = word.substring(endPosition-4, endPosition+1)
+        if(centerName == '에버랜드'){
           console.log(" building is center Name : ", centerName)
           return true
         } else {
           return false
         }
-      }else if(/컨트리클럽/.exec(word)){
+      } else if(/공원/.exec(word)){
+        let centerName = word.substring(endPosition-2, endPosition+1)
+        if(centerName == '공원'){
+          console.log(" building is center Name : ", centerName)
+          return true
+        } else {
+          return false
+        }
+      } else if(/컨트리클럽/.exec(word)){
         let centerName = word.substring(endPosition-5, endPosition+1)
         if(centerName == '컨트리클럽'){
           console.log(" building is center Name : ", centerName)

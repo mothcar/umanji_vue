@@ -53,10 +53,10 @@
         max-width="290"
       >
         <v-card>
-          <v-card-title class="headline">로그인 하시겠습니까?</v-card-title>
+          <v-card-title class="headline">{{ dialog_title }}</v-card-title>
 
           <v-card-text class="p_portal_page">
-            동네사람들에게 좋은 정보를 제공하시면 계급이 승급됩니다.
+            {{ dialog_content }}
           </v-card-text>
 
           <v-card-actions>
@@ -70,15 +70,13 @@
               아니오
             </v-btn>
 
-            <router-link :to="{ name: 'secureLogin', params: {} }">
               <v-btn
                 color="green darken-1"
                 flat="flat"
-                @click="login"
+                @click="enterSpace"
               >
                 예
               </v-btn>
-            </router-link>
 
           </v-card-actions>
         </v-card>
@@ -119,12 +117,18 @@ export default {
       // mapSettings,
       centerMarker: {},
       zoom_level: 18,
-      dialog: false,
       zindex: -1,
       p_position: {},
       msg: '',
       p_opacity: 0,
-      after_init_markers:[]
+      after_init_markers:[],
+      // dialog Data
+      dialog: false,
+      dialog_title: '',
+      dialog_content: '',
+      params: {
+        id: ''
+      }
     }
   },
 
@@ -191,13 +195,14 @@ export default {
                // console.log('COUNTRY ADDRESS IS :: ', address);
                let isKorea = ''
                isKorea = address.search("South Korea")
+               // console.log('isKorea IS in function isKorea :: ', isKorea);
                // console.log('isKorea IS in function Address :: ', address);
-               if(isKorea > 1){
+               if(isKorea >= 0){
                  _this.p_promise(e)
                } else {
-                 if (address.search("China") > 1){
+                 if (address.search("China") >= 0){
                    alert('중국서비스 준비중')
-                 } else if(address.search("Japan") > 1){
+                 } else if(address.search("Japan") >= 0){
                    alert('일본서비스 준비중')
                  } else {
                    alert('해외서비스 준비중')
@@ -209,7 +214,7 @@ export default {
      }, // createSpace
 
     p_promise: function(e) {
-      // console.log("Map clicked.........: ", e.latLng.lat())
+      let _this = this
       let clickedZoom = this.$store.state.zoom_level
 
       //if KOREA service only abable
@@ -223,30 +228,104 @@ export default {
         console.log('P Map Data from skt : ',res.data.addressInfo)
         console.log('P Map Data from skt : ',res.data.addressInfo.buildingName)
 
-        // give word and zoom level  to Dic then return true or false : res is Building of University or Golf useing Ditionary
-        // is not in Dic find Info Center
-        if(clickedZoom > 12){
+        let st_country_code = 'KR'
+        let sk_city_do = res.data.addressInfo.city_do
+        let sk_gu_gun = res.data.addressInfo.gu_gun
+        let sk_adminDong = res.data.addressInfo.adminDong
+        let sk_eup_myun = res.data.addressInfo.eup_myun
+        let sk_ri = res.data.addressInfo.ri
+        let sk_building_name = res.data.addressInfo.buildingName
+
+        let params = {
+          latitude:e.latLng.lat(),
+          longitude: e.latLng.lng(),
+          country_code: st_country_code,
+          city_do: sk_city_do,
+          gu_gun: sk_gu_gun,
+          adminDong: sk_adminDong,
+          eup_myun: sk_eup_myun,
+          ri: sk_ri,
+          building_name: sk_building_name
+          // portal_name: res.data.addressInfo.adminDong +' 정보센터',
+          // countryCode: 'KR',
+          // political_type: 'adminDong'
+        }
+
+        if(clickedZoom >= 12){
+          // Space or Info center
           if(isPlace.getPlace(clickedZoom, buildingName)) {
             // big Place
             console.log('This is BUILDING  .........................')
+            // find space New API
+            axios.get(p_env.BASE_URL+'/vue/getSpace', {
+              params: params
+            })
+            .then(res => {
+              let currentInfo = {}
+              currentInfo.id = res.data.data.id
+              currentInfo.name = res.data.data.portal_name
+              _this.$store.commit('setCurrentId', currentInfo)
+              console.log ('Skt send request and get data below ************************************************')
+              console.log('PMap Space : ', res.data.data)
+              // console.log('PMap Space : ', res.data.data.id)
+              // console.log('PMap Space : ', _this.$store.state.currentName)
+              // Dialog on
+              _this.dialog_title = res.data.data.portal_name
+              _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
+              _this.dialog = true
+            }) // end of axios vue/getInfoCenter
           } else {
             // info center
             console.log('This is INFO CENTER .........................')
+            // Get Postal Basic Info
+            axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+              params: params
+            })
+            .then(res => {
+              let currentInfo = {}
+              currentInfo.id = res.data.data.id
+              currentInfo.name = res.data.data.portal_name
+              _this.$store.commit('setCurrentId', currentInfo)
+              console.log ('Skt send request and get data below ************************************************')
+              console.log('PMap 1, Get info center : ', res.data.data)
+              console.log('PMap 1, Get info center : ', res.data.data.id)
+              console.log('PMap 1, Get info center : ', _this.$store.state.currentName)
+              // Dialog on
+              _this.dialog_title = res.data.data.portal_name
+              _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
+              _this.dialog = true
+            }) // end of axios vue/getInfoCenter
           }
         } else {
-          // info Center 
+          // info Center
+          // Get Postal Basic Info
+          axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+            params: params
+          })
+          .then(res => {
+            let currentInfo = {}
+            currentInfo.id = res.data.data.id
+            currentInfo.name = res.data.data.portal_name
+            _this.$store.commit('setCurrentId', currentInfo)
+            console.log ('Skt send request and get data below ************************************************')
+            console.log('PMap 2, Get info center : ', res.data.data)
+            console.log('PMap 2, Get info center : ', res.data.data.id)
+            console.log('PMap 2, Get info center : ', _this.$store.state.currentName)
 
-        }
+            _this.dialog_title = res.data.data.portal_name
+            _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
+            _this.dialog = true
+          }) // end of axios vue/getInfoCenter
 
+        } // Outter if
 
-
-        // axios.get()
-        // .then(res =>{
-        //   // give params as zoom level
-        // }) // axios's then
-
-      }) // then
+      }) // SKT then
     }, // p_promise
+
+    enterSpace: function() {
+      this.$router.push({name: 'portalPage', params:{id: 'test'}})
+
+    }, // enterSpace
 
     createPost: function() {
       // @click.stop="dialog = true"
@@ -338,33 +417,5 @@ export default {
     // console.log("Map ref : ", this.$refs)
 
   }
-}
-
-function getReverseGeocodingData(lat, lng) {
-    var latlng = new google.maps.LatLng(lat, lng);
-    // This is making the Geocode request
-    var geocoder = new google.maps.Geocoder();
-    var flag = false
-    geocoder.geocode({ 'latLng': latlng }, function (results, status) {
-        if (status !== google.maps.GeocoderStatus.OK) {
-            alert(status);
-        }
-        // This is checking to see if the Geoeode Status is OK before proceeding
-        if (status == google.maps.GeocoderStatus.OK) {
-            console.log(results);
-            var address = (results[0].formatted_address);
-            console.log('COUNTRY ADDRESS IS :: ', address);
-            let isKorea = ''
-            isKorea = address.search("South Korea")
-            console.log('isKorea IS :: ', isKorea);
-            if(isKorea > 1){
-              flag = true
-            } else {
-              flag = false
-            }
-
-        }
-    })
-    return flag
-}
+} // export default
 </script>
