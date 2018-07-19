@@ -27,9 +27,8 @@ export default {
       case 11:
       break
       case 12:
-        // if(){
-        //   returnFlag = true
-        // }
+        console.log('This level is 12')
+        returnFlag = this.getSimpleWord(12, placeName)
       break
       case 13:
         console.log('This level is 13')
@@ -39,11 +38,11 @@ export default {
       break
       case 15:
         console.log('This level is 15')
-        this.getSimpleWord(placeName)
+        returnFlag = this.getSimpleWord(15, placeName)
       break
       case 16:
         console.log('This level is  16')
-        this.getSimpleWord(placeName)
+        returnFlag = this.getSimpleWord(16, placeName)
       break
       case 17:
         console.log('This level is  17')
@@ -62,23 +61,84 @@ export default {
     return returnFlag
   }, // getPlace
 
-  getSimpleWord(word) {
+  getSimpleWord(zoom, word) {
     let endPosition = word.length
     let startPosition = 1
 
-    if(/대학교/.exec(word)){
-      let centerName = word.substring(endPosition-4, endPosition+1)
-      if(centerName == '대학교'){
-        console.log(" building is center Name : ", centerName)
-        return centerName
-      }
-    } else if(/공원/.exec(word)){
-      let centerName = word.substring(endPosition-2, endPosition+1)
-      if(centerName == '공원'){
-        console.log(" building is center Name : ", centerName)
-        return centerName
-      }
-    }
+    switch(zoom){
+      case 11: // Till this INFO CENTER ****************************************
+
+      break
+
+      case 12: // From this could be a SPACE ****************************************
+      if(/대학교/.exec(word)){
+        let centerName = word.substring(endPosition-3, endPosition+1)
+        if(centerName == '대학교'){
+          console.log(" building is center Name : ", centerName)
+          return true
+        } else {
+          return false
+        }
+      } else if(/삼성에버랜드/.exec(word)){
+        let centerName = word.substring(endPosition-6, endPosition+1)
+        if(centerName == '삼성에버랜드'){
+          console.log(" building is center Name : ", centerName)
+          return true
+        } else {
+          return false
+        }
+      }else if(/컨트리클럽/.exec(word)){
+        let centerName = word.substring(endPosition-5, endPosition+1)
+        if(centerName == '컨트리클럽'){
+          console.log(" building is center Name : ", centerName)
+          return true
+        } else {
+          return false
+        }
+      } // end of if else
+      break
+
+      case 15:
+        if(/대학교/.exec(word)){
+          let centerName = word.substring(endPosition-3, endPosition+1)
+          if(centerName == '대학교'){
+            console.log(" building is center Name : ", centerName)
+            return true
+          } else {
+            return false
+          }
+        } else if(/공원/.exec(word)){
+          let centerName = word.substring(endPosition-2, endPosition+1)
+          if(centerName == '공원'){
+            console.log(" building is center Name : ", centerName)
+            return true
+          } else {
+            return false
+          }
+        } // end of if else
+      break
+
+      case 16:
+        if(/대학교/.exec(word)){
+          let centerName = word.substring(endPosition-3, endPosition+1)
+          if(centerName == '대학교'){
+            console.log(" building is center Name : ", centerName)
+            return true
+          } else {
+            return false
+          }
+        } else if(/공원/.exec(word)){
+          let centerName = word.substring(endPosition-2, endPosition+1)
+          if(centerName == '공원'){
+            console.log(" building is center Name : ", centerName)
+            return true
+          } else {
+            return false
+          }
+        } // end of if else
+      break
+
+    } // switch
 
   }, // getSimpleWord
 

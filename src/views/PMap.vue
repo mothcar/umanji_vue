@@ -168,15 +168,51 @@ export default {
         map_coords.longitue = map.center.lng()
         this.$store.commit('setCoords', map_coords)
         // console.log("Map ref : ", map)
-        console.log('get CENTER : ',  JSON.stringify(map_coords))
+        // console.log('get CENTER : ',  JSON.stringify(map_coords))
+        console.log('get CENTER : ',  map)
       })
      },
 
-    createSpace: function(e) {
-      console.log("Map clicked.........: ", e.latLng.lat())
+     createSpace: function(e) {
+       let isKoreaAddress = false
+       let _this = this
+
+       var latlng = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+       // This is making the Geocode request
+       var geocoder = new google.maps.Geocoder();
+       geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+           if (status !== google.maps.GeocoderStatus.OK) {
+               alert(' 바다 ');
+           }
+           // This is checking to see if the Geoeode Status is OK before proceeding
+           if (status == google.maps.GeocoderStatus.OK) {
+               // console.log(results);
+               var address = (results[0].formatted_address);
+               // console.log('COUNTRY ADDRESS IS :: ', address);
+               let isKorea = ''
+               isKorea = address.search("South Korea")
+               // console.log('isKorea IS in function Address :: ', address);
+               if(isKorea > 1){
+                 _this.p_promise(e)
+               } else {
+                 if (address.search("China") > 1){
+                   alert('중국서비스 준비중')
+                 } else if(address.search("Japan") > 1){
+                   alert('일본서비스 준비중')
+                 } else {
+                   alert('해외서비스 준비중')
+                 }
+
+               }
+           } // status
+       }) // Geocoder
+     }, // createSpace
+
+    p_promise: function(e) {
+      // console.log("Map clicked.........: ", e.latLng.lat())
       let clickedZoom = this.$store.state.zoom_level
 
-      //*** Reversegeocoding from SKTelecom
+      //if KOREA service only abable
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+e.latLng.lng()+"&lat=" +e.latLng.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
         // _this.center_name = res.data.addressInfo.adminDong
@@ -189,35 +225,28 @@ export default {
 
         // give word and zoom level  to Dic then return true or false : res is Building of University or Golf useing Ditionary
         // is not in Dic find Info Center
-        console.log('WHAT IS IT????....................', isPlace.getPlace(clickedZoom, buildingName))
-
-        if(isPlace.getPlace(clickedZoom, buildingName)) {
-          // big Place
-          console.log('This is BUILDING  .........................')
+        if(clickedZoom > 12){
+          if(isPlace.getPlace(clickedZoom, buildingName)) {
+            // big Place
+            console.log('This is BUILDING  .........................')
+          } else {
+            // info center
+            console.log('This is INFO CENTER .........................')
+          }
         } else {
-          // info center
-          console.log('This is INFO CENTER .........................')
+          // info Center 
+
         }
+
+
 
         // axios.get()
         // .then(res =>{
         //   // give params as zoom level
         // }) // axios's then
 
-
-        // This axios Does Not Need Here ##########################
-        // axios.post(p_env.BASE_URL+'/vue/createPost', {
-        // })
-        // .then(res=>{
-        // })
-        // .catch(error => {
-        //   console.log(error.message);
-        // }) // axios
-
       }) // then
-
-      // this.createPost()
-    },
+    }, // p_promise
 
     createPost: function() {
       // @click.stop="dialog = true"
@@ -309,5 +338,33 @@ export default {
     // console.log("Map ref : ", this.$refs)
 
   }
+}
+
+function getReverseGeocodingData(lat, lng) {
+    var latlng = new google.maps.LatLng(lat, lng);
+    // This is making the Geocode request
+    var geocoder = new google.maps.Geocoder();
+    var flag = false
+    geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+        if (status !== google.maps.GeocoderStatus.OK) {
+            alert(status);
+        }
+        // This is checking to see if the Geoeode Status is OK before proceeding
+        if (status == google.maps.GeocoderStatus.OK) {
+            console.log(results);
+            var address = (results[0].formatted_address);
+            console.log('COUNTRY ADDRESS IS :: ', address);
+            let isKorea = ''
+            isKorea = address.search("South Korea")
+            console.log('isKorea IS :: ', isKorea);
+            if(isKorea > 1){
+              flag = true
+            } else {
+              flag = false
+            }
+
+        }
+    })
+    return flag
 }
 </script>
