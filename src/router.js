@@ -45,7 +45,8 @@ export default new Router({
     {
       path: '/portalPage/:id',
       name: 'portalPage',
-      component: PortalPage
+      component: PortalPage,
+      props: true
     },
     {
       path: '/postEditor',

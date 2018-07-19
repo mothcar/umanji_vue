@@ -9,7 +9,9 @@
           >
           <div class="p_portal_container">
             <h1>{{ title }} {{ $t("portal_page.title") }}</h1>
+            <h1> {{ getData}} </h1>
           </div>
+
 
         </v-carousel-item>
       </v-carousel>
@@ -163,7 +165,10 @@ export default {
             src: require('../assets/images/default_info_center4.jpg')
           }
         ],
-        dialog: false
+        dialog: false,
+        getData: 'Some Data..'
+
+
 
       } // return
     }, // data
@@ -213,14 +218,20 @@ export default {
     }, //methods
 
     created: function () {
-      axios.get(p_env.BASE_URL+'/main/posts?portalType=sublocality2&portalName=신길6동')
+      let params ={
+        portalType: 'sublocality2',
+        portalName: '신길6동'
+      }
+      axios.get(p_env.BASE_URL+'/vue/placePosts', {
+        params: params
+      })
       .then(res => {
         this.model.lists = res.data.data
-        // console.log('MainContainer : ',res.data.data)
+        this.getData = this.$store.state.building_name
+        console.log('PortalPage - Get from server data : ',res.data.data)
 
       })
 
-      console.log('PortalPage - params : ', this.$route.params.id)
     } // created
   } // export
 

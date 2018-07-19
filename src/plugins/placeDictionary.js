@@ -25,6 +25,7 @@ export default {
       case 10:
       break
       case 11:
+        returnFlag = false
       break
       case 12:
         console.log('This level is 12')
@@ -46,15 +47,19 @@ export default {
       break
       case 17:
         console.log('This level is  17')
+        returnFlag = true
       break
       case 18:
         console.log('This level is  18')
+        returnFlag = true
       break
       case 19:
         console.log('This level is  19')
+        returnFlag = true
       break
       case 20:
         console.log('This level is  20')
+        returnFlag = true
       break
 
     } // switch

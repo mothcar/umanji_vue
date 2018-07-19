@@ -34,6 +34,7 @@ export default new Vuex.Store({
     eup_myun: '',
     ri: '',
     bunji: '',
+    building_name: 'some name',
     tabState: 'adminDong',
     markers: []
   },

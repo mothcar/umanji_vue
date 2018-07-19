@@ -441,8 +441,8 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 37.5222712
-            testCoords.longitude = 126.8545651
+            testCoords.latitude = 37.1714823
+            testCoords.longitude = 128.4834568
 
             //*** Reversegeocoding from SKTelecom
             // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')

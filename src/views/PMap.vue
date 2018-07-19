@@ -108,7 +108,7 @@ export default {
   inject: ['changeTab'],
 
   props: {
-    markers: Array
+    // markers: Array
   },
 
   data() {
@@ -128,7 +128,8 @@ export default {
       dialog_content: '',
       params: {
         id: ''
-      }
+      },
+      markers: []
     }
   },
 
@@ -174,7 +175,48 @@ export default {
         // console.log("Map ref : ", map)
         // console.log('get CENTER : ',  JSON.stringify(map_coords))
         console.log('get CENTER : ',  map)
-      })
+
+        //****************************************************************************************
+        axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+map.center.lng()+"&lat=" +map.center.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+        .then(res => {
+
+          let buildingName = res.data.addressInfo.buildingName
+
+          console.log('P Map Data from skt : ',res.data.addressInfo)
+          this.$store.commit('setCurrentPosition', res.data.addressInfo)
+
+        }) // then
+        //****************************************************************************************
+
+        console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
+        axios.get(p_env.BASE_URL+'/vue/getSpaces', { params: {
+          locality: this.$store.state.city_do, // 서울
+          // view_level: this.$store.state.zoom_level
+          }
+        })
+        .then(res => {
+          this.markers = []
+
+          console.log('20180720 - get space type : ', res.data.data)
+          // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+
+          for (var i = 0, len = res.data.data.length; i < len; i++) {
+            // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+            let obj = { position:{}, info:{}}
+            obj.position.lat = res.data.data[i].location.coordinates[1]
+            obj.position.lng = res.data.data[i].location.coordinates[0]
+            obj.info.portal_rid = res.data.data[i].portal_rid
+            obj.info.position_name = res.data.data[i].place_name
+            obj.info.zoom_level = this.$store.state.zoom_level
+            this.markers[i] = obj
+            // console.log("content lat lng : ", _this.markers)
+          } // for
+          this.$store.commit('setMarkers', this.markers)
+
+        }) // axios
+
+
+      }) // $refs
      },
 
      createSpace: function(e) {
@@ -256,7 +298,7 @@ export default {
           if(isPlace.getPlace(clickedZoom, buildingName)) {
             // big Place
             console.log('This is BUILDING  .........................')
-            // find space New API
+            // find space create space New API
             axios.get(p_env.BASE_URL+'/vue/getSpace', {
               params: params
             })
@@ -270,7 +312,7 @@ export default {
               // console.log('PMap Space : ', res.data.data.id)
               // console.log('PMap Space : ', _this.$store.state.currentName)
               // Dialog on
-              _this.dialog_title = res.data.data.portal_name
+              _this.dialog_title = res.data.data.building_name
               _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
               _this.dialog = true
             }) // end of axios vue/getInfoCenter
@@ -299,6 +341,7 @@ export default {
         } else {
           // info Center
           // Get Postal Basic Info
+          console.log('This is OUtter INFO CENTER .........................')
           axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
             params: params
           })
@@ -323,7 +366,9 @@ export default {
     }, // p_promise
 
     enterSpace: function() {
-      this.$router.push({name: 'portalPage', params:{id: 'test'}})
+      // this.$router.push({name: 'portalPage', params:{id: 'test'}}, {query: { some: 'private' }})
+      this.$router.push({ name: 'portalPage', params:{id: 'placePage'}})
+
 
     }, // enterSpace
 
@@ -367,15 +412,18 @@ export default {
    let init=this.$store.state.init
 
    if(init){
-     this.centerMarker.lat = this.markers[0].position.lat
-     this.centerMarker.lng = this.markers[0].position.lng
+     // Error : when no marker
+     // this.centerMarker.lat = this.markers[0].position.lat
+     // this.centerMarker.lng = this.markers[0].position.lng
+     this.centerMarker.lat = this.$store.state.latitude
+     this.centerMarker.lng = this.$store.state.longitude
 
    } else {
      this.zoom_level = this.$store.state.zoom_level
      this.after_init_markers = this.$store.state.markers
 
-     this.centerMarker.lat = this.after_init_markers[0].position.lat
-     this.centerMarker.lng = this.after_init_markers[0].position.lng
+     this.centerMarker.lat = this.$store.state.latitude
+     this.centerMarker.lng = this.$store.state.longitude
    }
 
     this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
@@ -406,6 +454,9 @@ export default {
       // return this.$store.state.visible
 
     }) // this.$store.watch
+
+    //
+
 
     // console.log("Check ..... markers : ", this.markers)
     // console.log("PMAP...... data type : ", this.centerMarker)
