@@ -204,13 +204,42 @@ export default {
       }
       console.log('CHECK PRE PARAMS : ', params)
 
-      axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
-        params: params
-      })
-      .then(res => {
-        console.log('20180720 - returned result :', res.data.data)
-        this.rid = ''
-      }) // axios then
+      let placeType = this.$store.state.place_type
+
+      let spaceParams = {}
+      spaceParams.place_type = placeType
+
+
+      if(placeType == 'infocenter'){
+        axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+          params: params
+        })
+        .then(res => {
+          console.log('20180720 - returned result :', res.data.data)
+          let coords = {}
+          coords.latitude = res.data.data.location.coordinates[1]
+          coords.longitude = res.data.data.location.coordinates[0]
+          this.$store.commit('setCoords', coords)
+          spaceParams.s_rid = res.data.data.id
+          // this.rid = ''
+          axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
+            params: spaceParams
+          })
+          .then(res =>{
+            console.log('20180721 - returned data : ', res.data.data)
+            this.model.lists = res.data.data
+            this.getData = this.$store.state.building_name
+
+          }) // inner then
+        }) // axios then
+
+      } else {
+
+        console.log('20180721 - SpacePage : Coming Soon ')
+
+      } // end of if else
+
+
 
     },
 
@@ -259,24 +288,24 @@ export default {
     }, //methods
 
     created: function () {
-      let params ={
-        portalType: 'sublocality2',
-        portalName: '신길6동'
-      }
-      axios.get(p_env.BASE_URL+'/vue/placePosts', {
-        params: params
-      })
-      .then(res => {
-        this.model.lists = res.data.data
-        this.getData = this.$store.state.building_name
-        /*
-        import { i18n } from './i18n.js'
-        i18n.t()
-        */
-
-        console.log('SpacePage - Get from server data : ',res.data.data)
-
-      })
+      // let params ={
+      //   portalType: 'sublocality2',
+      //   portalName: '신길6동'
+      // }
+      // axios.get(p_env.BASE_URL+'/vue/placePosts', {
+      //   params: params
+      // })
+      // .then(res => {
+      //   this.model.lists = res.data.data
+      //   this.getData = this.$store.state.building_name
+      //   /*
+      //   import { i18n } from './i18n.js'
+      //   i18n.t()
+      //   */
+      //
+      //   console.log('SpacePage - Get from server data : ',res.data.data)
+      //
+      // })
 
     } // created
   } // export

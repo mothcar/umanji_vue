@@ -21,6 +21,7 @@ export default new Vuex.Store({
     photos: '',
     money: 0,
     // Current position Data
+    place_type: '',
     currentId: '',
     currentName: '',
     latitude: '',
@@ -134,7 +135,7 @@ export default new Vuex.Store({
     setCurrentId(state, payload) {
       state.currentId = payload.id
       state.currentName = payload.name
-      // state.adminDong = payload.adminDong
+      state.place_type = payload.placeType
     },
 
     setMarkers(state, payload) {

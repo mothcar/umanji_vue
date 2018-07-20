@@ -164,7 +164,7 @@
 
 <script>
 import Home from './PostContainer.vue'
-import MapContainer from './MapContainer.vue'
+// import MapContainer from './MapContainer.vue'
 import PMap from './PMap.vue'
 
 
@@ -173,7 +173,7 @@ export default {
 
   components: {
     Home,
-    MapContainer,
+    // MapContainer,
     PMap
   },
 
@@ -316,7 +316,7 @@ export default {
         console.log('20180718 - get from Server tab info center : ',res.data.data)
         _this.center_name = areaName
         _this.params.id = res.data.data.id
-        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:res.data.data.portal_name})
+        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:res.data.data.portal_name, placeType:'infocenter'})
         _this.params.id = areaType
 
 
@@ -363,7 +363,7 @@ export default {
             // obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
             obj.position.lat = res.data.data[i].location.coordinates[1]
             obj.position.lng = res.data.data[i].location.coordinates[0]
-            obj.info.portal_rid = res.data.data[i].portal_rid
+            obj.info.s_rid = res.data.data[i].s_rid
             obj.info.position_name = res.data.data[i].place_name
             obj.info.zoom_level = _this.$store.state.zoom_level
             _this.markers[i] = obj
@@ -405,6 +405,7 @@ export default {
 
     let init = this.$store.state.init
     console.log("20180716 - MainController - init : ", this.$store.state.init )
+
     if(init) {
       this.$store.commit('setInit', false)
 
@@ -443,8 +444,10 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 37.1714823
-            testCoords.longitude = 128.4834568
+            testCoords.latitude = 35.146089
+            testCoords.longitude = 126.9159706
+            
+            _this.$store.commit('setCoords', testCoords)
 
             //*** Reversegeocoding from SKTelecom
             // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -486,7 +489,7 @@ export default {
                 let currentInfo = {}
                 currentInfo.id = res.data.data.id
                 currentInfo.name = res.data.data.portal_name
-                currentInfo.adminDong = res.data.data.sublocality_level_2
+                currentInfo.placeType = 'infocenter'
                 _this.$store.commit('setCurrentId', currentInfo)
                 console.log ('Skt send request and get data below ************************************************')
                 console.log('MainContainer 2, Get info center : ', res.data.data)
@@ -526,7 +529,7 @@ export default {
                     let obj = { position:{}, info:{}}
                     obj.position.lat = res.data.data[i].location.coordinates[1]
                     obj.position.lng = res.data.data[i].location.coordinates[0]
-                    obj.info.portal_rid = res.data.data[i].portal_rid
+                    obj.info.s_rid = res.data.data[i].s_rid
                     obj.info.position_name = res.data.data[i].place_name
                     obj.info.zoom_level = _this.$store.state.zoom_level
                     _this.markers[i] = obj

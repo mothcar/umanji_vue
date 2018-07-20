@@ -4,7 +4,7 @@ import MainContainer from './views/MainContainer.vue'
 import PostContainer from './views/PostContainer.vue'
 import Login from './components/Login.vue'
 import About from './views/About.vue'
-import GMap from './views/MapContainer.vue'
+// import GMap from './views/MapContainer.vue'
 import MainLogin from './components/MainLogin.vue'
 import SecureLogin from './views/SecureLogin.vue'
 import SpacePage from './views/SpacePage.vue'
@@ -31,11 +31,6 @@ export default new Router({
       path: '/about',
       name: 'about',
       component: About
-    },
-    {
-      path: '/map',
-      name: 'map',
-      component: GMap
     },
     {
       path: '/secureLogin',

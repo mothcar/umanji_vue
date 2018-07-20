@@ -118,8 +118,6 @@ export default {
           // create_type: 'exist',
           // portalRid: '',
           view_level: this.$store.state.zoom_level,
-          portal_rid: portal_rid,
-          place_rid: place_rid,
           owner_id: this.$store.state.id,
           owner_name: this.$store.state.user_name,
           content: regContent,
@@ -131,7 +129,9 @@ export default {
           locality: this.$store.state.city_do,
           sublocality_level_1: this.$store.state.gu_gun,
           sublocality_level_2: this.$store.state.adminDong,
-          place_name: this.$store.state.currentName
+          place_type: this.$store.state.place_type,
+          place_name: this.$store.state.currentName,
+          s_rid: portal_rid,
         })
           .then(res => {
               window.history.back()

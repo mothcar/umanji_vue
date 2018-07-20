@@ -5,12 +5,13 @@
     map-type-id="roadmap"
     @dragstart="dragStart"
     @dragend="dragEnd"
+    @idle="onIdle"
     ref="mapRef"
     @click="createSpace"
   >
   <!-- style="width: 500px; height: 300px" -->
   <!--
-  @idle="onIdle"
+
   @zoom_changed="zoomChanged"
   https://developers.google.com/maps/documentation/javascript/maptypes
   map-type-id="terrain" /roadmap / satellite / hybrid
@@ -149,7 +150,7 @@ export default {
 
     zoomChanged: function(){
       console.log("zoom changed..........")
-      this.subSetCoords()
+      // this.subSetCoords()
 
       this.$refs.mapRef.$mapPromise.then((map) => {
         this.$store.commit('setZoomLevel', map.zoom)
@@ -163,14 +164,19 @@ export default {
 
     dragEnd: function() {
       console.log("drag End ..........")
+      // this.subSetCoords()
+    },
+
+    onIdle: function() {
       this.subSetCoords()
+      console.log("on Idle ..........")
     },
 
     subSetCoords: function() {
       this.$refs.mapRef.$mapPromise.then((map) => {
         let map_coords = {}
         map_coords.latitude = map.center.lat()
-        map_coords.longitue = map.center.lng()
+        map_coords.longitude = map.center.lng()
         this.$store.commit('setCoords', map_coords)
         // console.log("Map ref : ", map)
         // console.log('get CENTER : ',  JSON.stringify(map_coords))
@@ -189,15 +195,19 @@ export default {
         //****************************************************************************************
 
         console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
-        axios.get(p_env.BASE_URL+'/vue/getSpaces', { params: {
-          locality: this.$store.state.city_do, // 서울
-          // view_level: this.$store.state.zoom_level
-          }
+
+        let spaceParams = {}
+        spaceParams.latitude = map.center.lat()
+        spaceParams.longitude = map.center.lng()
+        spaceParams.zoom = this.$store.state.zoom_level
+
+        axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+          params: spaceParams
         })
         .then(res => {
           this.markers = []
 
-          console.log('20180720 - get space type : ', res.data.data)
+          console.log('20180720 - get Markers DATA : ', res.data.data)
           // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
           for (var i = 0, len = res.data.data.length; i < len; i++) {
@@ -426,6 +436,35 @@ export default {
      this.centerMarker.lng = this.$store.state.longitude
    }
 
+   let spaceParams = {}
+   spaceParams.latitude = this.$store.state.latitude
+   spaceParams.longitude = this.$store.state.longitude
+   spaceParams.zoom = this.$store.state.zoom_level
+
+   axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+     params: spaceParams
+   })
+   .then(res => {
+     this.markers = []
+
+     console.log('20180720 - get Markers DATA : ', res.data.data)
+     // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+
+     for (var i = 0, len = res.data.data.length; i < len; i++) {
+       // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+       let obj = { position:{}, info:{}}
+       obj.position.lat = res.data.data[i].location.coordinates[1]
+       obj.position.lng = res.data.data[i].location.coordinates[0]
+       obj.info.portal_rid = res.data.data[i].portal_rid
+       obj.info.position_name = res.data.data[i].place_name
+       obj.info.zoom_level = this.$store.state.zoom_level
+       this.markers[i] = obj
+       // console.log("content lat lng : ", _this.markers)
+     } // for
+     this.$store.commit('setMarkers', this.markers)
+
+   }) // axios
+
     this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
       // console.log('watched: ddddddd : ' , zoom_level)
 
@@ -455,17 +494,6 @@ export default {
 
     }) // this.$store.watch
 
-    //
-
-
-    // console.log("Check ..... markers : ", this.markers)
-    // console.log("PMAP...... data type : ", this.centerMarker)
-
-    // this.markers = this.$store.state.markers
-    // this.markets = this.$store.state.markers
-    // console.log("Map markers  : ", this.markers)
-
-    // console.log("Map ref : ", this.$refs)
 
   }
 } // export default
