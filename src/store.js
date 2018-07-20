@@ -134,6 +134,7 @@ export default new Vuex.Store({
     setCurrentId(state, payload) {
       state.currentId = payload.id
       state.currentName = payload.name
+      // state.adminDong = payload.adminDong
     },
 
     setMarkers(state, payload) {

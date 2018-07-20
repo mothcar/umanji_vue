@@ -366,8 +366,8 @@ export default {
     }, // p_promise
 
     enterSpace: function() {
-      // this.$router.push({name: 'portalPage', params:{id: 'test'}}, {query: { some: 'private' }})
-      this.$router.push({ name: 'portalPage', params:{id: 'placePage'}})
+      // this.$router.push({name: 'spacePage', params:{id: 'test'}}, {query: { some: 'private' }})
+      this.$router.push({ name: 'spacePage', params:{id: 'placePage'}})
 
 
     }, // enterSpace

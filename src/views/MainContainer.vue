@@ -65,7 +65,7 @@
             <v-container fill-height fluid>
                   <!-- <v-layout fill-height> -->
                     <v-flex xs12 align-end flexbox>
-                      <router-link :to="{ name: 'portalPage', params: params }" >
+                      <router-link :to="{ name: 'spacePage', params: params }" >
                         <!-- id: participantUser.user_id / target= '_blank' -->
                         <span class="headline">{{ center_name }} 정보센터</span>
                       </router-link>
@@ -204,7 +204,7 @@ export default {
       ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
       postLists: [],
       params: {
-        id: 'init'
+        id: 'adminDong'
       },
       markers: []
 
@@ -267,11 +267,13 @@ export default {
           // this.$store.commit('setViewLevel',)
           this.center_name = '세계'
           this.getPortalData('세계', 'world')
+          this.params.id = 'world'
           break;
         case 'country':
           this.$store.commit('changeTabState','country')
           this.center_name = '대한민국'
           this.getPortalData('대한민국', 'country')
+          this.params.id = 'country'
           break;
         case 'city_do':
           this.$store.commit('changeTabState','city_do')
@@ -450,7 +452,7 @@ export default {
             axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
             .then(res => {
               _this.center_name = res.data.addressInfo.adminDong
-              _this.params.id = res.data.addressInfo.adminDong
+              // _this.params.id = res.data.addressInfo.adminDong
               _this.$store.commit('setCurrentPosition', res.data.addressInfo)
               console.log('20180716 - MainContainer SKT DATA : ',res.data.addressInfo)
 
@@ -484,6 +486,7 @@ export default {
                 let currentInfo = {}
                 currentInfo.id = res.data.data.id
                 currentInfo.name = res.data.data.portal_name
+                currentInfo.adminDong = res.data.data.sublocality_level_2
                 _this.$store.commit('setCurrentId', currentInfo)
                 console.log ('Skt send request and get data below ************************************************')
                 console.log('MainContainer 2, Get info center : ', res.data.data)

@@ -1,20 +1,11 @@
 <template>
   <v-app>
-    <div>
-      <v-carousel hide-delimiters>
-        <v-carousel-item
-          v-for="(item,i) in items"
-          :key="i"
-          :src="item.src"
-          >
-          <div class="p_portal_container">
-            <h1>{{ title }} {{ $t("portal_page.title") }}</h1>
-            <h1> {{ getData}} </h1>
-          </div>
+    <div class="p_title_div">
+      <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
+          <!-- <div class="p_portal_container"> -->
+          <!-- $t("portal_page.title")  -->
+            <h1 class="p_title" :key="prefix">{{ title }} {{ prefix }}</h1>
 
-
-        </v-carousel-item>
-      </v-carousel>
     </div>
     <div>
       <!-- before was fixed-tabs -->
@@ -135,6 +126,7 @@
 
 <script>
 import LinkPrevue from 'link-prevue'
+// import  i18n  from 'vue-i18n'
 
 export default {
     props: {
@@ -144,34 +136,83 @@ export default {
 
     data () {
       return {
-        title: this.$route.params.id,
+        // title: this.$route.params.id,
+        title: 'SpacePage',
         item_name: ['Post', 'Person', 'Some'],
         model: {
           lists: [],
           id: 'tab-2'
         },
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        name: 'aaa',
+        text: 'Lorem ipsum ut labore et dolore mag nisi ut aliquip ex ea commodo consequat.',
+        src: require('../assets/images/default_info_center.jpg'),
         items: [
           {
             src: require('../assets/images/default_info_center.jpg')
-          },
-          {
-            src: require('../assets/images/default_info_center2.jpg')
-          },
-          {
-            src: require('../assets/images/default_info_center3.jpg')
-          },
-          {
-            src: require('../assets/images/default_info_center4.jpg')
           }
         ],
         dialog: false,
-        getData: 'Some Data..'
-
-
+        getData: 'Some Data..',
+        prefix: 'lang',
+        rid: ''
 
       } // return
     }, // data
+
+    mounted: function() {
+      this.prefix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
+      console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
+
+      let infoName = ''
+      let politicalType = ''
+
+      switch(this.$route.params.id){ //'city_do'
+        case 'world':
+          this.title = this.$store.state.world
+          infoName = '세계'
+          politicalType = 'world'
+        break
+
+        case 'country':
+          this.title = this.$store.state.country
+          infoName = '대한민국'
+          politicalType = 'country'
+        break
+
+        case 'city_do':
+          this.title = this.$store.state.city_do
+          infoName = this.$store.state.city_do
+          politicalType = 'locality'
+        break
+
+        case 'gu_gun':
+          this.title = this.$store.state.gu_gun
+          infoName = this.$store.state.gu_gun
+          politicalType = 'sublocality1'
+        break
+
+        case 'adminDong':
+          this.title = this.$store.state.adminDong
+          infoName = this.$store.state.adminDong
+          politicalType = 'sublocality2'
+        break
+      } // switch
+
+      let params = {
+        portal_name: infoName+' 정보센터',
+        political_type: politicalType
+      }
+      console.log('CHECK PRE PARAMS : ', params)
+
+      axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+        params: params
+      })
+      .then(res => {
+        console.log('20180720 - returned result :', res.data.data)
+        this.rid = ''
+      }) // axios then
+
+    },
 
     watch: {
       model: {
@@ -228,6 +269,11 @@ export default {
       .then(res => {
         this.model.lists = res.data.data
         this.getData = this.$store.state.building_name
+        /*
+        import { i18n } from './i18n.js'
+        i18n.t()
+        */
+
         console.log('SpacePage - Get from server data : ',res.data.data)
 
       })
@@ -237,7 +283,39 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
+.p_title_div {
+  width: 100%;
+  height: 100%;
+  /* background: url(../assets/images/default_info_center.jpg) center center no-repeat; */
+  background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat;
+
+  /* background-position: center center; */
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
+  background-size: cover;
+  background-color: #464646;
+
+  &:before {
+    content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        /* background-image: linear-gradient(to bottom right,#002f4b,#dc4225); */
+        background-image: linear-gradient(to bottom right,#555,#555);
+        opacity: .9;
+  }
+}
+
+.p_title {
+  margin: 5% 0 5% 0;
+  color: #fff;
+  text-shadow: 0 0 3px #111111;
+
+}
+
 .p_portal_container {
   vertical-align: center;
   margin-top: 20%;

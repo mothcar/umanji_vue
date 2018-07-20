@@ -7,7 +7,7 @@ import About from './views/About.vue'
 import GMap from './views/MapContainer.vue'
 import MainLogin from './components/MainLogin.vue'
 import SecureLogin from './views/SecureLogin.vue'
-import PortalPage from './views/PortalPage.vue'
+import SpacePage from './views/SpacePage.vue'
 import PostEditor from './views/PostEditor.vue'
 import Profile from './views/Profile.vue'
 
@@ -43,10 +43,9 @@ export default new Router({
       component: SecureLogin
     },
     {
-      path: '/portalPage/:id',
-      name: 'portalPage',
-      component: PortalPage,
-      props: true
+      path: '/spacePage/:id',
+      name: 'spacePage',
+      component: SpacePage
     },
     {
       path: '/postEditor',
