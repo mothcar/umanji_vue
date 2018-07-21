@@ -36,6 +36,23 @@ export default new Vuex.Store({
     ri: '',
     bunji: '',
     building_name: 'some name',
+    // Map Plcae Info
+    p_place_type: '',
+    p_id: '',
+    p_place_name: '',
+    p_about_info: {},
+    p_admin_dong_code: '',
+    p_admin_id: '',
+    p_building_index: '',
+    p_country: '',
+    p_locality : '',
+    p_sublocality1 : '',
+    p_sublocality2: '',
+    p_sublocality3 : '',
+    p_owner_id : '',
+    p_valuation: '',
+
+    // Etc
     tabState: 'adminDong',
     markers: []
   },
@@ -150,7 +167,25 @@ export default new Vuex.Store({
 
     setCountryCode(state, payload) {
       state.country_code = payload
+    },
+
+    setPlaceInfo(state, payload) {
+      state.p_place_type = payload.place_type
+      state.p_id = payload.id
+      state.p_place_name = payload.place_name
+      state.p_about_info = payload.about_info
+      state.p_admin_dong_code = payload.admin_dong_code
+      state.p_admin_id  = payload.admin_id
+      state.p_building_index = payload.building_index
+      state.p_country = payload.country
+      state.p_locality = payload.locality
+      state.p_sublocality1  = payload.sublocality1
+      state.p_sublocality2 = payload.sublocality2
+      state.p_sublocality3  = payload.sublocality3
+      state.p_owner_id  = payload.owner_id
+      state.p_valuation = payload.valuation
     }
+
 
   },  // mutations
 

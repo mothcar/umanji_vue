@@ -444,9 +444,9 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 35.146089
-            testCoords.longitude = 126.9159706
-            
+            testCoords.latitude = 37.4996798
+            testCoords.longitude = 126.9192621
+
             _this.$store.commit('setCoords', testCoords)
 
             //*** Reversegeocoding from SKTelecom

@@ -7,7 +7,7 @@
     @dragend="dragEnd"
     @idle="onIdle"
     ref="mapRef"
-    @click="createSpace"
+    @click="createPlace"
   >
   <!-- style="width: 500px; height: 300px" -->
   <!--
@@ -26,10 +26,21 @@
       :opacity="p_opacity"
 
     >
-    <GmapInfoWindow class="p_ifw" :zIndex="zindex" >
+    <GmapInfoWindow
+
+    :zIndex="zindex" >
+    <!--
+    <gmap-info-window
+      :options="{maxWidth: 300}"
+      :position="infoWindow.position"
+      :opened="infoWindow.open"
+      @closeclick="infoWindow.open=false">
+      <div v-html="infoWindow.template"></div>
+    </gmap-info-window>
+    -->
       <!-- <div>
         <img src="../assets/default_avatar.jpg" />
-        {{ m.info.portal_rid }}
+        {{ m.info.s_rid }}
       </div> -->
       <v-flex xs4 sm2 md1>
       <v-avatar
@@ -40,10 +51,11 @@
 
 
         </v-avatar>
-        {{ m.info.portal_rid }}
+        {{ m.info.s_rid }}
       </v-flex>
 
       </GmapInfoWindow>
+
   </GmapMarker>
     <!-- @click="center=m.position" -->
 
@@ -74,7 +86,7 @@
               <v-btn
                 color="green darken-1"
                 flat="flat"
-                @click="enterSpace"
+                @click="enterPlace"
               >
                 예
               </v-btn>
@@ -88,9 +100,15 @@
   </GmapMap>
 </template>
 
-<style scoped>
+<style >
 .gm-style .gm-style-iw {
-  background: #333;
+  background: #fff;
+  position: absolute;
+    top: 10px;
+}
+
+.p_ifw{
+
 }
 
 #map {
@@ -121,7 +139,7 @@ export default {
       zindex: -1,
       p_position: {},
       msg: '',
-      p_opacity: 0,
+      p_opacity: .4,
       after_init_markers:[],
       // dialog Data
       dialog: false,
@@ -130,7 +148,12 @@ export default {
       params: {
         id: ''
       },
-      markers: []
+      markers: [],
+      infoWindow: { position: {
+          lat: 0,
+          lng: 0
+        }
+      }
     }
   },
 
@@ -154,7 +177,7 @@ export default {
 
       this.$refs.mapRef.$mapPromise.then((map) => {
         this.$store.commit('setZoomLevel', map.zoom)
-        console.log('This Store zoom level is : ', this.$store.state.zoom_level)
+        // console.log('This Store zoom level is : ', this.$store.state.zoom_level)
       })
     },
 
@@ -173,6 +196,7 @@ export default {
     },
 
     subSetCoords: function() {
+      let _this = this
       this.$refs.mapRef.$mapPromise.then((map) => {
         let map_coords = {}
         map_coords.latitude = map.center.lat()
@@ -180,7 +204,7 @@ export default {
         this.$store.commit('setCoords', map_coords)
         // console.log("Map ref : ", map)
         // console.log('get CENTER : ',  JSON.stringify(map_coords))
-        console.log('get CENTER : ',  map)
+        // console.log('get CENTER : ',  map)
 
         //****************************************************************************************
         axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+map.center.lng()+"&lat=" +map.center.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
@@ -194,20 +218,20 @@ export default {
         }) // then
         //****************************************************************************************
 
-        console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
+        // console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
 
-        let spaceParams = {}
-        spaceParams.latitude = map.center.lat()
-        spaceParams.longitude = map.center.lng()
-        spaceParams.zoom = this.$store.state.zoom_level
+        let placeParams = {}
+        placeParams.latitude = map.center.lat()
+        placeParams.longitude = map.center.lng()
+        placeParams.zoom = this.$store.state.zoom_level
 
         axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-          params: spaceParams
+          params: placeParams
         })
         .then(res => {
           this.markers = []
 
-          console.log('20180720 - get Markers DATA : ', res.data.data)
+          // console.log('20180720 - get Markers DATA : ', res.data.data)
           // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
           for (var i = 0, len = res.data.data.length; i < len; i++) {
@@ -215,7 +239,9 @@ export default {
             let obj = { position:{}, info:{}}
             obj.position.lat = res.data.data[i].location.coordinates[1]
             obj.position.lng = res.data.data[i].location.coordinates[0]
-            obj.info.portal_rid = res.data.data[i].portal_rid
+            _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
+            _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
+            obj.info.s_rid = res.data.data[i].s_rid
             obj.info.position_name = res.data.data[i].place_name
             obj.info.zoom_level = this.$store.state.zoom_level
             this.markers[i] = obj
@@ -229,7 +255,7 @@ export default {
       }) // $refs
      },
 
-     createSpace: function(e) {
+     createPlace: function(e) {
        let isKoreaAddress = false
        let _this = this
 
@@ -250,7 +276,7 @@ export default {
                // console.log('isKorea IS in function isKorea :: ', isKorea);
                // console.log('isKorea IS in function Address :: ', address);
                if(isKorea >= 0){
-                 _this.p_promise(e)
+                 _this.sub_createPlace(e)
                } else {
                  if (address.search("China") >= 0){
                    alert('중국서비스 준비중')
@@ -263,22 +289,18 @@ export default {
                }
            } // status
        }) // Geocoder
-     }, // createSpace
+     }, // createPlace
 
-    p_promise: function(e) {
+    sub_createPlace: function(e) {
       let _this = this
       let clickedZoom = this.$store.state.zoom_level
 
       //if KOREA service only abable
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+e.latLng.lng()+"&lat=" +e.latLng.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        // _this.center_name = res.data.addressInfo.adminDong
-        // _this.params.id = res.data.addressInfo.adminDong
-        // _this.$store.commit('setCurrentPosition', res.data.addressInfo)
         let buildingName = res.data.addressInfo.buildingName
 
         console.log('P Map Data from skt : ',res.data.addressInfo)
-        console.log('P Map Data from skt : ',res.data.addressInfo.buildingName)
 
         let st_country_code = 'KR'
         let sk_city_do = res.data.addressInfo.city_do
@@ -288,60 +310,106 @@ export default {
         let sk_ri = res.data.addressInfo.ri
         let sk_building_name = res.data.addressInfo.buildingName
 
-        let params = {
+        let placeParams = {
           latitude:e.latLng.lat(),
           longitude: e.latLng.lng(),
-          country_code: st_country_code,
-          city_do: sk_city_do,
-          gu_gun: sk_gu_gun,
-          adminDong: sk_adminDong,
-          eup_myun: sk_eup_myun,
-          ri: sk_ri,
-          building_name: sk_building_name
+          country: st_country_code,
+          locality: sk_city_do,
+          sublocality_level_1: sk_gu_gun,
+          sublocality_level_2: sk_adminDong,
+          sublocality_level_3: sk_ri,
+          place_name: sk_building_name,
+          admin_dong_code: res.data.addressInfo.adminDongCode,
+          building_index: res.data.addressInfo.buildingIndex
           // portal_name: res.data.addressInfo.adminDong +' 정보센터',
           // countryCode: 'KR',
           // political_type: 'adminDong'
         }
 
         if(clickedZoom >= 12){
-          // Space or Info center
+          // Place or Info center
           if(isPlace.getPlace(clickedZoom, buildingName)) {
             // big Place
             console.log('This is BUILDING  .........................')
-            // find space create space New API
-            axios.get(p_env.BASE_URL+'/vue/getSpace', {
-              params: params
+
+            // find Place create Place New API
+            axios.get(p_env.BASE_URL+'/vue/getPlace', {
+              params: placeParams
             })
             .then(res => {
-              let currentInfo = {}
-              currentInfo.id = res.data.data.id
-              currentInfo.name = res.data.data.portal_name
-              _this.$store.commit('setCurrentId', currentInfo)
-              console.log ('Skt send request and get data below ************************************************')
-              console.log('PMap Space : ', res.data.data)
-              // console.log('PMap Space : ', res.data.data.id)
-              // console.log('PMap Space : ', _this.$store.state.currentName)
+              let placeInfo = {}
+              placeInfo.place_type = 'place'
+              placeInfo.id = res.data.data.id
+              placeInfo.place_name = res.data.data.place_name
+              placeInfo.about_info = res.data.data.about_info
+              placeInfo.admin_dong_code = res.data.data.admin_dong_code
+              placeInfo.admin_id = res.data.data.admin_id
+              placeInfo.building_index = res.data.data.building_index
+              placeInfo.country = res.data.data.country
+              placeInfo.locality = res.data.data.locality
+              placeInfo.sublocality1 = res.data.data.sublocality_level_1
+              placeInfo.sublocality2 = res.data.data.sublocality_level_2
+              placeInfo.sublocality3 = res.data.data.sublocality_level_3
+              placeInfo.owner_id = res.data.data.owner_id
+              placeInfo.valuation = res.data.data.valuation
+              _this.$store.commit('setPlaceInfo', placeInfo)
+
+              console.log ('get Place  data below ************************************************')
+              console.log('PMap Place  : ', res.data.data)
+              // console.log('PMap Place  : ', res.data.data.id)
+              // console.log('PMap Place  : ', _this.$store.state.currentName)
               // Dialog on
-              _this.dialog_title = res.data.data.building_name
+              _this.dialog_title = res.data.data.place_name
               _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
               _this.dialog = true
             }) // end of axios vue/getInfoCenter
           } else {
-            // info center
+            // info center END DIVIDE PLACE TYPE infocenter / place
             console.log('This is INFO CENTER .........................')
+            switch(clickedZoom){
+              case 12, 13, 14, 15: // gu_gun
+              break
+
+              case 16, 17, 18, 19, 20: // adminDong
+              break
+
+            } // switch
+
+            let infoParams = {}
+            infoParams.country_code = 'KR',
+            infoParams.city_do = sk_city_do,
+            infoParams.gu_gun = sk_gu_gun,
+            infoParams.adminDong = sk_adminDong,
+            infoParams.eup_myun = sk_eup_myun,
+            infoParams.latitude = e.latLng.lat(),
+            infoParams.longitude = e.latLng.lng()
+
+
             // Get Postal Basic Info
             axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-              params: params
+              // same params up above
+              params: infoParams
             })
             .then(res => {
-              let currentInfo = {}
-              currentInfo.id = res.data.data.id
-              currentInfo.name = res.data.data.portal_name
-              _this.$store.commit('setCurrentId', currentInfo)
+              let infoCenterInfo = {}
+              infoCenterInfo.place_type = 'infocenter'
+              infoCenterInfo.id = res.data.data.id
+              infoCenterInfo.place_name = res.data.data.portal_name
+              infoCenterInfo.about_info = res.data.data.about_info
+              infoCenterInfo.admin_id = res.data.data.admin_id
+              infoCenterInfo.country = res.data.data.country
+              infoCenterInfo.locality = res.data.data.locality
+              infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
+              infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
+              infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
+              infoCenterInfo.admin_id = res.data.data.admin_id
+              _this.$store.commit('setPlaceInfo', infoCenterInfo)
+
+
               console.log ('Skt send request and get data below ************************************************')
               console.log('PMap 1, Get info center : ', res.data.data)
               console.log('PMap 1, Get info center : ', res.data.data.id)
-              console.log('PMap 1, Get info center : ', _this.$store.state.currentName)
+              console.log('PMap 1, Get info center : ', _this.$store.state.place_name)
               // Dialog on
               _this.dialog_title = res.data.data.portal_name
               _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
@@ -350,20 +418,40 @@ export default {
           }
         } else {
           // info Center
+          // NOT YET
           // Get Postal Basic Info
+          let infoParams = {}
+          infoParams.country_code = 'KR',
+          infoParams.city_do = sk_city_do,
+          infoParams.gu_gun = sk_gu_gun,
+          infoParams.adminDong = sk_adminDong,
+          infoParams.eup_myun = sk_eup_myun,
+          infoParams.latitude = e.latLng.lat(),
+          infoParams.longitude = e.latLng.lng()
+
           console.log('This is OUtter INFO CENTER .........................')
           axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-            params: params
+            params: infoParams
           })
           .then(res => {
-            let currentInfo = {}
-            currentInfo.id = res.data.data.id
-            currentInfo.name = res.data.data.portal_name
-            _this.$store.commit('setCurrentId', currentInfo)
+            let infoCenterInfo = {}
+            infoCenterInfo.place_type = 'infocenter'
+            infoCenterInfo.id = res.data.data.id
+            infoCenterInfo.place_name = res.data.data.portal_name
+            infoCenterInfo.about_info = res.data.data.about_info
+            infoCenterInfo.admin_id = res.data.data.admin_id
+            infoCenterInfo.country = res.data.data.country
+            infoCenterInfo.locality = res.data.data.locality
+            infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
+            infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
+            infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
+            infoCenterInfo.admin_id = res.data.data.admin_id
+            _this.$store.commit('setPlaceInfo', infoCenterInfo)
+
             console.log ('Skt send request and get data below ************************************************')
             console.log('PMap 2, Get info center : ', res.data.data)
             console.log('PMap 2, Get info center : ', res.data.data.id)
-            console.log('PMap 2, Get info center : ', _this.$store.state.currentName)
+            console.log('PMap 2, Get info center : ', _this.$store.state.place_name)
 
             _this.dialog_title = res.data.data.portal_name
             _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
@@ -373,14 +461,14 @@ export default {
         } // Outter if
 
       }) // SKT then
-    }, // p_promise
+    }, // sub_createPlace
 
-    enterSpace: function() {
-      // this.$router.push({name: 'spacePage', params:{id: 'test'}}, {query: { some: 'private' }})
+    enterPlace: function() {
+      // this.$router.push({name: 'PlacePage', params:{id: 'test'}}, {query: { some: 'private' }})
       this.$router.push({ name: 'spacePage', params:{id: 'placePage'}})
 
 
-    }, // enterSpace
+    }, // enterPlace
 
     createPost: function() {
       // @click.stop="dialog = true"
@@ -415,7 +503,11 @@ export default {
     // its map has not been initialized.
     // Therefore we need to write mapRef.$mapPromise.then(() => ...)
 
-   console.log('20180718 - mapref : ', this.$refs.mapRef)
+   console.log('20180721 - mapref : ', this.$refs.mapref)
+
+   this.$refs.mapRef.$mapPromise.then((map) => {
+     console.log('20180721 - mapref : ', map)
+   })
 
    this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
 
@@ -436,13 +528,13 @@ export default {
      this.centerMarker.lng = this.$store.state.longitude
    }
 
-   let spaceParams = {}
-   spaceParams.latitude = this.$store.state.latitude
-   spaceParams.longitude = this.$store.state.longitude
-   spaceParams.zoom = this.$store.state.zoom_level
+   let placeParams = {}
+   placeParams.latitude = this.$store.state.latitude
+   placeParams.longitude = this.$store.state.longitude
+   placeParams.zoom = this.$store.state.zoom_level
 
    axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-     params: spaceParams
+     params: placeParams
    })
    .then(res => {
      this.markers = []
@@ -455,7 +547,7 @@ export default {
        let obj = { position:{}, info:{}}
        obj.position.lat = res.data.data[i].location.coordinates[1]
        obj.position.lng = res.data.data[i].location.coordinates[0]
-       obj.info.portal_rid = res.data.data[i].portal_rid
+       obj.info.s_rid = res.data.data[i].s_rid
        obj.info.position_name = res.data.data[i].place_name
        obj.info.zoom_level = this.$store.state.zoom_level
        this.markers[i] = obj

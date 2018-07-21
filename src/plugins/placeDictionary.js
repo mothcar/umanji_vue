@@ -47,19 +47,19 @@ export default {
       break
       case 17:
         console.log('This level is  17')
-        returnFlag = true
+        returnFlag = this.getSimpleWord(16, placeName)
       break
       case 18:
         console.log('This level is  18')
-        returnFlag = true
+        returnFlag = this.getSimpleWord(16, placeName)
       break
       case 19:
         console.log('This level is  19')
-        returnFlag = true
+        returnFlag = this.getSimpleWord(16, placeName)
       break
       case 20:
         console.log('This level is  20')
-        returnFlag = true
+        returnFlag = this.getSimpleWord(16, placeName)
       break
 
     } // switch
@@ -111,44 +111,14 @@ export default {
       } // end of if else
       break
 
-      case 15:
-        if(/대학교/.exec(word)){
-          let centerName = word.substring(endPosition-3, endPosition+1)
-          if(centerName == '대학교'){
-            console.log(" building is center Name : ", centerName)
-            return true
-          } else {
-            return false
-          }
-        } else if(/공원/.exec(word)){
-          let centerName = word.substring(endPosition-2, endPosition+1)
-          if(centerName == '공원'){
-            console.log(" building is center Name : ", centerName)
-            return true
-          } else {
-            return false
-          }
-        } // end of if else
-      break
-
-      case 16:
-        if(/대학교/.exec(word)){
-          let centerName = word.substring(endPosition-3, endPosition+1)
-          if(centerName == '대학교'){
-            console.log(" building is center Name : ", centerName)
-            return true
-          } else {
-            return false
-          }
-        } else if(/공원/.exec(word)){
-          let centerName = word.substring(endPosition-2, endPosition+1)
-          if(centerName == '공원'){
-            console.log(" building is center Name : ", centerName)
-            return true
-          } else {
-            return false
-          }
-        } // end of if else
+      case 15, 16, 17, 18, 19, 20:
+        if(word.length > 2) {
+          console.log(' THERE IS BUILDING NAME ................')
+          return true
+        } else {
+          console.log(' THERE IS NO BUILDING NAME . SO YOU CAN NOT CREATE BUILDING.')
+          return false
+        }
       break
 
     } // switch
