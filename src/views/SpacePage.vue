@@ -4,7 +4,7 @@
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
-            <h1 class="p_title" :key="prefix">{{ title }} {{ prefix }}</h1>
+            <h1 class="p_title" :key="suffix">{{ title }} {{ suffix }}</h1>
 
     </div>
     <div>
@@ -153,14 +153,17 @@ export default {
         ],
         dialog: false,
         getData: 'Some Data..',
-        prefix: 'lang',
+        suffix: '',
         rid: ''
 
       } // return
     }, // data
 
     mounted: function() {
-      this.prefix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
+      if(this.$store.state.p_place_type == 'infocenter') {
+        this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
+      }
+
       console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
 
       let infoName = ''
@@ -217,9 +220,9 @@ export default {
         .then(res => {
           console.log('20180720 - returned result :', res.data.data)
           let coords = {}
-          coords.latitude = res.data.data.location.coordinates[1]
-          coords.longitude = res.data.data.location.coordinates[0]
-          this.$store.commit('setCoords', coords)
+          // coords.latitude = res.data.data.location.coordinates[1]
+          // coords.longitude = res.data.data.location.coordinates[0]
+          // this.$store.commit('setCoords', coords)
           spaceParams.s_rid = res.data.data.id
           // this.rid = ''
           axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {

@@ -2,7 +2,9 @@ export default {
 
   getPlace: function(zoom_level, placeName) {
     let returnFlag = false
-    let filter = placeName
+    let dictionary = []
+
+    console.log('......... ', placeName)
 
     switch(zoom_level){
       case 2:
@@ -25,46 +27,74 @@ export default {
       case 10:
       break
       case 11:
-        returnFlag = false
+
       break
       case 12:
-        console.log('This level is 12')
-        returnFlag = this.getSimpleWord(12, placeName)
+        // console.log('This level is 12')
+        dictionary = ['대학교', '공원', '에버랜드', '컨트리클럽']
       break
       case 13:
-        console.log('This level is 13')
+        // console.log('This level is 13')
+        dictionary = ['대학교', '공원', '에버랜드', '컨트리클럽']
       break
       case 14:
-        console.log('This level is 14')
+        // console.log('This level is 14')
+        dictionary = ['국립서울현충원', '대학교', '공원', '에버랜드', '컨트리클럽']
       break
       case 15:
-        console.log('This level is 15')
-        returnFlag = this.getSimpleWord(15, placeName)
+        // console.log('This level is 15')
+        dictionary = ['초등학교', '중학교', '고등학교', '국회의사당', '국립중앙박물관', '국립서울현충원', '대학교', '공원', '에버랜드', '컨트리클럽']
       break
       case 16:
-        console.log('This level is  16')
-        returnFlag = this.getSimpleWord(16, placeName)
+        // console.log('This level is  16')
+        dictionary = ['초등학교', '중학교', '고등학교', '아파트', '삼성 래미안', '국회의사당', '국립중앙박물관', '국립서울현충원', '대학교', '공원', '에버랜드', '컨트리클럽']
       break
-      case 17:
-        console.log('This level is  17')
-        returnFlag = this.getSimpleWord(16, placeName)
-      break
-      case 18:
-        console.log('This level is  18')
-        returnFlag = this.getSimpleWord(16, placeName)
-      break
-      case 19:
-        console.log('This level is  19')
-        returnFlag = this.getSimpleWord(16, placeName)
-      break
-      case 20:
-        console.log('This level is  20')
-        returnFlag = this.getSimpleWord(16, placeName)
-      break
-
+      default:
+        console.log('This level is  : ', zoom_level)
+        return this.isBuildingName(placeName)
     } // switch
+
+    let result=[];
+    let isWord
+
+    for(var i=0; dictionary.length>i; i++){
+      isWord = placeName.search(dictionary[i])
+      // console.log('.................. word isWord : ', isWord)
+        if(isWord >= 0){
+
+          // console.log("From Wordservice this is BuILDING array ", placeName)
+          // console.log(".....................From Wordservice", isWord[0])
+          return returnFlag = true
+        } else {
+          // console.log('......................this is info ')
+          returnFlag = false
+        }
+    }  // for
     return returnFlag
   }, // getPlace
+
+  isBuildingName(word){
+    let infoList = ['주민센터', '구청', '시청', '군청', '서울특별시청']
+    let checkInfo
+
+    for(var j=0; infoList.length>j; j++){
+      checkInfo = word.search(infoList[j])
+      if(checkInfo >= 0){
+        return false
+        break
+      } else if(word.length >= 2){
+        return true
+      }
+    } // infoList for
+
+    // if(word.length >= 2){
+    //   // console.log("From Wordservice this is BuILDING array ", word)
+    //
+    // } else {
+    //   return false
+    // }
+  }, //isBuildingName
+
 
   getSimpleWord(zoom, word) {
     let endPosition = word.length
@@ -79,22 +109,6 @@ export default {
       if(/대학교/.exec(word)){
         let centerName = word.substring(endPosition-3, endPosition+1)
         if(centerName == '대학교'){
-          console.log(" building is center Name : ", centerName)
-          return true
-        } else {
-          return false
-        }
-      } else if(/에버랜드/.exec(word)){
-        let centerName = word.substring(endPosition-4, endPosition+1)
-        if(centerName == '에버랜드'){
-          console.log(" building is center Name : ", centerName)
-          return true
-        } else {
-          return false
-        }
-      } else if(/공원/.exec(word)){
-        let centerName = word.substring(endPosition-2, endPosition+1)
-        if(centerName == '공원'){
           console.log(" building is center Name : ", centerName)
           return true
         } else {
@@ -148,30 +162,6 @@ export default {
         type = 'portal'
         return type
       }
-    } else if(/군청/.exec(placeName)){
-      let centerName = placeName.substring(endPosition-2, endPosition+1)
-      if(centerName == '군청'){
-        console.log(TAG+" building is center Name : ", centerName)
-        type = 'portal'
-        return type
-      }
-
-    } else if(/시청/.exec(placeName)){
-      let centerName = placeName.substring(endPosition-2, endPosition+1)
-      if(centerName == '시청'){
-        console.log(TAG+" building is center Name : ", centerName)
-        type = 'portal'
-        return type
-      }
-
-    } else if(/도청/.exec(placeName)){
-      let centerName = placeName.substring(endPosition-2, endPosition+1)
-      if(centerName == '도청'){
-        console.log(TAG+" building is center Name : ", centerName)
-        type = 'portal'
-        return type
-      }
-
     } else {
       type = 'place'
       return type

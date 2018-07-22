@@ -108,10 +108,10 @@ export default {
         // if place DO commit place to 'cuttentId' in store
         console.log("visible : ", this.$store.state.visible)
         if(this.$store.state.visible) {
-          portal_rid = this.$store.state.currentId
+          portal_rid = this.$store.state.p_id
           console.log("LOGIC PASS HERE..........")
         } else {
-          place_rid = this.$store.state.currentId
+          place_rid = this.$store.state.p_id
         }
 
         axios.post(p_env.BASE_URL+'/vue/createPost', {
@@ -125,13 +125,13 @@ export default {
           longitude: this.longitude,
           country_code: this.country_code,
           location: location,
-          country: this.$store.state.country,
-          locality: this.$store.state.city_do,
-          sublocality_level_1: this.$store.state.gu_gun,
-          sublocality_level_2: this.$store.state.adminDong,
-          place_type: this.$store.state.place_type,
-          place_name: this.$store.state.currentName,
-          s_rid: portal_rid,
+          country: this.$store.state.p_country,
+          locality: this.$store.state.p_locality,
+          sublocality_level_1: this.$store.state.p_sublocality1,
+          sublocality_level_2: this.$store.state.p_sublocality2,
+          place_type: this.$store.state.p_place_type,
+          place_name: this.$store.state.p_place_name,
+          s_rid: this.$store.state.p_id
         })
           .then(res => {
               window.history.back()

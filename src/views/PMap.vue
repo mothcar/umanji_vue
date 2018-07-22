@@ -212,7 +212,7 @@ export default {
 
           let buildingName = res.data.addressInfo.buildingName
 
-          console.log('P Map Data from skt : ',res.data.addressInfo)
+          console.log('Lottelia  Data from skt : ',res.data.addressInfo)
           this.$store.commit('setCurrentPosition', res.data.addressInfo)
 
         }) // then
@@ -260,6 +260,12 @@ export default {
        let _this = this
 
        var latlng = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+       let coords = {}
+       coords.latitude = e.latLng.lat()
+       coords.longitude = e.latLng.lng()
+
+       console.log('20180721 - latlng : ', latlng)
+       this.$store.commit('setCoords', coords)
        // This is making the Geocode request
        var geocoder = new google.maps.Geocoder();
        geocoder.geocode({ 'latLng': latlng }, function (results, status) {
@@ -301,6 +307,7 @@ export default {
         let buildingName = res.data.addressInfo.buildingName
 
         console.log('P Map Data from skt : ',res.data.addressInfo)
+        console.log('P Map Data from skt BUILDING NAME  : ',buildingName)
 
         let st_country_code = 'KR'
         let sk_city_do = res.data.addressInfo.city_do
@@ -329,6 +336,7 @@ export default {
         if(clickedZoom >= 12){
           // Place or Info center
           if(isPlace.getPlace(clickedZoom, buildingName)) {
+
             // big Place
             console.log('This is BUILDING  .........................')
 
