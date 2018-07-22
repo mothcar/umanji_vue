@@ -15,48 +15,54 @@
   @zoom_changed="zoomChanged"
   https://developers.google.com/maps/documentation/javascript/maptypes
   map-type-id="terrain" /roadmap / satellite / hybrid
-  -->
-    <GmapMarker ref="myMarker"
+-->
+
+
+      <GmapMarker ref="myMarker"
       :key="index"
       v-for="(m, index) in markers"
       :position="m.position"
       :clickable="true"
       :draggable="false"
-      @click="test(index)"
-      :opacity="p_opacity"
+      :opacity="p_opacity" >
 
-    >
-    <GmapInfoWindow
-
-    :zIndex="zindex" >
-    <!--
-    <gmap-info-window
-      :options="{maxWidth: 300}"
-      :position="infoWindow.position"
-      :opened="infoWindow.open"
-      @closeclick="infoWindow.open=false">
-      <div v-html="infoWindow.template"></div>
-    </gmap-info-window>
-    -->
-      <!-- <div>
-        <img src="../assets/default_avatar.jpg" />
-        {{ m.info.s_rid }}
-      </div> -->
-      <v-flex xs4 sm2 md1>
-      <v-avatar
-          slot="activator"
-          size="36px"
-        >
-          <img src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460">
+        <GmapInfoWindow
+        :clickable="true" >
+        <!--
+        <gmap-info-window
+          :options="{maxWidth: 300}"
+          :position="infoWindow.position"
+          :opened="infoWindow.open"
+          @closeclick="infoWindow.open=false">
+          <div v-html="infoWindow.template"></div>
+        </gmap-info-window>
+        -->
+          <!-- <div>
+            <img src="../assets/default_avatar.jpg" />
+            {{ m.info.s_rid }}
+          </div> -->
+          <div @click="linkToPage(index)">
+          <v-flex xs12 sm12 md12>
+          <v-avatar
+              slot="activator"
+              size="36px"
+            >
+              <img src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460">
 
 
-        </v-avatar>
-        {{ m.info.s_rid }}
-      </v-flex>
+            </v-avatar>
+            <div>
+              {{ m.info.s_rid }}  {{ m.info.content }}
+            </div>
 
-      </GmapInfoWindow>
+          </v-flex>
+          </div>
 
-  </GmapMarker>
+          </GmapInfoWindow>
+
+
+      </GmapMarker>
+
     <!-- @click="center=m.position" -->
 
     <!-- Dialog ******************************************************************************** -->
@@ -166,9 +172,19 @@ export default {
   },
 
   methods: {
-    test: function(index) {
-      let info = this.markers[index]
-      // console.log("Marker Clicked .....", info)
+    linkToPage: function(index) {
+      let info = this.markers[index].info
+      let r_params = {}
+      r_params.s_rid = info.s_rid
+      r_params.place_type = info.place_type
+
+      this.$store.commit('setRouterParams', r_params)
+      // let placeType = this.$store.state.markers[index].place_type
+      // send place type to spacepage
+      console.log("20180722 - Store DATA .....", this.$store.state )
+      console.log("20180722 - Marker info .....", info )
+      this.$router.push({ name: 'spacePage', params:{id: 'page'}})
+      console.log("Marker Clicked .....", info)
     },
 
     zoomChanged: function(){
@@ -231,7 +247,7 @@ export default {
         .then(res => {
           this.markers = []
 
-          // console.log('20180720 - get Markers DATA : ', res.data.data)
+          console.log('20180722 - get Markers DATA : ', res.data.data)
           // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
           for (var i = 0, len = res.data.data.length; i < len; i++) {
@@ -239,13 +255,26 @@ export default {
             let obj = { position:{}, info:{}}
             obj.position.lat = res.data.data[i].location.coordinates[1]
             obj.position.lng = res.data.data[i].location.coordinates[0]
-            _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
-            _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
             obj.info.s_rid = res.data.data[i].s_rid
-            obj.info.position_name = res.data.data[i].place_name
+            obj.info.place_name = res.data.data[i].place_name
             obj.info.zoom_level = this.$store.state.zoom_level
+            obj.info.content = res.data.data[i].content
+            obj.info.place_type = res.data.data[i].place_type
+            obj.info.index = res.data.data[i].i
+            //
+            // obj.info.owner_id = this.$store.state.id,
+            // obj.info.owner_name = this.$store.state.user_name,
+            // obj.info.country_code = this.$store.state.country_code,
+            //
+            // obj.info.locality = res.data.addressInfo.city_do,
+            // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
+            // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
+            // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
+            // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
             this.markers[i] = obj
+
             // console.log("content lat lng : ", _this.markers)
+
           } // for
           this.$store.commit('setMarkers', this.markers)
 
@@ -547,7 +576,7 @@ export default {
    .then(res => {
      this.markers = []
 
-     console.log('20180720 - get Markers DATA : ', res.data.data)
+     console.log('20180722 - get Markers DATA : ', res.data.data)
      // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
      for (var i = 0, len = res.data.data.length; i < len; i++) {

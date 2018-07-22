@@ -237,7 +237,11 @@ export default {
 
   methods: {
     toMap: function(){
-      this.$store.commit('toMap', false)
+      let toMapParams = {}
+      toMapParams.isInfo = false
+      toMapParams.placeType = 'place'
+
+      this.$store.commit('toMap', toMapParams)
       console.log("MainContainer : toMap Clicked ")
     },
 
@@ -313,10 +317,15 @@ export default {
       })
       .then(res => {
         // currentId
+        let payload = {}
+        payload.id = res.data.data.id
+        payload.name = res.data.data.portal_name
+        payload.placeType = 'infocenter'
+
         console.log('20180718 - get from Server tab info center : ',res.data.data)
         _this.center_name = areaName
         _this.params.id = res.data.data.id
-        _this.$store.commit('setCurrentId', {id:res.data.data.id, name:res.data.data.portal_name, placeType:'infocenter'})
+        _this.$store.commit('setCurrentId', payload)
         _this.params.id = areaType
 
 
@@ -457,6 +466,17 @@ export default {
               _this.center_name = res.data.addressInfo.adminDong
               // _this.params.id = res.data.addressInfo.adminDong
               _this.$store.commit('setCurrentPosition', res.data.addressInfo)
+
+              let placeInfo = {}
+              placeInfo.place_type = 'infocenter'
+              placeInfo.place_name = res.data.addressInfo.adminDong
+              placeInfo.country = payloadCountry
+              placeInfo.locality = res.data.addressInfo.city_do
+              placeInfo.sublocality1 = res.data.addressInfo.gu_gun
+              placeInfo.sublocality2 = res.data.addressInfo.adminDong
+              placeInfo.sublocality3 = res.data.addressInfo.ri
+              _this.$store.commit('setPlaceInfo', placeInfo)
+
               console.log('20180716 - MainContainer SKT DATA : ',res.data.addressInfo)
 
               let st_country_code = payloadCountry
@@ -467,22 +487,32 @@ export default {
               let sk_ri = res.data.addressInfo.ri
               let sk_building_name = res.data.addressInfo.buildingName
 
+              let infoParams = {}
+              infoParams.country_code = 'KR',
+              infoParams.city_do = sk_city_do,
+              infoParams.gu_gun = sk_gu_gun,
+              infoParams.adminDong = sk_adminDong,
+              infoParams.eup_myun = sk_eup_myun,
+              infoParams.latitude = _this.$store.state.latitude,
+              infoParams.longitude = _this.$store.state.longitude
+
               // Get Postal Basic Info
               axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-                params: {
-                  latitude: _this.$store.state.latitude,
-                  longitude: _this.$store.state.longitude,
-                  country_code: st_country_code,
-                  city_do: sk_city_do,
-                  gu_gun: sk_gu_gun,
-                  adminDong: sk_adminDong,
-                  eup_myun: sk_eup_myun,
-                  ri: sk_ri,
-                  building_name: sk_building_name
-                  // portal_name: res.data.addressInfo.adminDong +' 정보센터',
-                  // countryCode: 'KR',
-                  // political_type: 'adminDong'
-                }
+                params: infoParams
+                // {
+                //   latitude: _this.$store.state.latitude,
+                //   longitude: _this.$store.state.longitude,
+                //   country_code: st_country_code,
+                //   city_do: sk_city_do,
+                //   gu_gun: sk_gu_gun,
+                //   adminDong: sk_adminDong,
+                //   eup_myun: sk_eup_myun,
+                //   ri: sk_ri,
+                //   building_name: sk_building_name
+                //   // portal_name: res.data.addressInfo.adminDong +' 정보센터',
+                //   // countryCode: 'KR',
+                //   // political_type: 'adminDong'
+                // }
                 // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
               })
               .then(res => {

@@ -160,60 +160,62 @@ export default {
     }, // data
 
     mounted: function() {
+      console.log('CHECK PLACE TYPE : ', this.$store.state.place_type )
+      console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
+      console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
+      // console.log('this.$route.params.id: ', this.$route.params.id)
+      // let set_page =
+
       if(this.$store.state.p_place_type == 'infocenter') {
         this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
-      }
 
-      console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
+        let infoName = ''
+        let politicalType = ''
 
-      let infoName = ''
-      let politicalType = ''
+        switch(this.$route.params.id){ //'city_do'
+          case 'world':
+            this.title = this.$store.state.world
+            infoName = '세계'
+            politicalType = 'world'
+          break
 
-      switch(this.$route.params.id){ //'city_do'
-        case 'world':
-          this.title = this.$store.state.world
-          infoName = '세계'
-          politicalType = 'world'
-        break
+          case 'country':
+            this.title = this.$store.state.country
+            infoName = '대한민국'
+            politicalType = 'country'
+          break
 
-        case 'country':
-          this.title = this.$store.state.country
-          infoName = '대한민국'
-          politicalType = 'country'
-        break
+          case 'city_do':
+            this.title = this.$store.state.city_do
+            infoName = this.$store.state.city_do
+            politicalType = 'locality'
+          break
 
-        case 'city_do':
-          this.title = this.$store.state.city_do
-          infoName = this.$store.state.city_do
-          politicalType = 'locality'
-        break
+          case 'gu_gun':
+            this.title = this.$store.state.gu_gun
+            infoName = this.$store.state.gu_gun
+            politicalType = 'sublocality1'
+          break
 
-        case 'gu_gun':
-          this.title = this.$store.state.gu_gun
-          infoName = this.$store.state.gu_gun
-          politicalType = 'sublocality1'
-        break
+          case 'adminDong':
+            this.title = this.$store.state.adminDong
+            infoName = this.$store.state.adminDong
+            politicalType = 'sublocality2'
+          break
+        } // switch
 
-        case 'adminDong':
-          this.title = this.$store.state.adminDong
-          infoName = this.$store.state.adminDong
-          politicalType = 'sublocality2'
-        break
-      } // switch
+        let params = {
+          portal_name: infoName+' 정보센터',
+          political_type: politicalType
+        }
+        console.log('CHECK PRE PARAMS : ', params)
 
-      let params = {
-        portal_name: infoName+' 정보센터',
-        political_type: politicalType
-      }
-      console.log('CHECK PRE PARAMS : ', params)
+        let placeType = this.$store.state.p_place_type
 
-      let placeType = this.$store.state.place_type
+        let spaceParams = {}
+        spaceParams.place_type = placeType
+        spaceParams.s_rid = this.$store.state.infowindow_rid
 
-      let spaceParams = {}
-      spaceParams.place_type = placeType
-
-
-      if(placeType == 'infocenter'){
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
           params: params
         })
@@ -223,7 +225,7 @@ export default {
           // coords.latitude = res.data.data.location.coordinates[1]
           // coords.longitude = res.data.data.location.coordinates[0]
           // this.$store.commit('setCoords', coords)
-          spaceParams.s_rid = res.data.data.id
+          spaceParams.s_rid = this.$store.state.p_id
           // this.rid = ''
           axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
             params: spaceParams
@@ -237,14 +239,30 @@ export default {
         }) // axios then
 
       } else {
-
+        // place
         console.log('20180721 - SpacePage : Coming Soon ')
+        let placeType = this.$store.state.p_place_type
 
-      } // end of if else
+        let spaceParams = {}
+        spaceParams.place_type = placeType
+        spaceParams.s_rid = this.$store.state.p_id
+        // this.rid = ''
+        axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
+          params: spaceParams
+        })
+        .then(res =>{
+          console.log('20180721 - returned data : ', res.data.data)
+          this.model.lists = res.data.data
+          this.getData = this.$store.state.building_name
+
+        }) // inner then
+
+      } // Big if else
+
+      // infowindow_rid
 
 
-
-    },
+    }, // mounted
 
     watch: {
       model: {

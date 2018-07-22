@@ -139,10 +139,10 @@ export default {
             console.log(error.message);
         }) // axios
 
-      } // end of if
+      } // end of if else 
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
-      var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+      // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
 
       // image upload
       // axios.post(p_env.BASE_URL+'/vue/createPost', this.selectedFile)

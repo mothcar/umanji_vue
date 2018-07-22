@@ -52,9 +52,13 @@ export default new Vuex.Store({
     p_owner_id : '',
     p_valuation: '',
 
+    //Marker Info
+    content: '',
+
     // Etc
     tabState: 'adminDong',
-    markers: []
+    markers: [],
+    infowindow_rid: ''
   },
 
   getters: {
@@ -106,7 +110,8 @@ export default new Vuex.Store({
 
     // toMap: state => state.list_mode = 'map',
     toMap (state, payload) {
-      state.visible = payload
+      state.visible = payload.isInfo
+      state.p_place_type = payload.placeType
     },
 
     toPost (state, payload) {
@@ -151,8 +156,9 @@ export default new Vuex.Store({
 
     setCurrentId(state, payload) {
       state.currentId = payload.id
+      state.p_id = payload.id
       state.currentName = payload.name
-      state.place_type = payload.placeType
+      state.p_place_type = payload.placeType
     },
 
     setMarkers(state, payload) {
@@ -184,6 +190,11 @@ export default new Vuex.Store({
       state.p_sublocality3  = payload.sublocality3
       state.p_owner_id  = payload.owner_id
       state.p_valuation = payload.valuation
+    },
+
+    setRouterParams(state, payload) {
+      state.p_id = payload.s_rid
+      state.p_place_type = payload.place_type
     }
 
 
