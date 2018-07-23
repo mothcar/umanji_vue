@@ -58,7 +58,8 @@ export default new Vuex.Store({
     // Etc
     tabState: 'adminDong',
     markers: [],
-    infowindow_rid: ''
+    infowindow_rid: '',
+    map_ref:{}
   },
 
   getters: {
@@ -195,6 +196,10 @@ export default new Vuex.Store({
     setRouterParams(state, payload) {
       state.p_id = payload.s_rid
       state.p_place_type = payload.place_type
+    },
+
+    setMapRef(state, payload){
+      state.map_ref = payload
     }
 
 

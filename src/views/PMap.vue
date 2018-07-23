@@ -11,6 +11,7 @@
   >
   <!-- style="width: 500px; height: 300px" -->
   <!--
+  @idle="onIdle"
 
   @zoom_changed="zoomChanged"
   https://developers.google.com/maps/documentation/javascript/maptypes
@@ -18,7 +19,7 @@
 -->
 
 
-      <GmapMarker ref="myMarker"
+      <GmapMarker
       :key="index"
       v-for="(m, index) in markers"
       :position="m.position"
@@ -140,13 +141,13 @@ export default {
     return{
       // markers : []
       // mapSettings,
-      centerMarker: {},
+      centerMarker: {lat:37.4989034, lng:126.9258932},
       zoom_level: 18,
       zindex: -1,
       p_position: {},
       msg: '',
       p_opacity: .4,
-      after_init_markers:[],
+      // after_init_markers:[],
       // dialog Data
       dialog: false,
       dialog_title: '',
@@ -159,7 +160,8 @@ export default {
           lat: 0,
           lng: 0
         }
-      }
+      },
+      mapInit: false
     }
   },
 
@@ -212,75 +214,77 @@ export default {
     },
 
     subSetCoords: function() {
-      let _this = this
+      // let _this = this
+
+
       this.$refs.mapRef.$mapPromise.then((map) => {
-        let map_coords = {}
-        map_coords.latitude = map.center.lat()
-        map_coords.longitude = map.center.lng()
-        this.$store.commit('setCoords', map_coords)
-        // console.log("Map ref : ", map)
-        // console.log('get CENTER : ',  JSON.stringify(map_coords))
-        // console.log('get CENTER : ',  map)
+        console.log("20180723 - setCoords MAP REF  : ", map )
+          console.log("20180723 - MAP CENTER : ",map.center.lat() )
+          let map_coords = {}
+          map_coords.latitude = map.center.lat()
+          map_coords.longitude = map.center.lng()
+          this.$store.commit('setCoords', map_coords)
+          // console.log("Map ref : ", map)
+          // console.log('get CENTER : ',  JSON.stringify(map_coords))
+          // console.log('get CENTER : ',  map)
 
-        //****************************************************************************************
-        axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+map.center.lng()+"&lat=" +map.center.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
-        .then(res => {
+          //****************************************************************************************
+          axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+map.center.lng()+"&lat=" +map.center.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+          .then(res => {
 
-          let buildingName = res.data.addressInfo.buildingName
+            let buildingName = res.data.addressInfo.buildingName
 
-          console.log('Lottelia  Data from skt : ',res.data.addressInfo)
-          this.$store.commit('setCurrentPosition', res.data.addressInfo)
+            console.log('Lottelia  Data from skt : ',res.data.addressInfo)
+            this.$store.commit('setCurrentPosition', res.data.addressInfo)
 
-        }) // then
-        //****************************************************************************************
+          }) // then
+          //****************************************************************************************
 
-        // console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
+          // console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
 
-        let placeParams = {}
-        placeParams.latitude = map.center.lat()
-        placeParams.longitude = map.center.lng()
-        placeParams.zoom = this.$store.state.zoom_level
+          let placeParams = {}
+          placeParams.latitude = map.center.lat()
+          placeParams.longitude = map.center.lng()
+          placeParams.zoom = this.$store.state.zoom_level
 
-        axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-          params: placeParams
-        })
-        .then(res => {
-          this.markers = []
+          axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+            params: placeParams
+          })
+          .then(res => {
+            this.markers = []
 
-          console.log('20180722 - get Markers DATA : ', res.data.data)
-          // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+            console.log('20180722 - get Markers DATA : ', res.data.data)
+            // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
-          for (var i = 0, len = res.data.data.length; i < len; i++) {
-            // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
-            let obj = { position:{}, info:{}}
-            obj.position.lat = res.data.data[i].location.coordinates[1]
-            obj.position.lng = res.data.data[i].location.coordinates[0]
-            obj.info.s_rid = res.data.data[i].s_rid
-            obj.info.place_name = res.data.data[i].place_name
-            obj.info.zoom_level = this.$store.state.zoom_level
-            obj.info.content = res.data.data[i].content
-            obj.info.place_type = res.data.data[i].place_type
-            obj.info.index = res.data.data[i].i
-            //
-            // obj.info.owner_id = this.$store.state.id,
-            // obj.info.owner_name = this.$store.state.user_name,
-            // obj.info.country_code = this.$store.state.country_code,
-            //
-            // obj.info.locality = res.data.addressInfo.city_do,
-            // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
-            // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
-            // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
-            // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
-            this.markers[i] = obj
+            for (var i = 0, len = res.data.data.length; i < len; i++) {
+              // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+              let obj = { position:{}, info:{}}
+              obj.position.lat = res.data.data[i].location.coordinates[1]
+              obj.position.lng = res.data.data[i].location.coordinates[0]
+              obj.info.s_rid = res.data.data[i].s_rid
+              obj.info.place_name = res.data.data[i].place_name
+              obj.info.zoom_level = this.$store.state.zoom_level
+              obj.info.content = res.data.data[i].content
+              obj.info.place_type = res.data.data[i].place_type
+              obj.info.index = res.data.data[i].i
+              //
+              // obj.info.owner_id = this.$store.state.id,
+              // obj.info.owner_name = this.$store.state.user_name,
+              // obj.info.country_code = this.$store.state.country_code,
+              //
+              // obj.info.locality = res.data.addressInfo.city_do,
+              // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
+              // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
+              // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
+              // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
+              this.markers[i] = obj
 
-            // console.log("content lat lng : ", _this.markers)
+              // console.log("content lat lng : ", _this.markers)
 
-          } // for
-          this.$store.commit('setMarkers', this.markers)
+            } // for
+            this.$store.commit('setMarkers', this.markers)
 
-        }) // axios
-
-
+          }) // axios
       }) // $refs
      },
 
@@ -540,30 +544,29 @@ export default {
     // its map has not been initialized.
     // Therefore we need to write mapRef.$mapPromise.then(() => ...)
 
-   console.log('20180721 - mapref : ', this.$refs.mapref)
+   // console.log('20180721 - mapref before : ', this.$refs.mapref)
 
    this.$refs.mapRef.$mapPromise.then((map) => {
-     console.log('20180721 - mapref : ', map)
-   })
+     console.log('20180721 - mapref after : ', map)
+     // this.mapInit = true
+     // this.$store.commit('setMapRef', map)
+
 
    this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
 
    let init=this.$store.state.init
 
-   if(init){
-     // Error : when no marker
-     // this.centerMarker.lat = this.markers[0].position.lat
-     // this.centerMarker.lng = this.markers[0].position.lng
-     this.centerMarker.lat = this.$store.state.latitude
-     this.centerMarker.lng = this.$store.state.longitude
 
-   } else {
      this.zoom_level = this.$store.state.zoom_level
-     this.after_init_markers = this.$store.state.markers
+     // this.after_init_markers = this.$store.state.markers
+
+     console.log('20180723 - NOT LITERAL  : ', this.$store.state.latitude)
+     console.log('20180723 - NOT LITERAL TYPE : ', typeof this.$store.state.latitude)
+     console.log('20180723 - LATITUDE : ', this.$store.state.latitude)
+     console.log('20180723 - LONGITUDE : ', this.$store.state.longitude)
 
      this.centerMarker.lat = this.$store.state.latitude
      this.centerMarker.lng = this.$store.state.longitude
-   }
 
    let placeParams = {}
    placeParams.latitude = this.$store.state.latitude
@@ -593,35 +596,36 @@ export default {
      this.$store.commit('setMarkers', this.markers)
 
    }) // axios
+ }) // map ref
 
-    this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
-      // console.log('watched: ddddddd : ' , zoom_level)
-
-      this.zoom_level = zoom_level
-
-      // let e = zoom_level
-      // switch(e){
-      //   case 'adminDong':
-      //     this.zoom_level = 16
-      //   break;
-      //   case 'gu_gun':
-      //     this.zoom_level = 14
-      //   break;
-      //   case 'city_do':
-      //     this.zoom_level = 11
-      //   break;
-      //   case 'country':
-      //     this.zoom_level = 7
-      //   break;
-      //   case 'world':
-      //     this.zoom_level = 3
-      //   break;
-      // }
-
-      // this.markers = this.$store.state.markers
-      // return this.$store.state.visible
-
-    }) // this.$store.watch
+    // this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
+    //   // console.log('watched: ddddddd : ' , zoom_level)
+    //
+    //   this.zoom_level = zoom_level
+    //
+    //   // let e = zoom_level
+    //   // switch(e){
+    //   //   case 'adminDong':
+    //   //     this.zoom_level = 16
+    //   //   break;
+    //   //   case 'gu_gun':
+    //   //     this.zoom_level = 14
+    //   //   break;
+    //   //   case 'city_do':
+    //   //     this.zoom_level = 11
+    //   //   break;
+    //   //   case 'country':
+    //   //     this.zoom_level = 7
+    //   //   break;
+    //   //   case 'world':
+    //   //     this.zoom_level = 3
+    //   //   break;
+    //   // }
+    //
+    //   // this.markers = this.$store.state.markers
+    //   // return this.$store.state.visible
+    //
+    // }) // this.$store.watch
 
 
   }

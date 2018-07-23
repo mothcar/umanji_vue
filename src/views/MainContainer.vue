@@ -496,7 +496,7 @@ export default {
               infoParams.latitude = _this.$store.state.latitude,
               infoParams.longitude = _this.$store.state.longitude
 
-              // Get Postal Basic Info
+              // Get Postal Basic Info : findOne
               axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
                 params: infoParams
                 // {
@@ -521,10 +521,19 @@ export default {
                 currentInfo.name = res.data.data.portal_name
                 currentInfo.placeType = 'infocenter'
                 _this.$store.commit('setCurrentId', currentInfo)
+
                 console.log ('Skt send request and get data below ************************************************')
-                console.log('MainContainer 2, Get info center : ', res.data.data)
-                console.log('MainContainer 2, Get info center : ', res.data.data.id)
-                console.log('MainContainer 2, Get info center : ', _this.$store.state.currentName)
+                console.log('MainContainer 20180722 - , Get info center : ', res.data.data)
+                console.log('MainContainer 20180722 - , Get info center : ', res.data.data.id)
+                console.log('MainContainer 20180722 - , Get info center : ', _this.$store.state.currentName)
+
+                let currentLatLng = {}
+                // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
+                // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
+                currentLatLng.latitude = res.data.data.location.coordinates[1]
+                currentLatLng.longitude = res.data.data.location.coordinates[0]
+                console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+                _this.$store.commit('setCoords', currentLatLng)
                 // console.log('MainContainer 2, Get info center : ', res.data.data.id)
               }) // end of axios vue/getInfoCenter
               .then(res => {

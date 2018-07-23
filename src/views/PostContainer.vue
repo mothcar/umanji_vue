@@ -17,10 +17,13 @@
     <!-- create Post Button ******************************************************************************** -->
 
     <!-- content ******************************************************************************** -->
-            <v-card class="p_card" v-for="item in postLists"
-              :key="item.id"
+
+            <v-card class="p_card" v-for="(item, index) in postLists"
+              :key="index"
               avatar
               @click="">
+              <!-- :key="item.id" -->
+              <div @click="linkToPage(index)">
 
                 <v-card-title primary-title>
                   <v-list-tile-avatar>
@@ -52,8 +55,10 @@
                     :src="item.photos"
                     height="200px"
                   ></v-card-media> -->
+                  </div>
 
             </v-card>
+
       <!-- content ******************************************************************************** -->
 
 
@@ -163,12 +168,24 @@ export default {
       this.dialog = false
     },
 
-    doSomething() {
-      console.log('PostContainer : Hello')
-    },
-    doSomethingAfterMounted() {
-      console.log('PostContainer : Editor mounted')
-    }
+    linkToPage(idx){
+      let info = this.postLists[idx]
+      console.log("20180722 - PostList info .....", info )
+
+      let r_params = {}
+      r_params.s_rid = info.s_rid
+      r_params.place_type = info.place_type
+
+      this.$store.commit('setRouterParams', r_params)
+      // // let placeType = this.$store.state.markers[index].place_type
+      // // send place type to spacepage
+      // console.log("20180722 - Store DATA .....", this.$store.state )
+      //
+      this.$router.push({ name: 'spacePage', params:{id: 'page'}})
+      // console.log("Marker Clicked .....", info)
+
+    } // linkToPage
+
 
   }, // methods
 
