@@ -23,16 +23,15 @@
               avatar
               @click="">
               <!-- :key="item.id" -->
-              <div @click="linkToPage(index)">
 
                 <v-card-title primary-title>
                   <v-list-tile-avatar>
-                    <img :src="item.photos">
+                    <img :src="default_user" @click="showProfile(index)">
                   </v-list-tile-avatar>
                   <div>
 
 
-                    <div v-html="item.content"></div>
+                    <div v-html="item.content"  @click="linkToPage(index)"></div>
                   </div>
                 </v-card-title>
                 <div>
@@ -55,7 +54,6 @@
                     :src="item.photos"
                     height="200px"
                   ></v-card-media> -->
-                  </div>
 
             </v-card>
 
@@ -146,7 +144,8 @@ export default {
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
       ],
       content: '',
-      dialog: false
+      dialog: false,
+      default_user: require('../assets/images/default_user.jpg')
 
 
   }),
@@ -184,7 +183,14 @@ export default {
       this.$router.push({ name: 'spacePage', params:{id: 'page'}})
       // console.log("Marker Clicked .....", info)
 
-    } // linkToPage
+    }, // linkToPage
+
+    showProfile(idx){
+      console.log ('20180723 - clicked show profile index  : ', idx)
+
+      // send Profile id to Store
+      this.$router.push({name: 'profile'})
+    },
 
 
   }, // methods

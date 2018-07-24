@@ -4,7 +4,7 @@
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
-            <h1 class="p_title" :key="suffix">{{ title }} {{ suffix }}</h1>
+            <h1 class="p_title" :key="suffix">{{ place_title }} {{ suffix }}</h1>
 
     </div>
     <div>
@@ -42,14 +42,15 @@
         >
 
         <!-- content ******************************************************************************** -->
-        <v-card class="p_card" v-for="item in model.lists"
-          :key="item.id"
+        <v-card class="p_card" v-for="(item, user_index) in model.lists"
+          :key="user_index"
           avatar
           @click="">
 
             <v-card-title primary-title>
               <v-list-tile-avatar>
-                <img :src="item.photos">
+                  <img :src="default_user" @click="showProfile(user_index)">
+
               </v-list-tile-avatar>
               <div>
                 <div>{{ item.content }}</div>
@@ -137,7 +138,7 @@ export default {
     data () {
       return {
         // title: this.$route.params.id,
-        title: 'SpacePage',
+        place_title: 'PlacePage',
         item_name: ['Post', 'Person', 'Some'],
         model: {
           lists: [],
@@ -154,7 +155,8 @@ export default {
         dialog: false,
         getData: 'Some Data..',
         suffix: '',
-        rid: ''
+        rid: '',
+        default_user: require('../assets/images/default_user.jpg')
 
       } // return
     }, // data
@@ -166,6 +168,9 @@ export default {
       // console.log('this.$route.params.id: ', this.$route.params.id)
       // let set_page =
 
+      this.place_title = this.$store.state.p_place_name
+
+      // INFOCENTER **********************************************************************
       if(this.$store.state.p_place_type == 'infocenter') {
         this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
 
@@ -174,31 +179,31 @@ export default {
 
         switch(this.$route.params.id){ //'city_do'
           case 'world':
-            this.title = this.$store.state.world
+            this.place_title = this.$store.state.world
             infoName = '세계'
             politicalType = 'world'
           break
 
           case 'country':
-            this.title = this.$store.state.country
+            this.place_title = this.$store.state.country
             infoName = '대한민국'
             politicalType = 'country'
           break
 
           case 'city_do':
-            this.title = this.$store.state.city_do
+            this.place_title = this.$store.state.city_do
             infoName = this.$store.state.city_do
             politicalType = 'locality'
           break
 
           case 'gu_gun':
-            this.title = this.$store.state.gu_gun
+            this.place_title = this.$store.state.gu_gun
             infoName = this.$store.state.gu_gun
             politicalType = 'sublocality1'
           break
 
           case 'adminDong':
-            this.title = this.$store.state.adminDong
+            this.place_title = this.$store.state.adminDong
             infoName = this.$store.state.adminDong
             politicalType = 'sublocality2'
           break
@@ -239,8 +244,10 @@ export default {
         }) // axios then
 
       } else {
-        // place
+        // place **********************************************************************
         console.log('20180721 - SpacePage : Coming Soon ')
+
+        // this.place_name = this.$store.state.p_place_name
         let placeType = this.$store.state.p_place_type
 
         let spaceParams = {}
@@ -257,7 +264,7 @@ export default {
 
         }) // inner then
 
-      } // Big if else
+      } // Big if else **********************************************************************
 
       // infowindow_rid
 
@@ -300,6 +307,13 @@ export default {
           this.dialog = true
         }
         // console.log("PostContainer : Write post clicked...")
+      },
+
+      showProfile(idx){
+        console.log ('20180723 - clicked show profile index  : ', idx)
+
+        // send Profile id to Store
+        this.$router.push({name: 'profile'})
       },
 
       login: function() {

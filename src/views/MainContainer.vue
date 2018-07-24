@@ -453,15 +453,15 @@ export default {
             let testCoords = {}
             // testCoords.latitude = 37.3927368
             // testCoords.longitude = 126.9523922
-            testCoords.latitude = 37.4996798
-            testCoords.longitude = 126.9192621
-
-            _this.$store.commit('setCoords', testCoords)
+            // testCoords.latitude = 37.4996798
+            // testCoords.longitude = 126.9192621
+            //
+            // _this.$store.commit('setCoords', testCoords)
 
             //*** Reversegeocoding from SKTelecom
-            // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+            axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
             // Test
-            axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+            // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
             .then(res => {
               _this.center_name = res.data.addressInfo.adminDong
               // _this.params.id = res.data.addressInfo.adminDong

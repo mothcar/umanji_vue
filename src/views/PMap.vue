@@ -42,22 +42,20 @@
             <img src="../assets/default_avatar.jpg" />
             {{ m.info.s_rid }}
           </div> -->
-          <div @click="linkToPage(index)">
           <v-flex xs12 sm12 md12>
           <v-avatar
               slot="activator"
               size="36px"
             >
-              <img src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460">
+              <img :src="default_user" @click="showProfile(index)">
 
 
             </v-avatar>
-            <div>
+            <div @click="linkToPage(index)">
               {{ m.info.s_rid }}  {{ m.info.content }}
             </div>
 
           </v-flex>
-          </div>
 
           </GmapInfoWindow>
 
@@ -161,7 +159,8 @@ export default {
           lng: 0
         }
       },
-      mapInit: false
+      mapInit: false,
+      default_user: require('../assets/images/default_user.jpg')
     }
   },
 
@@ -174,6 +173,13 @@ export default {
   },
 
   methods: {
+    showProfile(idx){
+      console.log ('20180723 - clicked show profile index  : ', idx)
+
+      // send Profile id to Store
+      this.$router.push({name: 'profile'})
+    },
+
     linkToPage: function(index) {
       let info = this.markers[index].info
       let r_params = {}
@@ -548,17 +554,11 @@ export default {
 
    this.$refs.mapRef.$mapPromise.then((map) => {
      console.log('20180721 - mapref after : ', map)
-     // this.mapInit = true
-     // this.$store.commit('setMapRef', map)
+     this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
 
-
-   this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
-
-   let init=this.$store.state.init
-
+     let init=this.$store.state.init
 
      this.zoom_level = this.$store.state.zoom_level
-     // this.after_init_markers = this.$store.state.markers
 
      console.log('20180723 - NOT LITERAL  : ', this.$store.state.latitude)
      console.log('20180723 - NOT LITERAL TYPE : ', typeof this.$store.state.latitude)
@@ -568,66 +568,65 @@ export default {
      this.centerMarker.lat = this.$store.state.latitude
      this.centerMarker.lng = this.$store.state.longitude
 
-   let placeParams = {}
-   placeParams.latitude = this.$store.state.latitude
-   placeParams.longitude = this.$store.state.longitude
-   placeParams.zoom = this.$store.state.zoom_level
+     let placeParams = {}
+     placeParams.latitude = this.$store.state.latitude
+     placeParams.longitude = this.$store.state.longitude
+     placeParams.zoom = this.$store.state.zoom_level
 
-   axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-     params: placeParams
-   })
-   .then(res => {
-     this.markers = []
+     axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+       params: placeParams
+     })
+     .then(res => {
+       this.markers = []
 
-     console.log('20180722 - get Markers DATA : ', res.data.data)
-     // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+       console.log('20180722 - get Markers DATA : ', res.data.data)
+       // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
-     for (var i = 0, len = res.data.data.length; i < len; i++) {
-       // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
-       let obj = { position:{}, info:{}}
-       obj.position.lat = res.data.data[i].location.coordinates[1]
-       obj.position.lng = res.data.data[i].location.coordinates[0]
-       obj.info.s_rid = res.data.data[i].s_rid
-       obj.info.position_name = res.data.data[i].place_name
-       obj.info.zoom_level = this.$store.state.zoom_level
-       this.markers[i] = obj
-       // console.log("content lat lng : ", _this.markers)
-     } // for
-     this.$store.commit('setMarkers', this.markers)
+       for (var i = 0, len = res.data.data.length; i < len; i++) {
+         // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+         let obj = { position:{}, info:{}}
+         obj.position.lat = res.data.data[i].location.coordinates[1]
+         obj.position.lng = res.data.data[i].location.coordinates[0]
+         obj.info.s_rid = res.data.data[i].s_rid
+         obj.info.position_name = res.data.data[i].place_name
+         obj.info.zoom_level = this.$store.state.zoom_level
+         this.markers[i] = obj
+         // console.log("content lat lng : ", _this.markers)
+       } // for
+       this.$store.commit('setMarkers', this.markers)
 
-   }) // axios
- }) // map ref
+     }) // axios
+   }) // map ref
 
-    // this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
-    //   // console.log('watched: ddddddd : ' , zoom_level)
-    //
-    //   this.zoom_level = zoom_level
-    //
-    //   // let e = zoom_level
-    //   // switch(e){
-    //   //   case 'adminDong':
-    //   //     this.zoom_level = 16
-    //   //   break;
-    //   //   case 'gu_gun':
-    //   //     this.zoom_level = 14
-    //   //   break;
-    //   //   case 'city_do':
-    //   //     this.zoom_level = 11
-    //   //   break;
-    //   //   case 'country':
-    //   //     this.zoom_level = 7
-    //   //   break;
-    //   //   case 'world':
-    //   //     this.zoom_level = 3
-    //   //   break;
-    //   // }
-    //
-    //   // this.markers = this.$store.state.markers
-    //   // return this.$store.state.visible
-    //
-    // }) // this.$store.watch
+   this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
+      console.log('watched: ddddddd : ' , zoom_level)
 
+      this.zoom_level = zoom_level
 
-  }
+      // let e = zoom_level
+      // switch(e){
+      //   case 'adminDong':
+      //     this.zoom_level = 16
+      //   break;
+      //   case 'gu_gun':
+      //     this.zoom_level = 14
+      //   break;
+      //   case 'city_do':
+      //     this.zoom_level = 11
+      //   break;
+      //   case 'country':
+      //     this.zoom_level = 7
+      //   break;
+      //   case 'world':
+      //     this.zoom_level = 3
+      //   break;
+      // }
+
+      // this.markers = this.$store.state.markers
+      // return this.$store.state.visible
+
+    }) // this.$store.watch
+
+  } // mounted 
 } // export default
 </script>
