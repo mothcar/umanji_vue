@@ -186,9 +186,14 @@ export default {
     }, // linkToPage
 
     showProfile(idx){
-      console.log ('20180723 - clicked show profile index  : ', idx)
+      let info = this.postLists[idx]
+      let r_params = {}
+      console.log("20180724 - Store DATA .....", info )
+      r_params.owner_id = info.owner_id
 
-      // send Profile id to Store
+      this.$store.commit('setOwnerId', r_params)
+
+      // send owner_id to Profile
       this.$router.push({name: 'profile'})
     },
 

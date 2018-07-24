@@ -310,7 +310,12 @@ export default {
       },
 
       showProfile(idx){
-        console.log ('20180723 - clicked show profile index  : ', idx)
+        let info = this.model.lists[idx]
+        let r_params = {}
+        console.log("20180724 - Store DATA .....", info )
+        r_params.owner_id = info.owner_id
+
+        this.$store.commit('setOwnerId', r_params)
 
         // send Profile id to Store
         this.$router.push({name: 'profile'})

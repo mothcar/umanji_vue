@@ -2,7 +2,7 @@
   <div class="p_container">
 
     <div class="p_box p_header">
-      <h1> Profile - Paul Hwang</h1>
+      <h1> Profile - {{ user_name }}</h1>
     </div>
     <div class="p_box p_side">
       <h2> menu </h2>
@@ -11,7 +11,8 @@
       <div class="p_main_container">
         <h2 class="p_p">main - Possess</h2>
         <h3 class="p_p">admin Level : 5</h3>
-        <h3 class="p_p">Money : 34,000</h3>
+        <h3 class="p_p">Money : {{ money }}</h3>
+        Wallet <v-btn color="success" @click="routeWallet" >Wallet</v-btn>
         <h3 class="p_p">Building : 5</h3>
         <h3 class="p_p">Blogs : 15</h3>
 
@@ -81,13 +82,33 @@ img {
 export default {
   data() {
     return {
-      image: require('../assets/images/profile_sample.jpg')
+      image: require('../assets/images/profile_sample.jpg'),
+      user_data: '',
+      user_name: '',
+      money: 0
     }
 
 
   },
 
+  mounted() {
+    // console.log('20180724 - GET ID :', this.$store.state.p_owner_id)
+    let owner_id = this.$store.state.p_owner_id
+    axios.get(p_env.BASE_URL+'/vue/getUserData', {
+      params: {id: owner_id}
+    })
+    .then(res=>{
+      console.log('20180724 - GET profile data :', res.data.data)
+      this.user_data = res.data.data
+      this.user_name = res.data.data.user_name
+      this.money = res.data.data.money
+    }) // axios then
+  }, // mounted
+
   methods: {
+    routeWallet: function() {
+      this.$router.push({name: 'wallet'})
+    }
 
   },
 

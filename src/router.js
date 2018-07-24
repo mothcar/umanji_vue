@@ -10,6 +10,7 @@ import SecureLogin from './views/SecureLogin.vue'
 import SpacePage from './views/SpacePage.vue'
 import PostEditor from './views/PostEditor.vue'
 import Profile from './views/Profile.vue'
+import Wallet from './views/Wallet.vue'
 
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
       path: '/profile',
       name: 'profile',
       component: Profile
+    },
+    {
+      path: '/wallet',
+      name: 'wallet',
+      component: Wallet
     }
 
   ]

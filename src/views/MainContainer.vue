@@ -118,7 +118,7 @@
         <v-list-tile-title>로그인</v-list-tile-title>
       </v-list-tile>
 
-      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: '', params: {} }" >
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'wallet', params: {} }" >
         <v-list-tile-action>
           <v-icon>account_balance_wallet</v-icon>
         </v-list-tile-action>
@@ -557,7 +557,7 @@ export default {
 
                   // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
 
-                  console.log('20180718 - position type : ', res.data.data)
+                  console.log('20180724 - position type : ', res.data.data)
                   // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
 

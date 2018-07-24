@@ -174,7 +174,12 @@ export default {
 
   methods: {
     showProfile(idx){
-      console.log ('20180723 - clicked show profile index  : ', idx)
+      let info = this.markers[idx].info
+      let r_params = {}
+      console.log("20180724 - Store DATA .....", info )
+      r_params.owner_id = info.owner_id
+
+      this.$store.commit('setOwnerId', r_params)
 
       // send Profile id to Store
       this.$router.push({name: 'profile'})
@@ -253,46 +258,84 @@ export default {
           placeParams.longitude = map.center.lng()
           placeParams.zoom = this.$store.state.zoom_level
 
-          axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-            params: placeParams
-          })
-          .then(res => {
-            this.markers = []
+          this.findPostMarkers(placeParams)
 
-            console.log('20180722 - get Markers DATA : ', res.data.data)
-            // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
-            for (var i = 0, len = res.data.data.length; i < len; i++) {
-              // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
-              let obj = { position:{}, info:{}}
-              obj.position.lat = res.data.data[i].location.coordinates[1]
-              obj.position.lng = res.data.data[i].location.coordinates[0]
-              obj.info.s_rid = res.data.data[i].s_rid
-              obj.info.place_name = res.data.data[i].place_name
-              obj.info.zoom_level = this.$store.state.zoom_level
-              obj.info.content = res.data.data[i].content
-              obj.info.place_type = res.data.data[i].place_type
-              obj.info.index = res.data.data[i].i
-              //
-              // obj.info.owner_id = this.$store.state.id,
-              // obj.info.owner_name = this.$store.state.user_name,
-              // obj.info.country_code = this.$store.state.country_code,
-              //
-              // obj.info.locality = res.data.addressInfo.city_do,
-              // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
-              // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
-              // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
-              // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
-              this.markers[i] = obj
-
-              // console.log("content lat lng : ", _this.markers)
-
-            } // for
-            this.$store.commit('setMarkers', this.markers)
-
-          }) // axios
       }) // $refs
      },
+
+     findPostMarkers: function(placeParams){
+
+       axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+         params: placeParams
+       })
+       .then(res => {
+         this.markers = []
+
+         console.log('20180723 - get Markers DATA : ', res.data.data)
+         // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+
+         for (var i = 0, len = res.data.data.length; i < len; i++) {
+           // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+           let obj = { position:{}, info:{}}
+           obj.position.lat = res.data.data[i].location.coordinates[1]
+           obj.position.lng = res.data.data[i].location.coordinates[0]
+           obj.info.s_rid = res.data.data[i].s_rid
+           obj.info.position_name = res.data.data[i].place_name
+           obj.info.zoom_level = this.$store.state.zoom_level
+           obj.info.owner_id = res.data.data[i].owner_id
+
+           obj.info.content = res.data.data[i].content
+           obj.info.place_type = res.data.data[i].place_type
+           obj.info.index = res.data.data[i].i
+           //
+           this.markers[i] = obj
+           // console.log("content lat lng : ", _this.markers)
+         } // for
+         this.$store.commit('setMarkers', this.markers)
+
+       }) // axios
+
+       // axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
+       //   params: placeParams
+       // })
+       // .then(res => {
+       //   this.markers = []
+       //
+       //   console.log('20180722 - get Markers DATA : ', res.data.data)
+       //   // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+       //
+       //   for (var i = 0, len = res.data.data.length; i < len; i++) {
+       //     // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+       //     let obj = { position:{}, info:{}}
+       //     obj.position.lat = res.data.data[i].location.coordinates[1]
+       //     obj.position.lng = res.data.data[i].location.coordinates[0]
+       //     obj.info.s_rid = res.data.data[i].s_rid
+       //     obj.info.place_name = res.data.data[i].place_name
+       //     obj.info.zoom_level = this.$store.state.zoom_level
+       //     obj.info.content = res.data.data[i].content
+       //     obj.info.place_type = res.data.data[i].place_type
+       //     obj.info.index = res.data.data[i].i
+       //     //
+       //     // obj.info.owner_id = this.$store.state.id,
+       //     // obj.info.owner_name = this.$store.state.user_name,
+       //     // obj.info.country_code = this.$store.state.country_code,
+       //     //
+       //     // obj.info.locality = res.data.addressInfo.city_do,
+       //     // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
+       //     // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
+       //     // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
+       //     // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
+       //     this.markers[i] = obj
+       //
+       //     // console.log("content lat lng : ", _this.markers)
+       //
+       //   } // for
+       //   this.$store.commit('setMarkers', this.markers)
+       //
+       // }) // axios
+
+     }, //findPostMarkers
 
      createPlace: function(e) {
        let isKoreaAddress = false
@@ -573,29 +616,8 @@ export default {
      placeParams.longitude = this.$store.state.longitude
      placeParams.zoom = this.$store.state.zoom_level
 
-     axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-       params: placeParams
-     })
-     .then(res => {
-       this.markers = []
+     this.findPostMarkers(placeParams)
 
-       console.log('20180722 - get Markers DATA : ', res.data.data)
-       // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
-
-       for (var i = 0, len = res.data.data.length; i < len; i++) {
-         // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
-         let obj = { position:{}, info:{}}
-         obj.position.lat = res.data.data[i].location.coordinates[1]
-         obj.position.lng = res.data.data[i].location.coordinates[0]
-         obj.info.s_rid = res.data.data[i].s_rid
-         obj.info.position_name = res.data.data[i].place_name
-         obj.info.zoom_level = this.$store.state.zoom_level
-         this.markers[i] = obj
-         // console.log("content lat lng : ", _this.markers)
-       } // for
-       this.$store.commit('setMarkers', this.markers)
-
-     }) // axios
    }) // map ref
 
    this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
@@ -627,6 +649,6 @@ export default {
 
     }) // this.$store.watch
 
-  } // mounted 
+  } // mounted
 } // export default
 </script>

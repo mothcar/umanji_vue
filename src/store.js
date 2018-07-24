@@ -200,6 +200,10 @@ export default new Vuex.Store({
 
     setMapRef(state, payload){
       state.map_ref = payload
+    },
+
+    setOwnerId(state, payload){
+      state.p_owner_id = payload.owner_id
     }
 
 
