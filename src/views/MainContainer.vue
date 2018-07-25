@@ -139,6 +139,13 @@
         <v-list-tile-title>Log out</v-list-tile-title>
       </v-list-tile>
 
+      <v-list-tile class="text-md-center" @click="goToCurrentPosition">
+        <v-list-tile-action>
+          <v-icon>place</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Current Location</v-list-tile-title>
+      </v-list-tile>
+
 
       <v-list-tile class="text-md-center" @click="rightDrawer = !rightDrawer">
         <v-list-tile-action>
@@ -199,9 +206,7 @@ export default {
       left: true,
       rightDrawer: false,
       model: 'tab-2',
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, '+
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'+
-      ' Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      text: 'Lorem ipsum dolor sit amet',
       postLists: [],
       params: {
         id: 'adminDong'
@@ -253,6 +258,11 @@ export default {
     logout: function () {
       this.$store.commit('auth', false)
       this.rightDrawer = !this.rightDrawer
+    },
+
+    goToCurrentPosition: function() {
+      this.rightDrawer = !this.rightDrawer
+      alert('준비중입니다')
     },
 
     changeTab (current) {
@@ -316,7 +326,8 @@ export default {
         }
       })
       .then(res => {
-        // currentId
+        // Tab select Info Center Level and Find info Center data
+        console.log('20180725 - INFO CENTER : ', res.data.data  ) 
         let payload = {}
         payload.id = res.data.data.id
         payload.name = res.data.data.portal_name
@@ -362,6 +373,14 @@ export default {
           }
         })
         .then(res => {
+          let moment = require('moment')
+
+          for(var i=0; res.data.data.length> i; i++){
+            let old_date = res.data.data[i].createdAt
+            let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
+            res.data.data[i].createdAt = new_date
+          }
+
           _this.postLists = res.data.data
           // _this.markers = res.data.Data
           _this.markers = []
@@ -549,9 +568,15 @@ export default {
                   }
                 })
                 .then(res => {
-                  _this.postLists = res.data.data
-                  // console.log('MainContainer 4 :: Continue Post Lists : ',res.data.data)
+                  let moment = require('moment')
 
+                  for(var i=0; res.data.data.length> i; i++){
+                    let old_date = res.data.data[i].createdAt
+                    let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
+                    res.data.data[i].createdAt = new_date
+                  }
+
+                  _this.postLists = res.data.data
 
                   _this.markers = []
 

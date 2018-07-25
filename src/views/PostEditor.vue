@@ -118,8 +118,9 @@ export default {
           // create_type: 'exist',
           // portalRid: '',
           view_level: this.$store.state.zoom_level,
-          owner_id: this.$store.state.id,
-          owner_name: this.$store.state.user_name,
+          creator_id: this.$store.state.id,
+          creator_name: this.$store.state.user_name,
+          photos: this.$store.state.photos,
           content: regContent,
           latitude: this.latitude,
           longitude: this.longitude,
@@ -139,7 +140,7 @@ export default {
             console.log(error.message);
         }) // axios
 
-      } // end of if else 
+      } // end of if else
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
       // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'

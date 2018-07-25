@@ -26,12 +26,16 @@
 
                 <v-card-title primary-title>
                   <v-list-tile-avatar>
-                    <img :src="default_user" @click="showProfile(index)">
+                    <img :src="item.photos[0]" @click="showProfile(index)">
                   </v-list-tile-avatar>
                   <div>
+                    <div >{{ item.creator_name}} {{ item.place_name}} </div>
+                    <!--    items.photos
+                    v-if(place_type == 'infocenter')  -->
 
 
                     <div v-html="item.content"  @click="linkToPage(index)"></div>
+                    <div>{{ item.createdAt }}</div>
                   </div>
                 </v-card-title>
                 <div>
@@ -119,7 +123,10 @@ export default {
 
   name: 'home',
   props: {
-    postLists: Array
+    postLists: {
+    type: Array,
+    default: () => {}
+  }
   },
 
   data: () => ({
@@ -189,11 +196,11 @@ export default {
       let info = this.postLists[idx]
       let r_params = {}
       console.log("20180724 - Store DATA .....", info )
-      r_params.owner_id = info.owner_id
+      r_params.creator_id = info.creator_id
 
-      this.$store.commit('setOwnerId', r_params)
+      this.$store.commit('setCreatorId', r_params)
 
-      // send owner_id to Profile
+      // send creator_id to Profile
       this.$router.push({name: 'profile'})
     },
 

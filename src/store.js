@@ -49,7 +49,8 @@ export default new Vuex.Store({
     p_sublocality1 : '',
     p_sublocality2: '',
     p_sublocality3 : '',
-    p_owner_id : '',
+    p_creator_id : '',
+    p_creator_name : '',
     p_valuation: '',
 
     //Marker Info
@@ -189,7 +190,8 @@ export default new Vuex.Store({
       state.p_sublocality1  = payload.sublocality1
       state.p_sublocality2 = payload.sublocality2
       state.p_sublocality3  = payload.sublocality3
-      state.p_owner_id  = payload.owner_id
+      state.p_creator_id  = payload.creator_id
+      state.p_creator_name  = payload.creator_name
       state.p_valuation = payload.valuation
     },
 
@@ -202,8 +204,8 @@ export default new Vuex.Store({
       state.map_ref = payload
     },
 
-    setOwnerId(state, payload){
-      state.p_owner_id = payload.owner_id
+    setCreatorId(state, payload){
+      state.p_creator_id = payload.creator_id
     }
 
 

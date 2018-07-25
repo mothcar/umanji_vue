@@ -224,9 +224,9 @@ export default {
 
     getLedgerData: function(){
       let moment = require('moment')
-      let owner_id = this.$store.state.p_owner_id
+      let creator_id = this.$store.state.p_creator_id
       axios.get(p_env.BASE_URL+'/vue/getUserData', {
-        params: {id: owner_id}
+        params: {id: creator_id}
       })
       .then(res=>{
         console.log('20180724 - GET profile data :', res.data.data)
@@ -234,7 +234,7 @@ export default {
         this.money = res.data.data.money
 
         axios.get(p_env.BASE_URL+'/vue/getLedgerData', {
-          params: {id: owner_id}
+          params: {id: creator_id}
         })
         .then(results=>{
           console.log('20180725 - get LEDGER DATA : ', results.data.data  )

@@ -1,4 +1,9 @@
 <template>
+
+  <div app-data>
+
+
+
   <GmapMap id="map"
     :center="centerMarker"
     :zoom="zoom_level"
@@ -9,6 +14,7 @@
     ref="mapRef"
     @click="createPlace"
   >
+
   <!-- style="width: 500px; height: 300px" -->
   <!--
   @idle="onIdle"
@@ -47,7 +53,7 @@
               slot="activator"
               size="36px"
             >
-              <img :src="default_user" @click="showProfile(index)">
+              <img :src="m.info.photos[0]" @click="showProfile(index)">
 
 
             </v-avatar>
@@ -63,6 +69,8 @@
       </GmapMarker>
 
     <!-- @click="center=m.position" -->
+
+
 
     <!-- Dialog ******************************************************************************** -->
     <v-layout row justify-center>
@@ -102,18 +110,42 @@
     </v-layout>
     <!-- Dialog ******************************************************************************** -->
 
+
+
+
   </GmapMap>
+
+
+  <div class="image-overlay">
+    <!-- ads ******************************************************************************** -->
+    <img class="ads" src="../assets/images/ads_default.jpg" @click="linkToHomePage"/>
+    <!-- ads ******************************************************************************** -->
+  </div>
+</div>
+
 </template>
 
-<style >
+<style>
 .gm-style .gm-style-iw {
   background: #fff;
-  position: absolute;
-    top: 10px;
+  top: 10px;
 }
 
-.p_ifw{
+.image-overlay {
+  height: 1px;
+}
 
+.image-overlay .ads{
+  position: absolute;
+  max-width: 50%;
+  max-height: 50%;
+  bottom: 40px;
+  left: 0px;
+  z-index: 2;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+.vue-map-container {
 }
 
 #map {
@@ -160,7 +192,8 @@ export default {
         }
       },
       mapInit: false,
-      default_user: require('../assets/images/default_user.jpg')
+      default_user: require('../assets/images/default_user.jpg'),
+      ads: true
     }
   },
 
@@ -177,9 +210,9 @@ export default {
       let info = this.markers[idx].info
       let r_params = {}
       console.log("20180724 - Store DATA .....", info )
-      r_params.owner_id = info.owner_id
+      r_params.creator_id = info.creator_id
 
-      this.$store.commit('setOwnerId', r_params)
+      this.$store.commit('setCreatorId', r_params)
 
       // send Profile id to Store
       this.$router.push({name: 'profile'})
@@ -283,7 +316,9 @@ export default {
            obj.info.s_rid = res.data.data[i].s_rid
            obj.info.position_name = res.data.data[i].place_name
            obj.info.zoom_level = this.$store.state.zoom_level
-           obj.info.owner_id = res.data.data[i].owner_id
+           obj.info.creator_id = res.data.data[i].creator_id
+           obj.info.creator_name = this.$store.state.user_name,
+           obj.info.photos = res.data.data[i].photos
 
            obj.info.content = res.data.data[i].content
            obj.info.place_type = res.data.data[i].place_type
@@ -317,8 +352,8 @@ export default {
        //     obj.info.place_type = res.data.data[i].place_type
        //     obj.info.index = res.data.data[i].i
        //     //
-       //     // obj.info.owner_id = this.$store.state.id,
-       //     // obj.info.owner_name = this.$store.state.user_name,
+       //     // obj.info.creator_id = this.$store.state.id,
+       //     // obj.info.creator_name = this.$store.state.user_name,
        //     // obj.info.country_code = this.$store.state.country_code,
        //     //
        //     // obj.info.locality = res.data.addressInfo.city_do,
@@ -440,7 +475,7 @@ export default {
               placeInfo.sublocality1 = res.data.data.sublocality_level_1
               placeInfo.sublocality2 = res.data.data.sublocality_level_2
               placeInfo.sublocality3 = res.data.data.sublocality_level_3
-              placeInfo.owner_id = res.data.data.owner_id
+              placeInfo.creator_id = res.data.data.creator_id
               placeInfo.valuation = res.data.data.valuation
               _this.$store.commit('setPlaceInfo', placeInfo)
 
@@ -574,6 +609,13 @@ export default {
     login: function() {
       this.dialog = false
     },
+
+    linkToHomePage: function(){
+      let adsUrl = 'https://www.hyundai.co.kr/Index.hub'
+      // window.location.href = adsUrl
+      window.open(adsUrl , '_blank' )
+    },
+
 
     myMarker: function() {
       // console.log("My marker")

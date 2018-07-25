@@ -313,9 +313,9 @@ export default {
         let info = this.model.lists[idx]
         let r_params = {}
         console.log("20180724 - Store DATA .....", info )
-        r_params.owner_id = info.owner_id
+        r_params.creator_id = info.creator_id
 
-        this.$store.commit('setOwnerId', r_params)
+        this.$store.commit('setCreatorId', r_params)
 
         // send Profile id to Store
         this.$router.push({name: 'profile'})
