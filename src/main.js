@@ -77,9 +77,6 @@ Vue.use(VueGoogleMaps, {
   // installComponents: true,
 })
 
-let address
-
-
 new Vue({
   i18n,
   router,

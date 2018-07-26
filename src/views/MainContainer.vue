@@ -174,8 +174,6 @@ import Home from './PostContainer.vue'
 // import MapContainer from './MapContainer.vue'
 import PMap from './PMap.vue'
 
-
-
 export default {
 
   components: {
@@ -327,7 +325,7 @@ export default {
       })
       .then(res => {
         // Tab select Info Center Level and Find info Center data
-        console.log('20180725 - INFO CENTER : ', res.data.data  ) 
+        console.log('20180725 - INFO CENTER : ', res.data.data  )
         let payload = {}
         payload.id = res.data.data.id
         payload.name = res.data.data.portal_name

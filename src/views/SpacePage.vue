@@ -172,7 +172,7 @@ export default {
 
       // INFOCENTER **********************************************************************
       if(this.$store.state.p_place_type == 'infocenter') {
-        this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터'
+        // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
 
         let infoName = ''
         let politicalType = ''

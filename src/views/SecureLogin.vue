@@ -35,8 +35,10 @@
         data() {
             return {
                 input: {
-                    username: p_env.login_id,
-                    password: p_env.login_pw,
+                    // username: p_env.login_id,
+                    // password: p_env.login_pw,
+                    username: '',
+                    password: '111111',
                     // down below Data from Server DB
                     id: '',
                     email: '',
