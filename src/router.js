@@ -11,6 +11,7 @@ import SpacePage from './views/SpacePage.vue'
 import PostEditor from './views/PostEditor.vue'
 import Profile from './views/Profile.vue'
 import Wallet from './views/Wallet.vue'
+import OtherProfile from './views/OtherProfile.vue'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export default new Router({
       path: '/wallet',
       name: 'wallet',
       component: Wallet
+    },
+    {
+      path: '/otherprofile',
+      name: 'otherprofile',
+      component: OtherProfile
     }
 
   ]

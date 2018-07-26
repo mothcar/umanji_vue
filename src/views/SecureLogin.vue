@@ -63,6 +63,7 @@
                         this.$store.commit('setUserInfo', res.data.data)
                         this.$store.commit('auth', true)
                         console.log('SecureLogin - login : ', res.data.data)
+                        console.log('SecureLogin - login : ', this.$store.state)
                         // this.$router.push({name: 'home'})
                         window.history.back()
                     }).catch(error => {

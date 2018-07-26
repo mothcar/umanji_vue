@@ -120,7 +120,7 @@ export default {
           view_level: this.$store.state.zoom_level,
           creator_id: this.$store.state.id,
           creator_name: this.$store.state.user_name,
-          photos: this.$store.state.photos,
+          photos: this.$store.state.photos[0],
           content: regContent,
           latitude: this.latitude,
           longitude: this.longitude,

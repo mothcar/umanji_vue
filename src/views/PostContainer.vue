@@ -201,7 +201,7 @@ export default {
       this.$store.commit('setCreatorId', r_params)
 
       // send creator_id to Profile
-      this.$router.push({name: 'profile'})
+      this.$router.push({name: 'otherprofile'})
     },
 
 
