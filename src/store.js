@@ -52,9 +52,13 @@ export default new Vuex.Store({
     p_creator_id : '',
     p_creator_name : '',
     p_valuation: '',
+    p_political_type: '',
 
     //Marker Info
     content: '',
+
+    // route Data
+    route_id: '',
 
     // Etc
     tabState: 'adminDong',
@@ -156,11 +160,18 @@ export default new Vuex.Store({
       state.tabState = payload
     },
 
-    setCurrentId(state, payload) {
-      state.currentId = payload.id
-      state.p_id = payload.id
-      state.currentName = payload.name
+    setForPostData(state, payload) {
       state.p_place_type = payload.placeType
+      state.p_id = payload.id
+      state.p_place_name = payload.portal_name
+      state.p_about_info = payload.about_info
+      state.p_admin_id  = payload.admin_id
+      state.p_country = payload.country
+      state.p_locality = payload.locality
+      state.p_sublocality1  = payload.sublocality_level_1
+      state.p_sublocality2 = payload.sublocality_level_2
+      state.p_sublocality3  = payload.sublocality_level_3
+      state.p_political_type  = payload.political_type
     },
 
     setMarkers(state, payload) {
@@ -198,6 +209,7 @@ export default new Vuex.Store({
     setRouterParams(state, payload) {
       state.p_id = payload.s_rid
       state.p_place_type = payload.place_type
+      state.p_place_name = payload.place_name
     },
 
     setMapRef(state, payload){

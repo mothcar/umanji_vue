@@ -325,16 +325,13 @@ export default {
       })
       .then(res => {
         // Tab select Info Center Level and Find info Center data
-        console.log('20180725 - INFO CENTER : ', res.data.data  )
-        let payload = {}
-        payload.id = res.data.data.id
-        payload.name = res.data.data.portal_name
-        payload.placeType = 'infocenter'
+        let currentInfo = res.data.data
+        currentInfo.placeType = 'infocenter'
+        _this.$store.commit('setForPostData', currentInfo)
 
-        console.log('20180718 - get from Server tab info center : ',res.data.data)
+        console.log('20180727 - Tab selected setForPostData: ',_this.$store.state)
         _this.center_name = areaName
         _this.params.id = res.data.data.id
-        _this.$store.commit('setCurrentId', payload)
         _this.params.id = areaType
 
 
@@ -533,15 +530,12 @@ export default {
                 // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
               })
               .then(res => {
-                let currentInfo = {}
-                currentInfo.id = res.data.data.id
-                currentInfo.name = res.data.data.portal_name
+                let currentInfo = res.data.data
                 currentInfo.placeType = 'infocenter'
-                _this.$store.commit('setCurrentId', currentInfo)
+                _this.$store.commit('setForPostData', currentInfo)
 
                 console.log ('Skt send request and get data below ************************************************')
-                console.log('MainContainer 20180722 - , Get info center : ', res.data.data)
-                console.log('MainContainer 20180722 - , Get info center : ', res.data.data.id)
+                console.log('20180727 - Tab selected setForPostData: ',_this.$store.state)
                 console.log('MainContainer 20180722 - , Get info center : ', _this.$store.state.currentName)
 
                 let currentLatLng = {}

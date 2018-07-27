@@ -219,9 +219,11 @@ export default {
 
     linkToPage: function(index) {
       let info = this.markers[index].info
+      console.log("20180727 - Marker Clicked .....", info)
       let r_params = {}
       r_params.s_rid = info.s_rid
       r_params.place_type = info.place_type
+      r_params.place_name = info.position_name
 
       this.$store.commit('setRouterParams', r_params)
       // let placeType = this.$store.state.markers[index].place_type
@@ -229,7 +231,7 @@ export default {
       console.log("20180722 - Store DATA .....", this.$store.state )
       console.log("20180722 - Marker info .....", info )
       this.$router.push({ name: 'spacePage', params:{id: 'page'}})
-      console.log("Marker Clicked .....", info)
+
     },
 
     zoomChanged: function(){
