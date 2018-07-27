@@ -1,10 +1,29 @@
 <template>
   <v-app>
+
+    <v-toolbar
+      color="cyan"
+      dark
+      tabs
+      fixed
+    >
+      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+
+      <v-toolbar-title>{{ place_title }}</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+    </v-toolbar>
+
+
+
+
     <div class="p_title_div">
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
             <h1 class="p_title" :key="suffix">{{ place_title }} {{ suffix }}</h1>
+            <h3>{{ $route.params.id.place_name}}</h3>
 
     </div>
     <div>
@@ -57,7 +76,7 @@
               </div>
             </v-card-title>
             <div>
-              <link-prevue url="https://naver.com/">
+              <link-prevue :url="item.link_url">
                 <template slot-scope="props">
                   <div class="card" style="width: 20rem;">
 
@@ -120,6 +139,77 @@
     </v-layout>
     <!-- Dialog ******************************************************************************** -->
 
+    <!-- RIGHT MENU ********************************** -->
+    <v-navigation-drawer
+    temporary
+    :left="left"
+    v-model="rightDrawer"
+    fixed
+    app
+    >
+    <v-list>
+
+      <v-list-tile @click="rightDrawer = !rightDrawer" :to="{ name: 'home', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>home</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Home</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === false" @click="rightDrawer = !rightDrawer" :to="{ name: 'secureLogin', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>perm_identity</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>로그인</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'wallet', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>account_balance_wallet</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Wallet</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'profile', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>account_box</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Setting</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="space_setting" >
+        <v-list-tile-action>
+          <v-icon>account_box</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Space Setting</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile v-show="authenticated === true" @click="logout" :to="{ name: '', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>voice_over_off</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Log out</v-list-tile-title>
+      </v-list-tile>
+
+      <v-list-tile class="text-md-center" @click="">
+        <v-list-tile-action>
+          <v-icon>place</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Current Location</v-list-tile-title>
+      </v-list-tile>
+
+
+      <v-list-tile class="text-md-center" @click="rightDrawer = !rightDrawer">
+        <v-list-tile-action>
+          <v-icon>clear</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>CLOSE</v-list-tile-title>
+      </v-list-tile>
+
+    </v-list>
+  </v-navigation-drawer>
+  <!-- RIGHT MENU ********************************** -->
+
   </v-app>
 
 
@@ -138,6 +228,8 @@ export default {
     data () {
       return {
         // title: this.$route.params.id,
+        rightDrawer: false,
+        left: true,
         place_title: 'PlacePage',
         item_name: ['Post', 'Person', 'Some'],
         model: {
@@ -156,7 +248,8 @@ export default {
         getData: 'Some Data..',
         suffix: '',
         rid: '',
-        default_user: require('../assets/images/default_user.jpg')
+        default_user: require('../assets/images/default_user.jpg'),
+        routed_data: ''
 
       } // return
     }, // data
@@ -165,7 +258,18 @@ export default {
       // let someData
       // this.$bus.$emit('bus-data', someData)
 
-      let getData = this.$route.params.id
+      let getData
+      console.log('20180728 - NOT REVERSE CHECK : ', typeof this.$route.params.id)
+
+      if(typeof this.$route.params.id == 'object'){
+        console.log('20180728 - NOT REVERSE')
+        getData = this.$route.params.id
+      } else {
+        console.log('20180728 - REVERSE')
+        getData = this.$store.state.reverse_route_data
+      }
+
+      this.routed_data = getData
       console.log('20180727 - GET BUS DATA ON SPACEPACE : ', getData )
       // console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
       // console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
@@ -176,6 +280,10 @@ export default {
 
         let infoName = ''
         let politicalType = ''
+        if(getData.sublocality1 == undefined){
+          getData.sublocality1 = getData.sublocality_level_1
+          getData.sublocality2 = getData.sublocality_level_2
+        }
 
         switch(this.$route.params.id){ //'city_do'
           case 'world':
@@ -191,25 +299,25 @@ export default {
           break
 
           case 'city_do':
-            this.place_title = this.$store.state.city_do
-            infoName = this.$store.state.city_do
+            this.place_title = getData.locality
+            infoName = getData.locality
             politicalType = 'locality'
           break
 
           case 'gu_gun':
-            this.place_title = this.$store.state.gu_gun
-            infoName = this.$store.state.gu_gun
+            this.place_title = getData.sublocality1
+            infoName = getData.sublocality1
             politicalType = 'sublocality1'
           break
 
           case 'adminDong':
-            this.place_title = this.$store.state.adminDong
-            infoName = this.$store.state.adminDong
+            this.place_title = getData.sublocality2
+            infoName = getData.sublocality2
             politicalType = 'sublocality2'
           break
           default:
-            this.place_title = getData.sublocality_level_2
-            infoName = getData.sublocality_level_2
+            this.place_title = getData.sublocality2
+            infoName = getData.sublocality2
             politicalType = 'sublocality2'
 
         } // switch
@@ -255,11 +363,11 @@ export default {
 
         // this.place_name = this.$store.state.p_place_name
         let placeType = getData.place_type
-        this.place_title = getData.position_name
+        this.place_title = getData.place_name
 
         let spaceParams = {}
         spaceParams.place_type = placeType
-        spaceParams.s_rid = this.$store.state.p_id
+        spaceParams.s_rid = getData.s_rid
         // this.rid = ''
         axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
           params: spaceParams
@@ -298,9 +406,9 @@ export default {
          deep: true
        }, // model
 
-       // '$route' (to, from){
-       //   console.log('20170728 - to.params.id on SPCE : ', to.params.id)
-       // }
+       'this.$route' (to, from){
+         console.log('20170728 - to.params.id on SPCE : ', to.params.id)
+       }
 
     },
 
@@ -309,6 +417,11 @@ export default {
     },
 
     methods: {
+      logout: function () {
+        this.$store.commit('auth', false)
+        this.rightDrawer = !this.rightDrawer
+      },
+
       createPost: function() {
         // @click.stop="dialog = true"
         if(this.$store.state.authenticated == true) {
@@ -332,11 +445,26 @@ export default {
         this.$router.push({name: 'profile'})
       },
 
+      space_setting: function() {
+        let info = this.routed_data
+        this.$store.commit('setReverseRouteData', info)
+
+        this.$router.push({ name: 'spaceSetting', params:{data: info}})
+
+        this.rightDrawer = !this.rightDrawer
+      },
+
       login: function() {
         this.dialog = false
       }
 
     }, //methods
+
+    computed: {
+      authenticated () {
+        return this.$store.state.authenticated
+      },
+    },
 
     created: function () {
       // let params ={

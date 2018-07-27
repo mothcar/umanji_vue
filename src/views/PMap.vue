@@ -210,6 +210,15 @@ export default {
   },
 
   methods: {
+    moveCurrentLocation : function() {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.centerMarker = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+      });
+    },
+    
     showProfile(idx){
       let info = this.markers[idx].info
       let r_params = {}
@@ -322,7 +331,7 @@ export default {
            obj.position.lat = uniqList[i].location.coordinates[1]
            obj.position.lng = uniqList[i].location.coordinates[0]
            obj.info.s_rid = uniqList[i].s_rid
-           obj.info.position_name = uniqList[i].place_name
+           obj.info.place_name = uniqList[i].place_name
            obj.info.zoom_level = this.$store.state.zoom_level
            obj.info.creator_id = uniqList[i].creator_id
            obj.info.creator_name = this.$store.state.user_name,

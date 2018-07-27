@@ -12,6 +12,7 @@ import PostEditor from './views/PostEditor.vue'
 import Profile from './views/Profile.vue'
 import Wallet from './views/Wallet.vue'
 import OtherProfile from './views/OtherProfile.vue'
+import SpaceSetting from './views/SpaceSetting.vue'
 
 Vue.use(Router)
 
@@ -63,6 +64,11 @@ export default new Router({
       path: '/otherprofile',
       name: 'otherprofile',
       component: OtherProfile
+    },
+    {
+      path: '/spaceSetting/:data',
+      name: 'spaceSetting',
+      component: SpaceSetting
     }
 
   ]

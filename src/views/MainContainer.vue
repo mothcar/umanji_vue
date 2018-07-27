@@ -13,8 +13,9 @@
       <v-spacer></v-spacer>
 
       <v-btn icon>
-        <v-icon>search</v-icon>
+        <v-icon @click="">search</v-icon>
       </v-btn>
+      <!-- searchLocation -->
 
       <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
       <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
@@ -65,10 +66,10 @@
             <v-container fill-height fluid>
                   <!-- <v-layout fill-height> -->
                     <v-flex xs12 align-end flexbox>
-                      <router-link :to="{ name: 'spacePage', params: params }" >
+                      <!-- <router-link :to="{ name: 'spacePage', params: params }" > -->
                         <!-- id: participantUser.user_id / target= '_blank' -->
-                        <span class="headline">{{ center_name }} 정보센터</span>
-                      </router-link>
+                        <span class="headline" @click="infocenterRouter">{{ center_name }} 정보센터</span>
+                      <!-- </router-link> -->
                     </v-flex>
                   <!-- </v-layout> -->
                 </v-container>
@@ -205,6 +206,7 @@ export default {
       rightDrawer: false,
       model: 'tab-2',
       text: 'Lorem ipsum dolor sit amet',
+      searchAddressInput: '',
       postLists: [],
       params: {
         id: 'adminDong'
@@ -239,6 +241,17 @@ export default {
   name: 'App',
 
   methods: {
+    searchLocation: function() {
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'address': this.searchAddressInput}, (results, status) => {
+        if (status === 'OK') {
+          // this.currentLocation.lat = results[0].geometry.location.lat();
+          // this.currentLocation.lng = results[0].geometry.location.lng();
+          console.log('20180728 - search Location : ',result[0])
+        }
+      });
+    },
+
     toMap: function(){
       let toMapParams = {}
       toMapParams.isInfo = false
@@ -261,6 +274,26 @@ export default {
     goToCurrentPosition: function() {
       this.rightDrawer = !this.rightDrawer
       alert('준비중입니다')
+    },
+
+    infocenterRouter: function() {
+      let info = {
+        place_type: this.$store.state.p_place_type,
+        s_rid: this.$store.state.p_id,
+        place_name: this.$store.state.p_place_name,
+        about_info: this.$store.state.p_about_info,
+        admin_id: this.$store.state.p_admin_id,
+        country: this.$store.state.p_country,
+        locality: this.$store.state.p_locality,
+        sublocality1: this.$store.state.p_sublocality1,
+        sublocality2: this.$store.state.p_sublocality2,
+        sublocality3: this.$store.state.p_sublocality3,
+        political_type: this.$store.state.p_political_type
+
+      }
+      this.$router.push({ name: 'spacePage', params:{id: info}})
+      console.log('20180727 - PASSING DATA ....')
+      console.log('20180728 - INFO CENTER CLICKED.........')
     },
 
     changeTab (current) {
@@ -387,7 +420,7 @@ export default {
             obj.position.lat = res.data.data[i].location.coordinates[1]
             obj.position.lng = res.data.data[i].location.coordinates[0]
             obj.info.s_rid = res.data.data[i].s_rid
-            obj.info.position_name = res.data.data[i].place_name
+            obj.info.place_name = res.data.data[i].place_name
             obj.info.zoom_level = _this.$store.state.zoom_level
             _this.markers[i] = obj
             // console.log("content lat lng : ", _this.markers)
@@ -586,7 +619,7 @@ export default {
                     obj.position.lat = res.data.data[i].location.coordinates[1]
                     obj.position.lng = res.data.data[i].location.coordinates[0]
                     obj.info.s_rid = res.data.data[i].s_rid
-                    obj.info.position_name = res.data.data[i].place_name
+                    obj.info.place_name = res.data.data[i].place_name
                     obj.info.zoom_level = _this.$store.state.zoom_level
                     _this.markers[i] = obj
                     // console.log("content lat lng : ", _this.markers)

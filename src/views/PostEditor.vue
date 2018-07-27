@@ -36,6 +36,8 @@
                     <p >
                       {{ result }}
                     </p>
+                    <span>link url</span>
+                    <textarea class="p_textarea" v-model="link_url" ></textarea>
 
               </v-list-tile>
             </v-list>
@@ -71,6 +73,7 @@ export default {
       longitude: this.$store.state.longitude,
       location: '',
       content: '',
+      link_url: '',
       result: '',
       imageData: ''
 
@@ -122,6 +125,7 @@ export default {
           creator_name: this.$store.state.user_name,
           photos: this.$store.state.photos[0],
           content: regContent,
+          link_url: this.link_url,
           latitude: this.latitude,
           longitude: this.longitude,
           country_code: this.country_code,

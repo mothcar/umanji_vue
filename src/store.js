@@ -59,6 +59,7 @@ export default new Vuex.Store({
 
     // route Data
     route_id: '',
+    reverse_route_data: '',
 
     // Etc
     tabState: 'adminDong',
@@ -185,6 +186,10 @@ export default new Vuex.Store({
       state.p_sublocality2 = payload.sublocality_level_2
       state.p_sublocality3  = payload.sublocality_level_3
       // state.p_political_type  = payload.political_type
+    },
+
+    setReverseRouteData(state, payload) {
+      state.reverse_route_data = payload
     },
 
     setMarkers(state, payload) {
