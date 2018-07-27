@@ -77,6 +77,8 @@ Vue.use(VueGoogleMaps, {
   // installComponents: true,
 })
 
+Vue.prototype.$bus = new Vue()
+
 new Vue({
   i18n,
   router,

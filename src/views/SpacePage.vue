@@ -162,12 +162,16 @@ export default {
     }, // data
 
     mounted: function() {
-      console.log('CHECK PLACE TYPE : ', this.$store.state.place_type )
-      console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
-      console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
+      // let someData
+      // this.$bus.$emit('bus-data', someData)
+
+      let getData = this.$route.params.id
+      console.log('20180727 - GET BUS DATA ON SPACEPACE : ', getData )
+      // console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
+      // console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
       // console.log('this.$route.params.id: ', this.$route.params.id)
       // INFOCENTER **********************************************************************
-      if(this.$store.state.p_place_type == 'infocenter') {
+      if(getData.place_type == 'infocenter') {
         // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
 
         let infoName = ''
@@ -203,6 +207,11 @@ export default {
             infoName = this.$store.state.adminDong
             politicalType = 'sublocality2'
           break
+          default:
+            this.place_title = getData.sublocality_level_2
+            infoName = getData.sublocality_level_2
+            politicalType = 'sublocality2'
+
         } // switch
 
         let params = {
@@ -215,7 +224,7 @@ export default {
 
         let spaceParams = {}
         spaceParams.place_type = placeType
-        spaceParams.s_rid = this.$store.state.infowindow_rid
+        spaceParams.s_rid = this.$store.state.p_id
 
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
           params: params
@@ -235,17 +244,18 @@ export default {
             console.log('20180721 - returned data : ', res.data.data)
             this.model.lists = res.data.data
             this.getData = this.$store.state.building_name
-            this.place_title = this.$store.state.building_name
+            this.place_title = this.$store.state.p_place_name
 
           }) // inner then
         }) // axios then
 
       } else {
         // place **********************************************************************
-        console.log('20180721 - SpacePage : Coming Soon ')
+        console.log('20180727 - BUILDING ')
 
         // this.place_name = this.$store.state.p_place_name
-        let placeType = this.$store.state.p_place_type
+        let placeType = getData.place_type
+        this.place_title = getData.position_name
 
         let spaceParams = {}
         spaceParams.place_type = placeType
@@ -276,7 +286,7 @@ export default {
              case 'tab-Post':
               // console.log("switch Post")
              break;
-               case 'tab-Person':
+             case 'tab-Person':
               // console.log("switch Person")
              break;
              case 'tab-Some':
@@ -286,7 +296,11 @@ export default {
            // console.log('watch - model check : ', val)
          },
          deep: true
-        }
+       }, // model
+
+       // '$route' (to, from){
+       //   console.log('20170728 - to.params.id on SPCE : ', to.params.id)
+       // }
 
     },
 

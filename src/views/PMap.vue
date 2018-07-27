@@ -54,9 +54,8 @@
               size="36px"
             >
               <img :src="m.info.photos[0]" @click="showProfile(index)">
-
-
             </v-avatar>
+
             <div @click="linkToPage(index)">
               {{ m.info.s_rid }}  {{ m.info.content }}
             </div>
@@ -167,6 +166,12 @@ export default {
     // markers: Array
   },
 
+  // watch: {
+  //   $route (to, from){
+  //     console.log('20170728 - to.params.id ON MAP : ', to.params.id)
+  //   }
+  // },
+
   data() {
     return{
       // mapSettings,
@@ -221,16 +226,15 @@ export default {
       let info = this.markers[index].info
       console.log("20180727 - Marker Clicked .....", info)
       let r_params = {}
-      r_params.s_rid = info.s_rid
-      r_params.place_type = info.place_type
-      r_params.place_name = info.position_name
-
-      this.$store.commit('setRouterParams', r_params)
+      // r_params.s_rid = info.s_rid
+      // r_params.place_type = info.place_type
+      // r_params.place_name = info.position_name
+      //
+      // this.$store.commit('setRouterParams', r_params)
       // let placeType = this.$store.state.markers[index].place_type
       // send place type to spacepage
-      console.log("20180722 - Store DATA .....", this.$store.state )
-      console.log("20180722 - Marker info .....", info )
-      this.$router.push({ name: 'spacePage', params:{id: 'page'}})
+      // console.log("20180722 - Store DATA .....", this.$store.state )
+      this.$router.push({ name: 'spacePage', params:{id: info}})
 
     },
 

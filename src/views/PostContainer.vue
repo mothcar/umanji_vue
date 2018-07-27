@@ -34,7 +34,7 @@
                     v-if(place_type == 'infocenter')  -->
 
 
-                    <div v-html="item.content"  @click="linkToPage(index)"></div>
+                    <div v-html="item.content"  @click="transData(index)"></div>
                     <div>{{ item.createdAt }}</div>
                   </div>
                 </v-card-title>
@@ -152,12 +152,40 @@ export default {
       ],
       content: '',
       dialog: false,
-      default_user: require('../assets/images/default_user.jpg')
+      default_user: require('../assets/images/default_user.jpg'),
+      busData: ''
 
 
   }),
 
+  created: function () {
+
+    // this.busData = this.oData
+    // this.busData = []
+    // this.$bus.$on('bus-data', this.transData)
+
+    // console.log('PostContainer : Props in Post Containser ', this.props)
+  }, //created
+
   methods: {
+
+    transData: function(idx) {
+
+      let info = this.postLists[idx]
+
+      this.$router.push({ name: 'spacePage', params:{id: info}})
+      console.log('20180727 - PASSING DATA ....')
+    //
+    //
+    // this.busData.push(info);
+    // this.$nextTick(() => {
+    //  /*  UI update here */
+    //
+    //
+    //  console.log('20180727 - BUS DATA ....')
+    // });
+
+    },
 
     createPost: function() {
       // @click.stop="dialog = true"
@@ -174,23 +202,19 @@ export default {
       this.dialog = false
     },
 
-    linkToPage(idx){
-      let info = this.postLists[idx]
-      console.log("20180722 - PostList info .....", info )
-
-      let r_params = {}
-      r_params.s_rid = info.s_rid
-      r_params.place_type = info.place_type
-
-      this.$store.commit('setRouterParams', r_params)
-      // // let placeType = this.$store.state.markers[index].place_type
-      // // send place type to spacepage
-      // console.log("20180722 - Store DATA .....", this.$store.state )
-      //
-      this.$router.push({ name: 'spacePage', params:{id: 'page'}})
-      // console.log("Marker Clicked .....", info)
-
-    }, // linkToPage
+    // linkToPage(idx){
+    //   let info = this.postLists[idx]
+    //   console.log("20180727 - PostList link info .....", info )
+    //
+    //   this.$store.commit('setForPostData_fromPost', info)
+    //   // // let placeType = this.$store.state.markers[index].place_type
+    //   // // send place type to spacepage
+    //   console.log("20180722 - Store DATA .....", this.$store.state )
+    //   //
+    //   this.$router.push({ name: 'spacePage', params:{id: 'page'}})
+    //   // console.log("Marker Clicked .....", info)
+    //
+    // }, // linkToPage
 
     showProfile(idx){
       let info = this.postLists[idx]
@@ -235,11 +259,6 @@ export default {
   watch: {
 
   },
-
-  created: function () {
-
-    // console.log('PostContainer : Props in Post Containser ', this.props)
-  }, //created
 
   updated: function() {
     console.log("PostContainer : updated............")

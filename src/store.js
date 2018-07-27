@@ -174,6 +174,19 @@ export default new Vuex.Store({
       state.p_political_type  = payload.political_type
     },
 
+    setForPostData_fromPost(state, payload) {
+      state.p_place_type = payload.place_type
+      state.p_id = payload.s_rid
+      state.p_place_name = payload.place_name
+      state.p_admin_id  = payload.creator_id
+      state.p_country = payload.country
+      state.p_locality = payload.locality
+      state.p_sublocality1  = payload.sublocality_level_1
+      state.p_sublocality2 = payload.sublocality_level_2
+      state.p_sublocality3  = payload.sublocality_level_3
+      // state.p_political_type  = payload.political_type
+    },
+
     setMarkers(state, payload) {
 
       for(var i=0; payload.length > i; i++) {
