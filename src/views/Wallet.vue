@@ -42,6 +42,7 @@
     <div>
       <v-btn color="error" @click="openSender" >송금</v-btn>
       <v-btn color="info" @click="buyMoney" >구매</v-btn>
+      <h2>{{ title_money }}</h2>
       <!--  -->
       <!-- @click.stop="dialog = true" -->
     </div>
@@ -51,27 +52,33 @@
     :headers="headers"
     :items="ledger_lists"
     class="elevation-1"
-    default-sort="date:asc"
+    default-sort="order:desc"
   >
-    <template slot="items" slot-scope="props">
+    <template slot="items" slot-scope="props" v-model="props">
       <td>{{ props.item.createdAt }}</td>
       <td class="">
         <div>
 
 
         <v-list-tile-avatar>
-            <img :src="props.item.withdrawal_photo" @click="showProfile(user_index)">
+            <img v-if="props.item.withdrawal_id != '' && props.item.withdrawal_photo != ''" :src="props.item.withdrawal_photo" @click="">
+            <img v-if="props.item.deposit_id != '' && props.item.deposit_photo != ''" :src="props.item.deposit_photo" @click="">
         </v-list-tile-avatar>
         {{ props.item.deposit_name }} {{ props.item.description }}
       </div></td>
-      <td class="p_tabel_text">{{ props.item.amount }}</td>
-      <td class="p_tabel_text">{{ props.item.deposits }}</td>
-      <td class="p_tabel_text">{{ props.item.balance }}</td>
+      <td class="p_tabel_text" >{{ props.item.amount | check(props.item.withdrawal_id)  }}</td>
+      <td class="p_tabel_text">{{ props.item.amount | check(props.item.deposit_id)   }}</td>
+      <td class="p_tabel_text">{{ props.item.balance | thousand }}</td>
+      <td class="p_tabel_text">{{ props.item.order  }}</td>
     </template>
   </v-data-table>
   </v-layout>
 
   <!--
+
+  showImage(props.item.withdrawal_id)
+  showImage(props.item.deposit_id)
+
   value: true,
   date: '20180724',
   description: '빵값',
@@ -132,6 +139,21 @@
 </template>
 
 <script>
+import Vue from 'vue'
+Vue.filter('check', function (value, lee) {
+  // console.log('20180726 - check  : ', value+'    '+lee);
+  if(lee != ''){
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  }
+  // return value.split('').reverse().join('')
+})
+
+Vue.filter('thousand', function (value) {
+  // console.log('20180726 - check  : ', value+'    '+lee);
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  // return value.split('').reverse().join('')
+})
+
 export default {
   data() {
     return {
@@ -142,7 +164,6 @@ export default {
         id: 'tab-2'
       },
       user_data: '',
-      money: 0,
       get_user_phone: '',
       get_money: 0,
       get_content: '',
@@ -152,7 +173,7 @@ export default {
          {
            text: '날짜',
            align: 'right',
-           // sortable: true,
+           sortable: true,
            value: 'date',
            // isDescending: false,
           //  sort: (a,b) => {
@@ -165,12 +186,14 @@ export default {
          { text: '내 역', align: 'right', value: 'description' },
          { text: '출 금', align: 'right', value: 'withdrawals' },
          { text: '입 금', align: 'right', value: 'deposits' },
-         { text: '잔 액', align: 'right', value: 'balance' }
+         { text: '잔 액', align: 'right', value: 'balance' },
+         { text: '비 고', align: 'right', value: 'order' }
        ],
        // currentOrder: 'order',
        ledger_lists: [],
-       links: {text: 'teste'}  //  for refresh
+       links: {text: 'teste'},  //  for refresh
       // table data ***********************************************************************
+      title_money: '0'
 
     }
   },
@@ -231,7 +254,8 @@ export default {
       .then(res=>{
         console.log('20180724 - GET profile data :', res.data.data)
         this.user_data = res.data.data
-        this.money = res.data.data.money
+        this.title_money = this.thousandComma(res.data.data.money)
+
 
         axios.get(p_env.BASE_URL+'/vue/getLedgerData', {
           params: {id: userId}
@@ -250,32 +274,58 @@ export default {
 
         }) // second axios
       }) // axios then
-    } //getLedgerData
+    }, //getLedgerData
+
+    showProfile: function(idx){
+      console.log('20170727 - show profile : ', idx)
+    },
+
+    removeZero: function(e){
+      this.get_money = ''
+      console.log('20180727 - Image check : ',e)
+    },
+
+    thousandComma: function(number){
+      console.log('20170727 - thousand Comma :', number)
+
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+
+
+      // this.props
+      // if(userId == '') return false
+    },
 
   },
 
   computed: {
-  sortedItems: function() {
-    console.log('COMPUTED...............')
-    // return this.ledger_lists.sort((a, b) => new Date(a.order) - new Date(b.order))
+    checkImage: function() {
+      console.log('20180727 - Image check : ')
+    },
 
-    // function compare(a, b) {
-    //   console.log('20180725 - a is : ', a.order)
-    //   console.log('20180725 - b is : ', b.order)
-    //   if (a.order < b.order)
-    //     return -1;
-    //   if (a.order > b.order)
-    //     return 1;
-    //   return 0;
-    // }
-    //
-    // return this.ledger_lists.sort(compare);
-    return ledger_lists.sort(function(a, b) {
-        return a.order - b.order;
-      });
 
-  }
-},
+
+
+    sortedItems: function() {
+      console.log('COMPUTED...............')
+      // return this.ledger_lists.sort((a, b) => new Date(a.order) - new Date(b.order))
+
+      // function compare(a, b) {
+      //   console.log('20180725 - a is : ', a.order)
+      //   console.log('20180725 - b is : ', b.order)
+      //   if (a.order < b.order)
+      //     return -1;
+      //   if (a.order > b.order)
+      //     return 1;
+      //   return 0;
+      // }
+      //
+      // return this.ledger_lists.sort(compare);
+      return ledger_lists.sort(function(a, b) {
+          return a.order - b.order;
+        });
+
+    }
+  }, // computed
 
   components: {
 

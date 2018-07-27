@@ -49,7 +49,7 @@
 
             <v-card-title primary-title>
               <v-list-tile-avatar>
-                  <img :src="default_user" @click="showProfile(user_index)">
+                  <img :src="item.photos[0]" @click="showProfile(user_index)">
 
               </v-list-tile-avatar>
               <div>
@@ -166,10 +166,6 @@ export default {
       console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
       console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
       // console.log('this.$route.params.id: ', this.$route.params.id)
-      // let set_page =
-
-      this.place_title = this.$store.state.p_place_name
-
       // INFOCENTER **********************************************************************
       if(this.$store.state.p_place_type == 'infocenter') {
         // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
@@ -239,6 +235,7 @@ export default {
             console.log('20180721 - returned data : ', res.data.data)
             this.model.lists = res.data.data
             this.getData = this.$store.state.building_name
+            this.place_title = this.$store.state.building_name
 
           }) // inner then
         }) // axios then

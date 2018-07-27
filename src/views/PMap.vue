@@ -169,7 +169,6 @@ export default {
 
   data() {
     return{
-      // markers : []
       // mapSettings,
       centerMarker: {lat:37.4989034, lng:126.9258932},
       zoom_level: 18,
@@ -306,24 +305,27 @@ export default {
          this.markers = []
 
          console.log('20180723 - get Markers DATA : ', res.data.data)
+         let old_arr = res.data.data
          // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+         const uniqList = old_arr.filter((s1, pos, arr) => arr.findIndex((s2)=>s2.s_rid === s1.s_rid) === pos)
+         console.log('20180727 - uniqList: ', uniqList)
 
-         for (var i = 0, len = res.data.data.length; i < len; i++) {
+         for (var i = 0, len = uniqList.length; i < len; i++) {
            // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
            let obj = { position:{}, info:{}}
-           obj.position.lat = res.data.data[i].location.coordinates[1]
-           obj.position.lng = res.data.data[i].location.coordinates[0]
-           obj.info.s_rid = res.data.data[i].s_rid
-           obj.info.position_name = res.data.data[i].place_name
+           obj.position.lat = uniqList[i].location.coordinates[1]
+           obj.position.lng = uniqList[i].location.coordinates[0]
+           obj.info.s_rid = uniqList[i].s_rid
+           obj.info.position_name = uniqList[i].place_name
            obj.info.zoom_level = this.$store.state.zoom_level
-           obj.info.creator_id = res.data.data[i].creator_id
+           obj.info.creator_id = uniqList[i].creator_id
            obj.info.creator_name = this.$store.state.user_name,
-           obj.info.photos = res.data.data[i].photos
+           obj.info.photos = uniqList[i].photos
 
-           obj.info.content = res.data.data[i].content
-           obj.info.place_type = res.data.data[i].place_type
-           obj.info.index = res.data.data[i].i
-           //
+           obj.info.content = uniqList[i].content
+           obj.info.place_type = uniqList[i].place_type
+           obj.info.index = uniqList[i].i
+           // shrink marker number when it's parent id is equal
            this.markers[i] = obj
            // console.log("content lat lng : ", _this.markers)
          } // for
@@ -331,44 +333,6 @@ export default {
 
        }) // axios
 
-       // axios.get(p_env.BASE_URL+'/vue/findMapPostMarkers', {
-       //   params: placeParams
-       // })
-       // .then(res => {
-       //   this.markers = []
-       //
-       //   console.log('20180722 - get Markers DATA : ', res.data.data)
-       //   // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
-       //
-       //   for (var i = 0, len = res.data.data.length; i < len; i++) {
-       //     // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
-       //     let obj = { position:{}, info:{}}
-       //     obj.position.lat = res.data.data[i].location.coordinates[1]
-       //     obj.position.lng = res.data.data[i].location.coordinates[0]
-       //     obj.info.s_rid = res.data.data[i].s_rid
-       //     obj.info.place_name = res.data.data[i].place_name
-       //     obj.info.zoom_level = this.$store.state.zoom_level
-       //     obj.info.content = res.data.data[i].content
-       //     obj.info.place_type = res.data.data[i].place_type
-       //     obj.info.index = res.data.data[i].i
-       //     //
-       //     // obj.info.creator_id = this.$store.state.id,
-       //     // obj.info.creator_name = this.$store.state.user_name,
-       //     // obj.info.country_code = this.$store.state.country_code,
-       //     //
-       //     // obj.info.locality = res.data.addressInfo.city_do,
-       //     // obj.info.sublocality_level_1 = res.data.addressInfo.gu_gun,
-       //     // obj.info.sublocality_level_2 = res.data.addressInfo.adminDong,
-       //     // _this.infoWindow.position.lat = res.data.data[i].location.coordinates[1]
-       //     // _this.infoWindow.position.lng = res.data.data[i].location.coordinates[0]
-       //     this.markers[i] = obj
-       //
-       //     // console.log("content lat lng : ", _this.markers)
-       //
-       //   } // for
-       //   this.$store.commit('setMarkers', this.markers)
-       //
-       // }) // axios
 
      }, //findPostMarkers
 
@@ -481,8 +445,6 @@ export default {
 
               console.log ('get Place  data below ************************************************')
               console.log('PMap Place  : ', res.data.data)
-              // console.log('PMap Place  : ', res.data.data.id)
-              // console.log('PMap Place  : ', _this.$store.state.currentName)
               // Dialog on
               _this.dialog_title = res.data.data.place_name
               _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
@@ -508,7 +470,6 @@ export default {
             infoParams.eup_myun = sk_eup_myun,
             infoParams.latitude = e.latLng.lat(),
             infoParams.longitude = e.latLng.lng()
-
 
             // Get Postal Basic Info
             axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
