@@ -175,7 +175,7 @@ export default {
       let info = this.postLists[idx]
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
-      console.log('20180727 - PASSING DATA ....')
+      console.log('20180727 - PASSING DATA ....', info)
     //
     //
     // this.busData.push(info);
@@ -191,7 +191,15 @@ export default {
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
-        this.$router.push({name: 'postEditor'})
+        let info = this.$store.state.infocenter_data
+        info.place_type = 'infocenter'
+        // info.place_name = this.$store.state.infocenter_data.place_name
+        info.photos = this.$store.state.photos
+        info.id = this.$store.state.id
+        info.user_name = this.$store.state.user_name
+        info.place_name = this.$store.state.infocenter_data.portal_name
+        console.log("PostContainer : beforORE SEND PARAMS : ", info)
+        this.$router.push({name: 'postEditor', params: {data: info}})
         // console.log("PostContainer : dialog is true")
       } else {
         this.dialog = true

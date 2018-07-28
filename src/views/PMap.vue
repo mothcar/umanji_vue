@@ -218,7 +218,7 @@ export default {
         };
       });
     },
-    
+
     showProfile(idx){
       let info = this.markers[idx].info
       let r_params = {}
@@ -266,22 +266,23 @@ export default {
       // this.subSetCoords()
     },
 
+    // EVENT MOVE ZOOM CHANGE ***************************************************************************************
     onIdle: function() {
       this.subSetCoords()
       console.log("on Idle ..........")
     },
+    // EVENT MOVE ZOOM CHANGE ***************************************************************************************
 
     subSetCoords: function() {
       // let _this = this
 
-
       this.$refs.mapRef.$mapPromise.then((map) => {
-        console.log("20180723 - setCoords MAP REF  : ", map )
-          console.log("20180723 - MAP CENTER : ",map.center.lat() )
+        console.log("20180723 - setCurrentLocation MAP REF  : ", map )
+          // console.log("20180723 - MAP CENTER : ",map.center.lat() )
           let map_coords = {}
           map_coords.latitude = map.center.lat()
           map_coords.longitude = map.center.lng()
-          this.$store.commit('setCoords', map_coords)
+          this.$store.commit('setCurrentLocation', map_coords)
           // console.log("Map ref : ", map)
           // console.log('get CENTER : ',  JSON.stringify(map_coords))
           // console.log('get CENTER : ',  map)
@@ -293,7 +294,7 @@ export default {
             let buildingName = res.data.addressInfo.buildingName
 
             console.log('Lottelia  Data from skt : ',res.data.addressInfo)
-            this.$store.commit('setCurrentPosition', res.data.addressInfo)
+            this.$store.commit('setCurrentPlace', res.data.addressInfo)
 
           }) // then
           //****************************************************************************************
@@ -336,9 +337,12 @@ export default {
            obj.info.creator_id = uniqList[i].creator_id
            obj.info.creator_name = this.$store.state.user_name,
            obj.info.photos = uniqList[i].photos
-
-           obj.info.content = uniqList[i].content
            obj.info.place_type = uniqList[i].place_type
+           obj.info.sublocality1 = uniqList[i].sublocality_level_1
+           obj.info.sublocality2 = uniqList[i].sublocality_level_2
+           obj.info.location = uniqList[i].location
+           obj.info.link_url = uniqList[i].link_url
+           obj.info.content = uniqList[i].content
            obj.info.index = uniqList[i].i
            // shrink marker number when it's parent id is equal
            this.markers[i] = obj
@@ -361,7 +365,7 @@ export default {
        coords.longitude = e.latLng.lng()
 
        console.log('20180721 - latlng : ', latlng)
-       this.$store.commit('setCoords', coords)
+       this.$store.commit('setCurrentLocation', coords)
        // This is making the Geocode request
        var geocoder = new google.maps.Geocoder();
        geocoder.geocode({ 'latLng': latlng }, function (results, status) {
@@ -456,7 +460,7 @@ export default {
               placeInfo.sublocality3 = res.data.data.sublocality_level_3
               placeInfo.creator_id = res.data.data.creator_id
               placeInfo.valuation = res.data.data.valuation
-              _this.$store.commit('setPlaceInfo', placeInfo)
+              _this.$store.commit('setReverseRouteData', placeInfo)
 
               console.log ('get Place  data below ************************************************')
               console.log('PMap Place  : ', res.data.data)
@@ -504,7 +508,7 @@ export default {
               infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
               infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
               infoCenterInfo.admin_id = res.data.data.admin_id
-              _this.$store.commit('setPlaceInfo', infoCenterInfo)
+              _this.$store.commit('setReverseRouteData', infoCenterInfo)
 
 
               console.log ('Skt send request and get data below ************************************************')
@@ -547,7 +551,7 @@ export default {
             infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
             infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
             infoCenterInfo.admin_id = res.data.data.admin_id
-            _this.$store.commit('setPlaceInfo', infoCenterInfo)
+            _this.$store.commit('setReverseRouteData', infoCenterInfo)
 
             console.log ('Skt send request and get data below ************************************************')
             console.log('PMap 2, Get info center : ', res.data.data)
@@ -565,10 +569,8 @@ export default {
     }, // sub_createPlace
 
     enterPlace: function() {
-      // this.$router.push({name: 'PlacePage', params:{id: 'test'}}, {query: { some: 'private' }})
-      this.$router.push({ name: 'spacePage', params:{id: 'placePage'}})
-
-
+      let info = this.$store.state.reverse_route_data
+      this.$router.push({ name: 'spacePage', params:{id: info}})
     }, // enterPlace
 
     createPost: function() {
@@ -662,8 +664,6 @@ export default {
       //   break;
       // }
 
-      // this.markers = this.$store.state.markers
-      // return this.$store.state.visible
 
     }) // this.$store.watch
 

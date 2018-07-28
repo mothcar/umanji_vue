@@ -75,11 +75,19 @@ export default {
       content: '',
       link_url: '',
       result: '',
-      imageData: ''
+      imageData: '',
+      routed_data: ''
 
     }
 
   }, //data
+
+  mounted: function() {
+    this.routed_data = this.$route.params.data
+    console.log('20180728 - GET ROUTER DATA : ', this.$route.params.data)
+
+
+  },
 
   methods: {
     close: function() {
@@ -87,6 +95,7 @@ export default {
     },
 
     submitPost: function() {
+      console.log('20180728 - POST PARAMS : ', this.routed_data)
 
       var checkNull = this.content.replace(/\s|\r?\n|\r/g, '')
 
@@ -95,9 +104,9 @@ export default {
       } else {
         // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
         // var location = '{\"@class\":\"OPoint\",\"coordinates\":['+this.longitude+','+this.latitude+']}'
-        var location = {}
-        location['@class'] = 'OPoint'
-        location.coordinates = [this.longitude, this.latitude]
+        // var location = {}
+        // location['@class'] = 'OPoint'
+        // location.coordinates = [this.longitude, this.latitude]
 
         console.log('20180718 - Opoint type : ', JSON.stringify(location))
 
@@ -110,6 +119,8 @@ export default {
         // portal check ; Info or Map -> visible
         // if place DO commit place to 'cuttentId' in store
         console.log("visible : ", this.$store.state.visible)
+        let paramsData = this.routed_data
+
         if(this.$store.state.visible) {
           portal_rid = this.$store.state.p_id
           console.log("LOGIC PASS HERE..........")
@@ -117,26 +128,37 @@ export default {
           place_rid = this.$store.state.p_id
         }
 
+        console.log('20180728 - sublocolity type : ', typeof paramsData.sublocality1)
+
+        if(paramsData.photos == undefined){
+          paramsData.photos = this.$store.state.photos
+        }
+
+        if(paramsData.sublocality1 == undefined){
+          paramsData.sublocality1 = paramsData.sublocality_level_1
+          paramsData.sublocality2 = paramsData.sublocality_level_2
+        }
+
         axios.post(p_env.BASE_URL+'/vue/createPost', {
           // create_type: 'exist',
           // portalRid: '',
           view_level: this.$store.state.zoom_level,
           creator_id: this.$store.state.id,
-          creator_name: this.$store.state.user_name,
-          photos: this.$store.state.photos[0],
+          creator_name: paramsData.user_name,
+          photos: paramsData.photos[0],
           content: regContent,
-          link_url: this.link_url,
-          latitude: this.latitude,
-          longitude: this.longitude,
+          link_url: paramsData.link_url,
+          // latitude: this.latitude,
+          // longitude: this.longitude,
           country_code: this.country_code,
-          location: location,
-          country: this.$store.state.p_country,
-          locality: this.$store.state.p_locality,
-          sublocality_level_1: this.$store.state.p_sublocality1,
-          sublocality_level_2: this.$store.state.p_sublocality2,
-          place_type: this.$store.state.p_place_type,
-          place_name: this.$store.state.p_place_name,
-          s_rid: this.$store.state.p_id
+          location: paramsData.location,
+          country: paramsData.country,
+          locality: paramsData.locality,
+          sublocality_level_1: paramsData.sublocality1,
+          sublocality_level_2: paramsData.sublocality2,
+          place_type: paramsData.place_type,
+          place_name: paramsData.place_name,
+          s_rid: paramsData.s_rid
         })
           .then(res => {
               window.history.back()

@@ -46,7 +46,7 @@ export default new Router({
       component: SpacePage
     },
     {
-      path: '/postEditor',
+      path: '/postEditor/:data',
       name: 'postEditor',
       component: PostEditor
     },

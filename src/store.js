@@ -65,7 +65,11 @@ export default new Vuex.Store({
     tabState: 'adminDong',
     markers: [],
     infowindow_rid: '',
-    map_ref:{}
+    map_ref:{},
+
+    // new Current Place (address)
+    current_place: '',
+    infocenter_data: '' 
   },
 
   getters: {
@@ -133,16 +137,11 @@ export default new Vuex.Store({
       state.zoom_level = payload
     },
 
-    setCurrentPosition (state, payload) {
-      state.city_do = payload.city_do
-      state.gu_gun = payload.gu_gun
-      state.adminDong = payload.adminDong
-      state.eup_myun = payload.eup_myun
-      state.ri = payload.ri
-      // console.log("Store.js : " , payload.legalDong)
+    setCurrentPlace (state, payload) {
+      state.current_place = payload
     },
 
-    setCoords (state, payload) {
+    setCurrentLocation (state, payload) {
       state.latitude = payload.latitude
       state.longitude = payload.longitude
     },
@@ -190,6 +189,10 @@ export default new Vuex.Store({
 
     setReverseRouteData(state, payload) {
       state.reverse_route_data = payload
+    },
+
+    setCenterData(state, payload) {
+      state.infocenter_data = payload
     },
 
     setMarkers(state, payload) {
@@ -251,8 +254,8 @@ export default new Vuex.Store({
   */
 
   actions: {
-    setCurrentPosition (context) {
-      context.commit('setCurrentPosition')
+    setCurrentPlace (context) {
+      context.commit('setCurrentPlace')
     }
   } //action
 

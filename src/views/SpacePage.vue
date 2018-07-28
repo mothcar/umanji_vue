@@ -328,25 +328,31 @@ export default {
         }
         console.log('CHECK PRE PARAMS : ', params)
 
-        let placeType = this.$store.state.p_place_type
-
         let spaceParams = {}
-        spaceParams.place_type = placeType
-        spaceParams.s_rid = this.$store.state.p_id
+        spaceParams.place_type = 'infocenter'
+        spaceParams.id = getData.s_rid
 
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
           params: params
         })
         .then(res => {
-          console.log('20180720 - returned result :', res.data.data)
+          console.log('20180720 - Find Info center  result :', res.data.data)
           let coords = {}
+          // For Top Info Center Button
+          var location = res.data.data.location
+          this.routed_data.location = location
+
+          // location['@class'] = 'OPoint'
+          // location.coordinates = [this.longitude, this.latitude]
+
           // coords.latitude = res.data.data.location.coordinates[1]
           // coords.longitude = res.data.data.location.coordinates[0]
           // this.$store.commit('setCoords', coords)
-          spaceParams.s_rid = this.$store.state.p_id
-          // this.rid = ''
+
+          // spaceParams.s_rid = this.$store.state.current_place.id
+
           axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
-            params: spaceParams
+            params: {s_rid: getData.s_rid}
           })
           .then(res =>{
             console.log('20180721 - returned data : ', res.data.data)
@@ -364,6 +370,10 @@ export default {
         // this.place_name = this.$store.state.p_place_name
         let placeType = getData.place_type
         this.place_title = getData.place_name
+
+        if(getData.s_rid == undefined){
+          getData.s_rid = getData.id
+        }
 
         let spaceParams = {}
         spaceParams.place_type = placeType
@@ -424,8 +434,10 @@ export default {
 
       createPost: function() {
         // @click.stop="dialog = true"
+        let info = this.routed_data
+        this.$store.commit('setReverseRouteData', info)
         if(this.$store.state.authenticated == true) {
-          this.$router.push({name: 'postEditor'})
+          this.$router.push({name: 'postEditor', params: {data: info}})
           // console.log("PostContainer : dialog is true")
         } else {
           this.dialog = true
