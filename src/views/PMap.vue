@@ -338,6 +338,8 @@ export default {
            obj.info.creator_name = this.$store.state.user_name,
            obj.info.photos = uniqList[i].photos
            obj.info.place_type = uniqList[i].place_type
+           obj.info.country = uniqList[i].country
+           obj.info.locality = uniqList[i].locality
            obj.info.sublocality1 = uniqList[i].sublocality_level_1
            obj.info.sublocality2 = uniqList[i].sublocality_level_2
            obj.info.location = uniqList[i].location
@@ -433,6 +435,10 @@ export default {
           // political_type: 'adminDong'
         }
 
+        let location = {}
+        location['@class'] = 'OPoint'
+        location.coordinates = [e.latLng.lng(), e.latLng.lat()]
+
         if(clickedZoom >= 12){
           // Place or Info center
           if(isPlace.getPlace(clickedZoom, buildingName)) {
@@ -452,6 +458,7 @@ export default {
               placeInfo.about_info = res.data.data.about_info
               placeInfo.admin_dong_code = res.data.data.admin_dong_code
               placeInfo.admin_id = res.data.data.admin_id
+              placeInfo.location = location
               placeInfo.building_index = res.data.data.building_index
               placeInfo.country = res.data.data.country
               placeInfo.locality = res.data.data.locality
@@ -502,6 +509,7 @@ export default {
               infoCenterInfo.place_name = res.data.data.portal_name
               infoCenterInfo.about_info = res.data.data.about_info
               infoCenterInfo.admin_id = res.data.data.admin_id
+              infoCenterInfo.location = location
               infoCenterInfo.country = res.data.data.country
               infoCenterInfo.locality = res.data.data.locality
               infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
@@ -526,13 +534,17 @@ export default {
           // NOT YET
           // Get Postal Basic Info
           let infoParams = {}
-          infoParams.country_code = 'KR',
-          infoParams.city_do = sk_city_do,
-          infoParams.gu_gun = sk_gu_gun,
-          infoParams.adminDong = sk_adminDong,
-          infoParams.eup_myun = sk_eup_myun,
-          infoParams.latitude = e.latLng.lat(),
+          infoParams.country_code = 'KR'
+          infoParams.city_do = sk_city_do
+          infoParams.gu_gun = sk_gu_gun
+          infoParams.adminDong = sk_adminDong
+          infoParams.eup_myun = sk_eup_myun
+          infoParams.latitude = e.latLng.lat()
           infoParams.longitude = e.latLng.lng()
+
+          // let location = {}
+          // location['@class'] = 'OPoint'
+          // location.coordinates = [e.latLng.lng(), e.latLng.lat()]
 
           console.log('This is OUtter INFO CENTER .........................')
           axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
@@ -545,6 +557,7 @@ export default {
             infoCenterInfo.place_name = res.data.data.portal_name
             infoCenterInfo.about_info = res.data.data.about_info
             infoCenterInfo.admin_id = res.data.data.admin_id
+            infoCenterInfo.location = location
             infoCenterInfo.country = res.data.data.country
             infoCenterInfo.locality = res.data.data.locality
             infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
@@ -570,6 +583,7 @@ export default {
 
     enterPlace: function() {
       let info = this.$store.state.reverse_route_data
+      console.log('20180729 - ROUTER PARAMS : ', info )
       this.$router.push({ name: 'spacePage', params:{id: info}})
     }, // enterPlace
 

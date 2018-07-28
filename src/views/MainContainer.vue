@@ -221,7 +221,7 @@ export default {
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
     } else {
-      console.log("MainContainer : updated............")
+      console.log("MainContainer : updated............", this.$store.state.infocenter_data.location)
     }
 
     // passingData
@@ -277,22 +277,30 @@ export default {
     },
 
     infocenterRouter: function() {
-      let info = {
-        place_type: this.$store.state.p_place_type,
-        s_rid: this.$store.state.p_id,
-        place_name: this.$store.state.p_place_name,
-        about_info: this.$store.state.p_about_info,
-        admin_id: this.$store.state.p_admin_id,
-        country: this.$store.state.p_country,
-        locality: this.$store.state.p_locality,
-        sublocality1: this.$store.state.p_sublocality1,
-        sublocality2: this.$store.state.p_sublocality2,
-        sublocality3: this.$store.state.p_sublocality3,
-        political_type: this.$store.state.p_political_type,
-        latitude: this.$store.state.latitude,
-        longitude: this.$store.state.longitude
+      // let info = {
+      //   place_type: this.$store.state.p_place_type,
+      //   s_rid: this.$store.state.p_id,
+      //   place_name: this.$store.state.p_place_name,
+      //   about_info: this.$store.state.p_about_info,
+      //   admin_id: this.$store.state.p_admin_id,
+      //   country: this.$store.state.p_country,
+      //   locality: this.$store.state.p_locality,
+      //   sublocality1: this.$store.state.p_sublocality1,
+      //   sublocality2: this.$store.state.p_sublocality2,
+      //   sublocality3: this.$store.state.p_sublocality3,
+      //   political_type: this.$store.state.p_political_type,
+      //   latitude: this.$store.state.latitude,
+      //   longitude: this.$store.state.longitude
+      //
+      // }
+      let info = this.$store.state.infocenter_data
+      info.place_type = 'infocenter'
+      // info.place_name = this.$store.state.infocenter_data.place_name
+      // info.photos = this.$store.state.photos
+      // info.id = this.$store.state.id
+      // info.user_name = this.$store.state.user_name
+      info.place_name = this.$store.state.infocenter_data.portal_name
 
-      }
       this.$router.push({ name: 'spacePage', params:{id: info}})
       console.log('20180727 - PASSING DATA ....check s_rid = id ')
       console.log('20180728 - INFO CENTER CLICKED.........')
@@ -360,7 +368,7 @@ export default {
       })
       .then(res => {
         // Tab select Info Center Level and Find info Center data
-        console.log('20180728 - Tab selected INFOCENTER DATA : ',res.data.data)
+        console.log('20180728 - Tab selected INFOCENTER DATA : ',res.data.data)  // GOOOOOOOOOOD lat lng
         let currentInfo = res.data.data
         currentInfo.placeType = 'infocenter'
         currentInfo.s_rid = res.data.data.id
@@ -568,7 +576,8 @@ export default {
               .then(res => {
                 let currentInfo = res.data.data
                 currentInfo.placeType = 'infocenter'
-                _this.$store.commit('setForPostData', currentInfo)
+                currentInfo.s_rid = res.data.data.id
+                _this.$store.commit('setCenterData', currentInfo)
 
                 console.log ('Skt send request and get data below ************************************************')
                 console.log('20180727 - MainContainer First setForPostData: ',_this.$store.state)

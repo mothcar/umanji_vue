@@ -270,7 +270,7 @@ export default {
       }
 
       this.routed_data = getData
-      console.log('20180727 - GET BUS DATA ON SPACEPACE : ', getData )
+      console.log('20180727 - GET ROUTER DATA ON SPACEPACE : ', getData )
       // console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
       // console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
       // console.log('this.$route.params.id: ', this.$route.params.id)
@@ -364,7 +364,7 @@ export default {
         }) // axios then
 
       } else {
-        // place **********************************************************************
+        // place ********************************************************************************************************************
         console.log('20180727 - BUILDING ')
 
         // this.place_name = this.$store.state.p_place_name
@@ -376,8 +376,9 @@ export default {
         }
 
         let spaceParams = {}
-        spaceParams.place_type = placeType
+        // spaceParams.place_type = placeType
         spaceParams.s_rid = getData.s_rid
+        // spaceParams.user_name = getData.creator_name
         // this.rid = ''
         axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
           params: spaceParams

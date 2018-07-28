@@ -34,7 +34,7 @@
                     v-if(place_type == 'infocenter')  -->
 
 
-                    <div v-html="item.content"  @click="transData(index)"></div>
+                    <div v-html="item.content"  @click="spaceRouter(index)"></div>
                     <div>{{ item.createdAt }}</div>
                   </div>
                 </v-card-title>
@@ -170,12 +170,12 @@ export default {
 
   methods: {
 
-    transData: function(idx) {
+    spaceRouter: function(idx) {
 
       let info = this.postLists[idx]
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
-      console.log('20180727 - PASSING DATA ....', info)
+      console.log('20180727 - ROUTE DATA FROM POSTContainer PLACE TYPE  ....', info)
     //
     //
     // this.busData.push(info);

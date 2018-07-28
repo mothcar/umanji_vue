@@ -74,7 +74,7 @@ export default {
   }, // getPlace
 
   isBuildingName(word){
-    let infoList = ['주민센터', '구청', '시청', '군청', '서울특별시청']
+    let infoList = ['자치회관', '주민센터', '구청', '시청', '군청', '서울특별시청']
     let checkInfo
 
     for(var j=0; infoList.length>j; j++){
