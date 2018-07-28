@@ -9,7 +9,7 @@
     >
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
 
-      <v-toolbar-title>{{ place_title }}</v-toolbar-title>
+      <v-toolbar-title>{{ $route.params.id.place_name }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -22,7 +22,7 @@
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
-            <h1 class="p_title" :key="suffix">{{ place_title }} {{ suffix }}</h1>
+            <h1 class="p_title" :key="suffix">{{ $route.params.id.place_name }} {{ suffix }}</h1>
             <h3>{{ $route.params.id.place_name}}</h3>
 
     </div>
@@ -72,7 +72,7 @@
 
               </v-list-tile-avatar>
               <div>
-                <div>{{ item.content }}</div>
+                <div v-html="item.content">{{  }}</div>
               </div>
             </v-card-title>
             <div>
