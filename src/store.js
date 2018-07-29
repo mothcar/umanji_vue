@@ -18,6 +18,7 @@ export default new Vuex.Store({
     email: '',
     phone: '',
     user_name: '',
+    roles: '',
     photos: '',
     money: 0,
     // Current position Data
@@ -69,7 +70,7 @@ export default new Vuex.Store({
 
     // new Current Place (address)
     current_place: '',
-    infocenter_data: '' 
+    infocenter_data: ''
   },
 
   getters: {
@@ -151,6 +152,7 @@ export default new Vuex.Store({
       state.email = payload.user.email
       state.phone = payload.user.phone
       state.user_name = payload.user.user_name
+      state.roles = payload.user.roles
       state.photos = payload.user.photos
       state.money = payload.user.money
       state.token = payload.token

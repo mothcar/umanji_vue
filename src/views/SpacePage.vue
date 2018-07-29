@@ -1,31 +1,26 @@
 <template>
   <v-app>
 
-    <v-toolbar
-      color="cyan"
-      dark
-      tabs
-      fixed
-    >
+    <!-- toolbar *******************************************************************************  -->
+    <v-toolbar color="cyan" dark  tabs  fixed >
       <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
-
-      <v-toolbar-title>{{ $route.params.id.place_name }}</v-toolbar-title>
+      <v-toolbar-title>{{ routed_data.place_name }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
-
     </v-toolbar>
+    <!-- toolbar *******************************************************************************  -->
 
-
-
-
+    <!-- top info box *******************************************************************************  -->
     <div class="p_title_div">
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
-            <h1 class="p_title" :key="suffix">{{ $route.params.id.place_name }} {{ suffix }}</h1>
-            <h3>{{ $route.params.id.place_name}}</h3>
-
+            <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1>
+            <h3>{{ routed_data.place_name}}</h3>
     </div>
+    <!-- top info box *******************************************************************************  -->
+
+    <!-- tab and contents ***************************************************************************  -->
     <div>
       <!-- before was fixed-tabs -->
       <v-tabs
@@ -45,22 +40,21 @@
         </v-tab>
       </v-tabs>
 
-      <!-- create Post Button ******************************************************************************** -->
-      <div>
-        <v-btn color="success" @click="createPost" >Write Post</v-btn>
-        <!--  -->
-        <!-- @click.stop="dialog = true" -->
-      </div>
-      <!-- create Post Button ******************************************************************************** -->
-
       <v-tabs-items v-model="model.id">
         <v-tab-item
           v-for="(name, index) in item_name"
           :id="`tab-${name}`"
           :key="name"
         >
+        <!-- create Post Button ********************************************************* -->
+        <div>
+          <v-btn color="success" @click="changeTab" >{{ button_title[index] }}</v-btn>
+          <!--  -->
+          <!-- @click.stop="dialog = true" -->
+        </div>
+        <!-- create Post Button ********************************************************* -->
 
-        <!-- content ******************************************************************************** -->
+        <!-- content ******************************************************************** -->
         <v-card class="p_card" v-for="(item, user_index) in model.lists"
           :key="user_index"
           avatar
@@ -81,7 +75,7 @@
                   <div class="card" style="width: 20rem;">
 
                     <div class="card-block">
-                      <h4 class="card-title">{{props.title}}</h4>
+                      <h4 class="card-title" >{{props.title}}</h4>
                       <p class="card-text">{{props.description}}</p>
                       <a v-bind:href="props.url" class="btn btn-primary">More</a>
                       <img class="card-img-top" :src="props.img" :alt="props.title">
@@ -92,12 +86,13 @@
             </div>
 
         </v-card>
-        <!-- content ******************************************************************************** -->
+        <!-- content ******************************************************************** -->
 
         </v-tab-item>
       </v-tabs-items>
 
     </div>
+    <!-- tab and contents ***************************************************************************  -->
 
     <!-- Dialog ******************************************************************************** -->
     <v-layout row justify-center>
@@ -222,8 +217,7 @@ import LinkPrevue from 'link-prevue'
 export default {
     props: {
 
-    }
-    ,
+    },
 
     data () {
       return {
@@ -231,11 +225,13 @@ export default {
         rightDrawer: false,
         left: true,
         place_title: 'PlacePage',
-        item_name: ['Post', 'Person', 'Some'],
+        item_name: ['Post', 'Person', '커뮤니티'],
         model: {
-          lists: [],
-          id: 'tab-2'
+          id: 'tab-1',
+          lists: []
         },
+        button_title: ['Write post', 'Add Person', 'Add Community'],
+        function_name: ['createPost', 'addPerson', 'createCommunity'],
         name: 'aaa',
         text: 'Lorem ipsum ut labore et dolore mag nisi ut aliquip ex ea commodo consequat.',
         src: require('../assets/images/default_info_center.jpg'),
@@ -249,7 +245,8 @@ export default {
         suffix: '',
         rid: '',
         default_user: require('../assets/images/default_user.jpg'),
-        routed_data: ''
+        routed_data: '',
+        selectval: ''
 
       } // return
     }, // data
@@ -403,16 +400,19 @@ export default {
            // do stuff
            switch(val.id){
              case 'tab-Post':
+             this.selectval = 'createPost'
               // console.log("switch Post")
              break;
              case 'tab-Person':
+             console.log('20180730 - WATCH HANDLER : ', val.id )
+             this.selectval = 'addPerson'
               // console.log("switch Person")
              break;
-             case 'tab-Some':
+             case 'tab-커뮤니티':
+             this.selectval = 'createCommunity'
               // console.log("switch Some")
              break;
            }
-           // console.log('watch - model check : ', val)
          },
          deep: true
        }, // model
@@ -433,6 +433,22 @@ export default {
         this.rightDrawer = !this.rightDrawer
       },
 
+      changeTab: function() {
+        let idx = this.selectval
+        switch(idx){
+          case 'createPost':
+            this.createPost()
+          break
+          case 'addPerson':
+            this.addPerson()
+          break
+          case 'createCommunity':
+            this.createCommunity()
+          break
+
+        }
+      },
+
       createPost: function() {
         // @click.stop="dialog = true"
         let info = this.routed_data
@@ -444,6 +460,14 @@ export default {
           this.dialog = true
         }
         // console.log("PostContainer : Write post clicked...")
+      },
+
+      addPerson: function() {
+        console.log('ADD PERSON........')
+      },
+
+      createCommunity: function() {
+        console.log('CREATE COMMUNITY........')
       },
 
       showProfile(idx){
@@ -505,6 +529,10 @@ export default {
 </script>
 
 <style scoped>
+/* @charset "utf-8";
+.card-block .card-title .card-text{
+
+} */
 .p_title_div {
   width: 100%;
   height: 100%;
