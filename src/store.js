@@ -13,11 +13,12 @@ export default new Vuex.Store({
     emailentry:'',
     authenticated: false,
     // user Data
+    user_junk: '',
     id: '',
     token:'',
     email: '',
     phone: '',
-    user_name: '',
+    user_name: '손님',
     roles: '',
     photos: '',
     money: 0,
@@ -156,6 +157,7 @@ export default new Vuex.Store({
       state.photos = payload.user.photos
       state.money = payload.user.money
       state.token = payload.token
+      state.user_junk =payload
     },
 
     changeTabState(state, payload) {

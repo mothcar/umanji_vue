@@ -15,7 +15,12 @@
       <v-btn icon>
         <v-icon @click="">search</v-icon>
       </v-btn>
+
+      <v-btn icon>
+        <v-icon @click="openManageDialog">verified_user</v-icon>
+      </v-btn>
       <!-- searchLocation -->
+      <!-- verified_user -->
 
       <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
       <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
@@ -159,6 +164,23 @@
   </v-navigation-drawer>
   <!-- RIGHT MENU ********************************** -->
 
+  <!-- DIALOG MANAGEMENT ********************************** -->
+  <v-layout row justify-center>
+    <v-dialog v-model="manageDialog" persistent max-width="290">
+      <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
+      <v-card>
+        <v-card-title class="main_headline">관리자 페이지로 이동하시겠습니까?</v-card-title>
+        <v-card-text>이곳은 관리자 홈입니다. 여러분들께 좋은 서비스를 해드리기위해 이곳에서 운영에 대한 토론을 합니다. 아쉽게도 각 지역의 관리자들만 들어올 수 있습니다. 지역 발전을 위해 바라는 내용은 각 지역 관리자들께 말씀해 주십시오.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" flat @click.native="manageDialog = false">나가기</v-btn>
+          <v-btn color="green darken-1" flat @click.native="routerToManagement">들어가기</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
+  <!-- DIALOG MANAGEMENT ********************************** -->
+
 
 
   <!-- FOOTER ************************************** -->
@@ -211,7 +233,8 @@ export default {
       params: {
         id: 'adminDong'
       },
-      markers: []
+      markers: [],
+      manageDialog: false
 
     } // end of return
   }, // data
@@ -250,6 +273,16 @@ export default {
           console.log('20180728 - search Location : ',result[0])
         }
       });
+    },
+
+    openManageDialog() {
+      this.manageDialog = true
+    },
+
+    routerToManagement () {
+      this.manageDialog = false
+      this.$router.push({name:'manageHome'})
+      console.log('20180730 - Management OFFICE : ')
     },
 
     toMap: function(){
@@ -726,6 +759,10 @@ export default {
 </script>
 
 <style scoped>
+div.main_headline{
+  font-size: 17px;
+  color: #333;
+}
 .layout {
   flex:none;
 }

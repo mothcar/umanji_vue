@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import MainContainer from './views/MainContainer.vue'
 import PostContainer from './views/PostContainer.vue'
 import Login from './components/Login.vue'
-import About from './views/About.vue'
+// import About from './views/About.vue'
 // import GMap from './views/MapContainer.vue'
 import MainLogin from './components/MainLogin.vue'
 import SecureLogin from './views/SecureLogin.vue'
@@ -13,6 +13,8 @@ import Profile from './views/Profile.vue'
 import Wallet from './views/Wallet.vue'
 import OtherProfile from './views/OtherProfile.vue'
 import SpaceSetting from './views/SpaceSetting.vue'
+import ManagerMap from './views/management/ManagerMap.vue'
+import ManageHome from './views/management/ManageHome.vue'
 
 Vue.use(Router)
 
@@ -29,11 +31,6 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: MainLogin
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About
     },
     {
       path: '/secureLogin',
@@ -69,7 +66,19 @@ export default new Router({
       path: '/spaceSetting/:data',
       name: 'spaceSetting',
       component: SpaceSetting
+    },
+    {
+      path: '/managerMap',
+      name: 'managerMap',
+      component: ManagerMap
+    },
+    {
+      path: '/manageHome',
+      name: 'manageHome',
+      component: ManageHome
     }
+
+
 
   ]
 })

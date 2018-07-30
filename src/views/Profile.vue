@@ -12,7 +12,8 @@
         <h2 class="p_p">main - Possess</h2>
         <h3 class="p_p">admin Level : 5</h3>
         <h3 class="p_p">Money : {{ money }}</h3>
-        Wallet <v-btn color="success" @click="routeWallet" >Wallet</v-btn>
+        <h3 class="p_p">Wallet <span> <v-btn color="success" @click="routeWallet" >Wallet</v-btn> </span> </h3>
+        <h3 class="p_p">회원관리 <span> <v-btn v-if="isAdmin" color="info" @click="adminMember" >회원관리</v-btn> </span> </h3>
         <h3 class="p_p">Building : 5</h3>
         <h3 class="p_p">Blogs : 15</h3>
         <h3 class="p_p">My Photo :</h3>
@@ -54,6 +55,7 @@ export default {
       image: require('../assets/images/profile_sample.jpg'),
       user_data: '',
       user_name: '',
+      isAdmin: false,
       money: 0,
       readyToUpload: false,
       photo: '',
@@ -64,6 +66,11 @@ export default {
   mounted() {
     // console.log('20180724 - GET ID :', this.$store.state.userId)
     let userId = this.$store.state.id
+      for(var i=0; this.$store.state.roles.length>i; i++){
+        if(this.$store.state.roles[i] == 'politician') this.isAdmin = true
+      }
+
+
     axios.get(p_env.BASE_URL+'/vue/getUserData', {
       params: {id: userId}
     })
@@ -72,13 +79,18 @@ export default {
       this.photo = res.data.data.photos
       this.user_data = res.data.data
       this.user_name = res.data.data.user_name
-      this.money = res.data.data.money
+      this.money = this.thousandComma(res.data.data.money)
     }) // axios then
   }, // mounted
 
   methods: {
     routeWallet: function() {
       this.$router.push({name: 'wallet'})
+    },
+
+    adminMember () {
+      console.log('ROUTE TO ADMIN PAGE ')
+      this.$router.push({name:'managerMap'})
     },
 
     previewImage: function(event) {
@@ -99,6 +111,10 @@ export default {
             reader.readAsDataURL(input.files[0]);
         }
     }, // previewImage
+
+    thousandComma(value) {
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    },
 
     uploadPhoto: function() {
       let _this = this
