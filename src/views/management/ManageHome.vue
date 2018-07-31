@@ -56,9 +56,11 @@ export default {
     },
 
     joinManager() {
-      // this.apply_dialog = true
-      this.$refs.manaApply.dialog = true
-      console.log('20280730 - 지역관리자 신청 FORM')
+      if(this.auth) {
+        this.$refs.manaApply.dialog = true
+      } else {
+        alert('log in please')
+      }
     }
 
   },
