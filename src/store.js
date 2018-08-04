@@ -13,7 +13,7 @@ export default new Vuex.Store({
     emailentry:'',
     authenticated: false,
     // user Data
-    user_junk: '',
+    user_junk: '',  // object DATA
     id: '',
     token:'',
     email: '',
@@ -71,7 +71,8 @@ export default new Vuex.Store({
 
     // new Current Place (address)
     current_place: '',
-    infocenter_data: ''
+    infocenter_data: '',
+    placeInfo: ''
   },
 
   getters: {
@@ -243,6 +244,10 @@ export default new Vuex.Store({
 
     setCreatorId(state, payload){
       state.p_creator_id = payload.creator_id
+    },
+
+    setNewPlaceInfo(state, payload){
+      state.placeInfo = payload
     }
 
 

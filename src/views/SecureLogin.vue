@@ -42,9 +42,9 @@
                 v => /.+@.+/.test(v) || '정확한 이메일을 입력해 주세요'
               ],
               input: {
-                  // username: p_env.login_id,
+                  username: p_env.login_id,
                   // password: p_env.login_pw,
-                  username: '',
+                  // username: '',
                   password: '111111',
                   // down below Data from Server DB
                   id: '',

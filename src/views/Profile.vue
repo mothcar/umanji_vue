@@ -2,7 +2,7 @@
   <div class="p_container">
 
     <div class="p_box p_header">
-      <h1> Profile - {{ user_name }}</h1>
+      <h1> My Home - {{ user_name }}</h1>
     </div>
     <div class="p_box p_side">
       <h2> menu </h2>

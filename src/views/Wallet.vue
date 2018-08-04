@@ -58,8 +58,6 @@
       <td>{{ props.item.createdAt }}</td>
       <td class="">
         <div>
-
-
         <v-list-tile-avatar>
             <img v-if="props.item.withdrawal_id != '' && props.item.withdrawal_photo != ''" :src="props.item.withdrawal_photo" @click="">
             <img v-if="props.item.deposit_id != '' && props.item.deposit_photo != ''" :src="props.item.deposit_photo" @click="">

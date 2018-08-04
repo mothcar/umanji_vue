@@ -15,6 +15,7 @@ import OtherProfile from './views/OtherProfile.vue'
 import SpaceSetting from './views/SpaceSetting.vue'
 import ManagerMap from './views/management/ManagerMap.vue'
 import ManageHome from './views/management/ManageHome.vue'
+import Message from './views/Message.vue'
 
 Vue.use(Router)
 
@@ -76,6 +77,11 @@ export default new Router({
       path: '/manageHome',
       name: 'manageHome',
       component: ManageHome
+    },
+    {
+      path: '/message',
+      name: 'message',
+      component: Message
     }
 
 

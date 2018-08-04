@@ -17,6 +17,22 @@
           <!-- $t("portal_page.title")  -->
             <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1>
             <h3>{{ routed_data.place_name}}</h3>
+
+            <div v-if="place_type == 'infocenter' ">
+              <v-list-tile-avatar>
+                  <img :src="admin_photo" @click="showProfile(user_index)">
+              </v-list-tile-avatar>
+              <v-btn v-if="isOfficer" @click="setAdmin"> 임명 </v-btn>
+              <h3>{{ admin_name }}</h3>
+            </div>
+
+            <div v-if="place_type == 'place' ">
+              <v-list-tile-avatar>
+                  <img :src="owner_photo" @click="showProfile(user_index)">
+              </v-list-tile-avatar>
+              <h3>{{ owner_name }}</h3>
+            </div>
+
     </div>
     <!-- top info box *******************************************************************************  -->
 
@@ -204,14 +220,18 @@
     </v-list>
   </v-navigation-drawer>
   <!-- RIGHT MENU ********************************** -->
+  <dialogSetAdmin ref="dialog_set_admin"></dialogSetAdmin>
 
   </v-app>
+
 
 
 </template>
 
 <script>
 import LinkPrevue from 'link-prevue'
+import util from '@/plugins/filters'
+import dialogSetAdmin from '../components/dialog_setAdmin.vue'
 // import  i18n  from 'vue-i18n'
 
 export default {
@@ -224,6 +244,7 @@ export default {
         // title: this.$route.params.id,
         rightDrawer: false,
         left: true,
+        place_type: 'infocenter',
         place_title: 'PlacePage',
         item_name: ['Post', 'Person', '커뮤니티'],
         model: {
@@ -244,9 +265,14 @@ export default {
         getData: 'Some Data..',
         suffix: '',
         rid: '',
-        default_user: require('../assets/images/default_user.jpg'),
         routed_data: '',
-        selectval: ''
+        selectval: '',
+        admin_photo: require('../assets/images/default_user.jpg'),
+        admin_name: '관리자 없음',
+        owner_photo: require('../assets/images/default_user.jpg'),
+        owner_name: '소유자 없음',
+        isOfficer: false
+
 
       } // return
     }, // data
@@ -256,66 +282,78 @@ export default {
       // this.$bus.$emit('bus-data', someData)
 
       let getData
+      let infoName = ''
+      let politicalType = ''
+      let politicalLevel = 5
+
       console.log('20180728 - NOT REVERSE CHECK : ', typeof this.$route.params.id)
 
       if(typeof this.$route.params.id == 'object'){
         console.log('20180728 - NOT REVERSE')
+        console.log('20180802 - ROUTE PARAMS DATA : ', this.$route.params.id)
         getData = this.$route.params.id
+        console.log('20180727 - GET ROUTER DATA ON SPACEPACE : ', getData )
       } else {
         console.log('20180728 - REVERSE')
         getData = this.$store.state.reverse_route_data
       }
 
       this.routed_data = getData
-      console.log('20180727 - GET ROUTER DATA ON SPACEPACE : ', getData )
-      // console.log('CHECK AREA ON SPACE STORE DATA : ', this.$store.state)
-      // console.log('STORE DATA - p-place_type: ', this.$store.state.p_place_type )
-      // console.log('this.$route.params.id: ', this.$route.params.id)
+      console.log('20180803 - getData : ', getData)
+
       // INFOCENTER **********************************************************************
       if(getData.place_type == 'infocenter') {
         // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
 
-        let infoName = ''
-        let politicalType = ''
+        this.place_type = 'infocenter'
+
         if(getData.sublocality1 == undefined){
           getData.sublocality1 = getData.sublocality_level_1
           getData.sublocality2 = getData.sublocality_level_2
         }
+        // console.log('20180802 - OUT OF SWITCH : ', getData.political_type )
 
-        switch(this.$route.params.id){ //'city_do'
+        switch(getData.political_type){ //'city_do'
+
           case 'world':
             this.place_title = this.$store.state.world
             infoName = '세계'
             politicalType = 'world'
+            politicalLevel = 5
           break
 
           case 'country':
             this.place_title = this.$store.state.country
             infoName = '대한민국'
             politicalType = 'country'
+            politicalLevel = 4
           break
 
-          case 'city_do':
+          case 'locality':
             this.place_title = getData.locality
             infoName = getData.locality
             politicalType = 'locality'
+            politicalLevel = 3
           break
 
-          case 'gu_gun':
+          case 'sublocality1':
             this.place_title = getData.sublocality1
             infoName = getData.sublocality1
             politicalType = 'sublocality1'
+            politicalLevel = 2
           break
 
-          case 'adminDong':
+          case 'sublocality2':
             this.place_title = getData.sublocality2
             infoName = getData.sublocality2
             politicalType = 'sublocality2'
+            politicalLevel = 1
           break
-          default:
-            this.place_title = getData.sublocality2
-            infoName = getData.sublocality2
-            politicalType = 'sublocality2'
+          // default:
+          //   this.place_title = getData.sublocality2
+          //   infoName = getData.sublocality2
+          //   politicalType = 'sublocality2'
+          //   politicalLevel = 1
 
         } // switch
 
@@ -328,16 +366,93 @@ export default {
         let spaceParams = {}
         spaceParams.place_type = 'infocenter'
         spaceParams.id = getData.s_rid
+        spaceParams.political_type = politicalType
 
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
           params: params
         })
         .then(res => {
-          console.log('20180720 - Find Info center  result :', res.data.data)
+          console.log('20180802 - Find INFO CENTER result :', res.data.data)
           let coords = {}
           // For Top Info Center Button
+          this.$store.commit('setNewPlaceInfo', res.data.data)
           var location = res.data.data.location
           this.routed_data.location = location
+          console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
+          if(res.data.data.admin_photo != undefined){
+            this.admin_photo = res.data.data.admin_photo
+          }
+
+
+
+
+
+
+          console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
+          if(this.$store.state.user_junk != '' ){
+            let o = this.$store.state.user_junk.user.roles
+            let oSize = Object.keys(o).length
+
+            console.log('20180802 - SUBTRACT SIZE : ', oSize)
+
+            // for(var prop in o) {
+            //   console.log('20180802 - KEY VALUE : ', prop,o[prop]);
+            // }
+
+            if(oSize > 1) {
+              var key = "politician";
+              var value = util.getMapValue(o,key);      // value 2
+              console.log('20180802 - CHECK GET LEVEL FROM POLITICIAN TYPE', value)
+              // politicalLevel = 5
+              if(value != '') {
+                switch(value){
+                  case 'world':
+                  console.log('20180802 - POLITICAL LEVEL  :', politicalLevel)
+                  console.log('20180802 - CASE :', value)
+                    if(politicalLevel <= 5){
+                      this.isOfficer = true
+                    }
+                  break;
+                  case 'country':
+                  console.log('20180802 - CASE :', value)
+                    if(politicalLevel <= 4){
+                      this.isOfficer = true
+                    }
+                  break;
+                  case 'locality':
+                    if(politicalLevel <= 3){
+                      this.isOfficer = true
+                    }
+                  break;
+                  case 'sublocality1':
+                    if(politicalLevel <= 2){
+                      this.isOfficer = true
+                    }
+                  break;
+                  case 'sublocality2':
+                    if(politicalLevel <= 1){
+                      this.isOfficer = true
+                    }
+                  break;
+                } //switch
+              }
+
+              this.isCitizen = false
+            }
+          }
+
+
+
+
+          // let viewer_level = this.$store.state.user_junk.user.
+          // // viewer is officer
+          // if(viewer_level){
+          //   this.isOfficer = true
+          // }
+
+
+
+
 
           // location['@class'] = 'OPoint'
           // location.coordinates = [this.longitude, this.latitude]
@@ -363,6 +478,8 @@ export default {
       } else {
         // place ********************************************************************************************************************
         console.log('20180727 - BUILDING ')
+
+        this.place_type = 'place'
 
         // this.place_name = this.$store.state.p_place_name
         let placeType = getData.place_type
@@ -424,7 +541,8 @@ export default {
     },
 
     components: {
-      LinkPrevue
+      LinkPrevue,
+      dialogSetAdmin
     },
 
     methods: {
@@ -493,6 +611,10 @@ export default {
 
       login: function() {
         this.dialog = false
+      },
+
+      setAdmin () {
+        this.$refs.dialog_set_admin.dialog = true
       }
 
     }, //methods

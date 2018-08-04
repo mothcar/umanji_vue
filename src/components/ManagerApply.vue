@@ -97,7 +97,7 @@ export default {
 
     submit() {
       this.dialog = false
-      let userId = this.$store.state.id
+      let userId = this.$store.state.user_junk.user.id
       let submitParams = {
         user_name: this.user_name,
         photos: '',
@@ -108,6 +108,7 @@ export default {
         job: this.job,
         wanted_area: this.wanted_area
       }
+      console.log('20180802 - user_junk params : ', submitParams)
       axios.post(p_env.BASE_URL+'/vue/applyManager', submitParams)
       .then(res=>{
         console.log('20180731 - SUBMIT Done ........', res.data.data )

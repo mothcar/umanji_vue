@@ -17,7 +17,7 @@
       </v-btn>
 
       <v-btn icon>
-        <v-icon @click="openManageDialog">verified_user</v-icon>
+        <v-icon @click="openManageDialog">gavel</v-icon>
       </v-btn>
       <!-- searchLocation -->
       <!-- verified_user -->
@@ -131,6 +131,13 @@
         <v-list-tile-title>Wallet</v-list-tile-title>
       </v-list-tile>
 
+      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'message', params: {} }" >
+        <v-list-tile-action>
+          <v-icon>mail_outline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>Messages</v-list-tile-title>
+      </v-list-tile>
+
       <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'profile', params: {} }" >
         <v-list-tile-action>
           <v-icon>account_box</v-icon>
@@ -169,8 +176,8 @@
     <v-dialog v-model="manageDialog" persistent max-width="290">
       <!-- <v-btn slot="activator" color="primary" dark>Open Dialog</v-btn> -->
       <v-card>
-        <v-card-title class="main_headline">관리자 페이지로 이동하시겠습니까?</v-card-title>
-        <v-card-text>이곳은 관리자 홈입니다. 여러분들께 좋은 서비스를 해드리기위해 이곳에서 운영에 대한 토론을 합니다. 아쉽게도 각 지역의 관리자들만 들어올 수 있습니다. 지역 발전을 위해 바라는 내용은 각 지역 관리자들께 말씀해 주십시오.</v-card-text>
+        <v-card-title class="main_headline">지역관리자 페이지로 이동하시겠습니까?</v-card-title>
+        <v-card-text>이곳은 각 지역관리자 홈입니다. 여러분들께 좋은 서비스를 해드리기위해 이곳에서 운영에 대한 토론을 합니다. 아쉽게도 각 지역의 관리자들만 들어올 수 있습니다. 지역 발전을 위해 바라는 내용은 각 지역 관리자들께 말씀해 주십시오.</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" flat @click.native="manageDialog = false">나가기</v-btn>
@@ -301,6 +308,8 @@ export default {
 
     logout: function () {
       this.$store.commit('auth', false)
+      let resetData = ''
+      this.$store.commit('setUserInfo', resetData)
       this.rightDrawer = !this.rightDrawer
     },
 
