@@ -38,7 +38,11 @@
           </v-tooltip>
         </template>
         <template slot="items" slot-scope="props">
-          <td class="p_tabel_text">{{ props.item.photos }}</td>
+          <td class="p_tabel_text">{{  }}
+            <v-list-tile-avatar>
+                <img :src="props.item.photos[0]" @click="">
+            </v-list-tile-avatar>
+          </td>
           <td class="p_tabel_text">{{ props.item.user_name }}</td>
           <td class="p_tabel_text">{{ props.item.email }}</td>
           <td class="p_tabel_text">{{ props.item.manage_area }}</td>
@@ -136,6 +140,12 @@ export default {
     }
 
     console.log('20180731 - managemanet ref : ', refData)
+
+    axios.get(p_env.BASE_URL+'/vue/getManagerList')
+    .then(result=>{
+      this.managerList = result.data.data
+      console.log('20180805 - get manager list : ', result)
+    })
 
 
   }, // mounted

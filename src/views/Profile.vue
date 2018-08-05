@@ -9,7 +9,8 @@
     </div>
     <div class="p_box p_main">
       <div class="p_main_container">
-        <h2 class="p_p">main - Possess</h2>
+        <h2 class="p_p" v-show="isName"> 이름 :{{ user_name }} <v-btn @click="showInput">수정</v-btn></h2>
+        <h2 class="p_p" v-show="isName == false "> 이름 : <span> <input v-model="new_name" placeholder="이름입력"/><v-btn @click="update_name">수정</v-btn></span></h2>
         <h3 class="p_p">admin Level : 5</h3>
         <h3 class="p_p">Money : {{ money }}</h3>
         <h3 class="p_p">Wallet <span> <v-btn color="success" @click="routeWallet" >Wallet</v-btn> </span> </h3>
@@ -20,7 +21,7 @@
         <v-list-tile-avatar>
           <img :src="photo">
         </v-list-tile-avatar>
-        <v-btn v-if="readyToUpload" color="success" @click="uploadPhoto" >send Photo </v-btn>
+        <v-btn v-show="readyToUpload" color="success" @click="uploadPhoto" >send Photo </v-btn>
         <!-- file select *********************************************************************** -->
         <div>
             <div class="file-upload-form">
@@ -54,12 +55,14 @@ export default {
     return {
       image: require('../assets/images/profile_sample.jpg'),
       user_data: '',
-      user_name: '',
+      user_name: '등록안됨',
       isAdmin: false,
       money: 0,
       readyToUpload: false,
       photo: '',
-      imageData: ''
+      imageData: '',
+      isName: true,
+      new_name: ''
     } // return
   },
 
@@ -76,7 +79,17 @@ export default {
     })
     .then(res=>{
       console.log('20180724 - GET profile data :', res.data.data)
-      this.photo = res.data.data.photos
+      if(res.data.data.photos ==''){
+        console.log('20180805 - no image ............')
+        this.photo = require('../assets/images/default_user_image.png')
+      } else {
+        this.photo = res.data.data.photos
+      }
+
+      if(res.data.data.user_name == ''){
+        this.isName = false
+      }
+
       this.user_data = res.data.data
       this.user_name = res.data.data.user_name
       this.money = this.thousandComma(res.data.data.money)
@@ -134,13 +147,36 @@ export default {
           image : result.url
         })
         .then(res=>{
-          _this.readyToUpload = false
           console.log('20180726 - send image and get result : ', res )
         })
+        _this.readyToUpload = false
+        _this.imageData = ''
+        _this.photo = result.url
+        console.log('20180726 - send image and get cloduinary result : ', result )
       });
 
 
-    } // uploadPhoto
+    }, // uploadPhoto
+
+    update_name() {
+      let newName = this.new_name
+      console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
+      axios.post(p_env.BASE_URL+'/vue/updateName', {
+        user_id: this.$store.state.user_junk.user.id,
+        user_name: newName
+      })
+      .then(res=>{
+        this.user_name = res.data.data.user_name
+        this.isName = true
+
+        console.log('20180805 - update name ', res)
+      })
+
+    },
+
+    showInput() {
+      this.isName = false
+    }
 
   },
 

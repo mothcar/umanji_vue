@@ -75,7 +75,8 @@ export default {
       let submitParams = {
         // phone_number: this.phone_number,
         email: this.email,
-        s_rid: this.infoData.id
+        s_rid: this.infoData.id,
+        portal_name: this.infoData.portal_name
       }
       console.log('20180802 - submitParams : ', submitParams)
       axios.post(p_env.BASE_URL+'/vue/setAdmin', submitParams)

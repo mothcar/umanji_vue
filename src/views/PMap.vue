@@ -57,7 +57,10 @@
             </v-avatar>
 
             <div @click="linkToPage(index)">
-              {{ m.info.s_rid }}  {{ m.info.content }}
+              {{ m.info.s_rid }}
+            </div>
+            <div @click="linkToPage(index)" v-html="m.info.content">
+              {{ m.info.s_rid }}
             </div>
 
           </v-flex>

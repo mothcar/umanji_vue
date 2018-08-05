@@ -22,7 +22,7 @@
               <v-list-tile-avatar>
                   <img :src="admin_photo" @click="showProfile(user_index)">
               </v-list-tile-avatar>
-              <v-btn v-if="isOfficer" @click="setAdmin"> 임명 </v-btn>
+              <v-btn v-show="isOfficer" @click="setAdmin"> 임명 </v-btn>
               <h3>{{ admin_name }}</h3>
             </div>
 
@@ -379,79 +379,70 @@ export default {
           var location = res.data.data.location
           this.routed_data.location = location
           console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
-          if(res.data.data.admin_photo != undefined){
-            this.admin_photo = res.data.data.admin_photo
-          }
 
 
+          // Is there a Admin?
+          if(res.data.data.admin_id != ''){
+            this.admin_name = res.data.data.admin_name
+            if(res.data.data.admin_photo != undefined){
+              this.admin_photo = res.data.data.admin_photo
+            }
+            this.isOfficer = false
+          } else {
+            // Are you Admin level to appoint
+            console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
+            if(this.$store.state.user_junk != '' ){
+              let o = this.$store.state.user_junk.user.roles
+              let oSize = Object.keys(o).length
 
+              console.log('20180802 - SUBTRACT SIZE : ', oSize)
 
+              // for(var prop in o) {
+              //   console.log('20180802 - KEY VALUE : ', prop,o[prop]);
+              // }
 
+              if(oSize > 1) {
+                var key = "politician";
+                var value = util.getMapValue(o,key);      // value 2
+                console.log('20180802 - CHECK GET LEVEL FROM POLITICIAN TYPE', value)
+                // politicalLevel = 5
+                if(value != '') {
+                  switch(value){
+                    case 'world':
+                    console.log('20180802 - POLITICAL LEVEL  :', politicalLevel)
+                    console.log('20180802 - CASE :', value)
+                      if(politicalLevel <= 5){
+                        this.isOfficer = true
+                      }
+                    break;
+                    case 'country':
+                    console.log('20180802 - CASE :', value)
+                      if(politicalLevel <= 4){
+                        this.isOfficer = true
+                      }
+                    break;
+                    case 'locality':
+                      if(politicalLevel <= 3){
+                        this.isOfficer = true
+                      }
+                    break;
+                    case 'sublocality1':
+                      if(politicalLevel <= 2){
+                        this.isOfficer = true
+                      }
+                    break;
+                    case 'sublocality2':
+                      if(politicalLevel <= 1){
+                        this.isOfficer = true
+                      }
+                    break;
+                  } //switch
+                }
 
-          console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
-          if(this.$store.state.user_junk != '' ){
-            let o = this.$store.state.user_junk.user.roles
-            let oSize = Object.keys(o).length
-
-            console.log('20180802 - SUBTRACT SIZE : ', oSize)
-
-            // for(var prop in o) {
-            //   console.log('20180802 - KEY VALUE : ', prop,o[prop]);
-            // }
-
-            if(oSize > 1) {
-              var key = "politician";
-              var value = util.getMapValue(o,key);      // value 2
-              console.log('20180802 - CHECK GET LEVEL FROM POLITICIAN TYPE', value)
-              // politicalLevel = 5
-              if(value != '') {
-                switch(value){
-                  case 'world':
-                  console.log('20180802 - POLITICAL LEVEL  :', politicalLevel)
-                  console.log('20180802 - CASE :', value)
-                    if(politicalLevel <= 5){
-                      this.isOfficer = true
-                    }
-                  break;
-                  case 'country':
-                  console.log('20180802 - CASE :', value)
-                    if(politicalLevel <= 4){
-                      this.isOfficer = true
-                    }
-                  break;
-                  case 'locality':
-                    if(politicalLevel <= 3){
-                      this.isOfficer = true
-                    }
-                  break;
-                  case 'sublocality1':
-                    if(politicalLevel <= 2){
-                      this.isOfficer = true
-                    }
-                  break;
-                  case 'sublocality2':
-                    if(politicalLevel <= 1){
-                      this.isOfficer = true
-                    }
-                  break;
-                } //switch
+                this.isCitizen = false
               }
-
-              this.isCitizen = false
             }
           }
-
-
-
-
-          // let viewer_level = this.$store.state.user_junk.user.
-          // // viewer is officer
-          // if(viewer_level){
-          //   this.isOfficer = true
-          // }
-
-
-
 
 
           // location['@class'] = 'OPoint'
