@@ -9,6 +9,7 @@
   "dependencies": {
     "anchorme": "^1.1.2",
     "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
     "cloudinary": "^1.11.0",
     "google-maps-api-loader": "^1.1.1",
     "link-prevue": "^1.1.3",

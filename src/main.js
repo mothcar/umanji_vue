@@ -17,10 +17,20 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
 
 // axios Going *****************************************************************
+// const cors = require('cors');
 window.axios = require('axios');
+// window.axios.http.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:8080'
+// Vue.use(cors({
+//   origin: 'http://localhost:8080',
+//   credentials: true
+// }));
+// window.axios.defaults.headers.common['withCredentials'] = true
 // window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 // Vue.prototype.$http = window.axios
 // axios Going *****************************************************************
+// axios.interceptors.response.use(function(req, res, next) { res.header("Access-Control-Allow-Origin", "*");
+// res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+// next(); });
 
 
 // axios Deep Learn  ***********************************************************
