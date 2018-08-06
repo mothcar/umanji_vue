@@ -195,7 +195,7 @@ export default {
 
       axios.post(p_env.BASE_URL+'/vue/htmlParsing')
       .then(res=>{
-        console.log('20180805 - parsing result : ', res.data.data )
+        console.log('20180805 - parsing result : ', res.data.data['article:section'] )
       })
 
 

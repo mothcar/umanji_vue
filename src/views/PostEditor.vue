@@ -128,10 +128,10 @@ export default {
           place_rid = this.$store.state.p_id
         }
 
-        console.log('20180728 - sublocolity type : ', typeof paramsData.sublocality1)
+        // console.log('20180728 - sublocolity type : ', typeof paramsData.sublocality1)
 
         if(paramsData.photos == undefined){
-          paramsData.photos = this.$store.state.photos
+          paramsData.photos = this.$store.state.user_junk.user.photos
         }
 
         if(paramsData.sublocality1 == undefined){
