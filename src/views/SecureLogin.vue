@@ -71,7 +71,7 @@
               }) // axios /v1/auth/signup
               .then(res=>{
                   console.log('SecureLogin - login : ', res.data.data)
-                  this.$store.commit('setUserInfo', res.data.data.user)
+                  this.$store.commit('setUserInfo', res.data.data)
                   window.history.back()
               })
 

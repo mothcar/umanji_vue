@@ -31,7 +31,7 @@
         <v-list-tile-avatar>
           <img :src="photo">
         </v-list-tile-avatar>
-        <v-btn v-show="readyToUpload" color="success" @click="uploadPhoto" >send Photo </v-btn>
+        <v-btn v-show="readyToUpload" color="success" @click="uploadPhoto" > Update Photo </v-btn>
         <!-- file select *********************************************************************** -->
         <div>
             <div class="file-upload-form">
@@ -329,7 +329,7 @@ export default {
         console.log('20180726 - cloudinary result : ', result.url)
 
         axios.post(p_env.BASE_URL+'/vue/sendProfilePhoto', {
-          user_id: _this.$store.state.id,
+          user_id: _this.$store.state.user_junk.user.id,
           image : result.url
         })
         .then(res=>{

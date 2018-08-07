@@ -1,22 +1,20 @@
 <template>
-  <div class="home">
-
+  <!-- <div class="home" > -->
 
     <v-content>
 
     <v-layout class="p_margin_top">
       <v-flex xs12 sm6 offset-lg3 >
 
-
-
     <!-- create Post Button ******************************************************************************** -->
-    <div>
+    <!-- <div> -->
       <v-btn color="success" @click="createPost">Write Post</v-btn>
       <!-- @click.stop="dialog = true" -->
-    </div>
+    <!-- </div> -->
     <!-- create Post Button ******************************************************************************** -->
 
     <!-- content ******************************************************************************** -->
+
 
             <v-card class="p_card" v-for="(item, index) in postLists"
               :key="index"
@@ -47,7 +45,11 @@
                           <h4 class="card-title">{{props.title}}</h4>
                           <p class="card-text">{{props.description}}</p>
                           <a v-bind:href="props.url" class="btn btn-primary">More</a>
-                          <img class="card-img-top" :src="props.img" :alt="props.title">
+                          <!-- <img class="card-img-top" :src="props.img" :alt="props.title"> -->
+                          <v-card-media
+                            :src="props.img"
+                            height="200px"
+                          ></v-card-media>
                         </div>
                       </div>
                     </template>
@@ -66,7 +68,7 @@
 
             </v-flex>
           </v-layout>
-</v-content>
+
 
 <!-- Dialog ******************************************************************************** -->
 <v-layout row justify-center>
@@ -107,8 +109,8 @@
   </v-dialog>
 </v-layout>
 <!-- Dialog ******************************************************************************** -->
-
-  </div>
+</v-content>
+  <!-- </div> -->
 </template>
 
 <script>

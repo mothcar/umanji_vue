@@ -69,15 +69,15 @@
               height="50px"
             >
             <v-container fill-height fluid>
-                  <!-- <v-layout fill-height> -->
-                    <v-flex xs12 align-end flexbox>
-                      <!-- <router-link :to="{ name: 'spacePage', params: params }" > -->
-                        <!-- id: participantUser.user_id / target= '_blank' -->
-                        <span class="headline" @click="infocenterRouter">{{ center_name }} 정보센터</span>
-                      <!-- </router-link> -->
-                    </v-flex>
-                  <!-- </v-layout> -->
-                </v-container>
+                <!-- <v-layout fill-height> -->
+                  <v-flex xs12 align-end flexbox>
+                    <!-- <router-link :to="{ name: 'spacePage', params: params }" > -->
+                      <!-- id: participantUser.user_id / target= '_blank' -->
+                      <span class="headline" @click="infocenterRouter">{{ center_name }} 정보센터</span>
+                    <!-- </router-link> -->
+                  </v-flex>
+                <!-- </v-layout> -->
+              </v-container>
             </v-card-media>
           </v-card>
         </v-tab-item>
@@ -250,6 +250,7 @@ export default {
     if(this.$store.state.adminDong.length > 1){
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
+      console.log("MainContainer : updated............ but Nothing To do. ", )
     } else {
       console.log("MainContainer : updated............", this.$store.state.infocenter_data.location)
     }
@@ -308,7 +309,8 @@ export default {
 
     logout: function () {
       this.$store.commit('auth', false)
-      let resetData = ''
+      let resetData = {}
+      resetData.user.id = ''
       this.$store.commit('setUserInfo', resetData)
       this.rightDrawer = !this.rightDrawer
     },
@@ -499,7 +501,7 @@ export default {
 
         }) // axios then
       }) // end of axios
-    }
+    } // getPortalData()
 
 
   }, // method
@@ -562,6 +564,7 @@ export default {
           _this.$store.commit('setCountryCode', payloadCountry)
 
           if(payloadCountry == 'KR'){
+            // else #702
 
             // For Test Coords
             let testCoords = {}
@@ -707,7 +710,7 @@ export default {
     } else {
       // init : false middle of Service
       // when back to Home
-      console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED WHEN??? MAY BE RETURN FROM MAP???')
+      console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
 
       this.center_name = this.$store.state.current_place.adminDong
 
