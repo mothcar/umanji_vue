@@ -42,7 +42,7 @@
                 v => /.+@.+/.test(v) || '정확한 이메일을 입력해 주세요'
               ],
               input: {
-                  username: '',
+                  username: 'mo@naver.com',
                   // password: p_env.login_pw,
                   // username: '',
                   password: '111111',

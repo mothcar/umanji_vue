@@ -16,6 +16,7 @@ import SpaceSetting from './views/SpaceSetting.vue'
 import ManagerMap from './views/management/ManagerMap.vue'
 import ManageHome from './views/management/ManageHome.vue'
 import Message from './views/Message.vue'
+import GoogleAnalytics from './views/GoogleAnalytics.vue'
 
 Vue.use(Router)
 
@@ -82,6 +83,24 @@ export default new Router({
       path: '/message',
       name: 'message',
       component: Message
+    },
+    {
+      path: '/googleAnalytics',
+      name: 'googleAnalytics',
+      component: GoogleAnalytics,
+      meta: {
+        title: 'Hello Analytics Reporting API V4',
+        metaTags: [
+          {
+            name: 'google-signin-client_id',
+            content: '263376258632-vnl8i3q9mqo4eavmssv0hrqqhilrvpu1.apps.googleusercontent.com'
+          },
+          {
+            name: 'google-signin-scope',
+            content: 'https://www.googleapis.com/auth/analytics.readonly'
+          }
+        ]
+      },
     }
 
 

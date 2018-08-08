@@ -27,19 +27,20 @@
                     <img :src="item.photos[0]" @click="showProfile(index)">
                   </v-list-tile-avatar>
                   <div>
-                    <div >{{ item.creator_name}} {{ item.place_name}} </div>
+                    <div ><strong @click="showProfile(index)">{{ item.creator_name}}</strong>님이  <strong @click="spaceRouter(index)">{{ item.place_name}}</strong>에서   <span>{{ item.createdAt }}</span></div>
                     <!--    items.photos
                     v-if(place_type == 'infocenter')  -->
 
 
                     <div v-html="item.content"  @click="spaceRouter(index)"></div>
-                    <div>{{ item.createdAt }}</div>
+
                   </div>
                 </v-card-title>
                 <div>
                   <link-prevue v-show="hasUrl" :url="item.link_url">
                     <template slot-scope="props">
-                      <div class="card" style="width: 20rem;">
+                      <!-- <div class="card" style="width: 20rem;"> -->
+                      <v-card class="card">
 
                         <div class="card-block">
                           <h4 class="card-title">{{props.title}}</h4>
@@ -48,10 +49,10 @@
                           <!-- <img class="card-img-top" :src="props.img" :alt="props.title"> -->
                           <v-card-media
                             :src="props.img"
-                            height="200px"
+                            height="300px"
                           ></v-card-media>
                         </div>
-                      </div>
+                      </v-card>
                     </template>
                   </link-prevue>
                 </div>

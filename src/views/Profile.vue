@@ -12,10 +12,11 @@
       <P>
         {{ news_result }}
       </P>
-      <v-btn @click="pdfParser">Parser</v-btn>
+      <v-btn @click="pdfParser">Election Area Parser</v-btn>
       <input type='file' accept='text/plain' onchange='openFile(event)'>
       <br>
       <div id='output'>...</div>
+      <v-btn @click="routeToAnalytics"> Analytics </v-btn>
     </div>
     <div class="p_box p_main">
       <div class="p_main_container">
@@ -112,164 +113,26 @@ export default {
 
   methods: {
     getMetaMyData(prevue) {
-      // const urlMetadata = require('url-metadata')
-      // urlMetadata(this.test_url ).then(
-      //   function (metadata) { // success handler
-      //     this.news_result = metadata
-      //     console.log('20180805 - result ',metadata)
-      //   },
-      //   function (error) { // failure handler
-      //     console.log(error)
-      //   })
-      // const {getMetadata} = require('page-metadata-parser');
-      // const url = this.test_url;
-      // const response =  fetch(url);
-      // const html =  response.text();
-      // const doc = new JSDOM(html);
-      // const metadata = getMetadata(doc, url);
-
-      // axios.get(this.test_url, {'http://localhost:8080': true
-      // })
-      // .then(res=>{
-      //   this.news_result = res
-      //   console.log('20180805 - result ',res)
-      // })
-      // let preUrl = 'news.joins.com/article/22860744?cloc=joongang|home|newslist1big'
-      // let url =  'https://opengraph.io/api/1.0/site/'+ preUrl
-      // axios.get(url)
-      // .then(res=>{
-      //   this.news_result = res
-      //   console.log('20180805 - result ',res)
-      // })
-      // https://news.joins.com/article/22860744?cloc=joongang|home|newslist1big
-
-      // console.log('clicked', prevue.images, prevue.title, prevue.url, prevue.description)
-      // console.log('clicked......', prevue)
-      // console.log('clicked...ref...', this.$refs.preview)
-
-
-      // var req = new XMLHttpRequest();
-      // req.open("GET", this.test_url + "/api/data/v8.2/EntityDefinitions(LogicalName='contact')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$filter=LogicalName eq 'new_contactpriority'&$expand=OptionSet", true);
-      // req.setRequestHeader("OData-MaxVersion", "4.0");
-      // req.setRequestHeader("OData-Version", "4.0");
-      // req.setRequestHeader("Accept", "application/json");
-      // req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
-      // req.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-      // req.setRequestHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-      // req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
-      // req.onreadystatechange = function () {
-      //     if (this.readyState === 4) {
-      //         req.onreadystatechange = null;
-      //         if (this.status === 200) {
-      //             var results = JSON.parse(this.response);
-      //             for (var i = 0; i < results.value[0].OptionSet.Options.length; i++) {
-      //                 var Label = results.value[0].OptionSet.Options[i].Label.UserLocalizedLabel.Label;
-      //                 alert(Label);
-      //             }
-      //         } else {
-      //             Xrm.Utility.alertDialog(this.statusText);
-      //         }
-      //     }
-      // };
-      // req.send();
-
-      // const metascraper = require('metascraper')
-      // const got = require('got')
-      //
-      // const targetUrl = 'http://www.bloomberg.com/news/articles/2016-05-24/as-zenefits-stumbles-gusto-goes-head-on-by-selling-insurance'
-      //
-      // ;(async () => {
-      //   const {body: html, url} = await got(targetUrl)
-      //   const metadata = await metascraper({html, url})
-      //   console.log(metadata)
-      // })()
-
-      // let url = 'https://news.joins.com/article/22860744?cloc=joongang|home|newslist1big'
-      //
-      // var ogs = require('open-graph-scraper');
-      // var options = {'url': url};
-      // ogs(options, function (error, results) {
-      //   console.log('error:', error); // This is returns true or false. True if there was a error. The error it self is inside the results object.
-      //   console.log('results:', results);
-      // });
 
       axios.post(p_env.BASE_URL+'/vue/htmlParsing')
       .then(res=>{
         console.log('20180805 - parsing result : ', res.data.data['article:section'] )
       })
 
-
     },
 
     pdfParser() {
-      // let fs = require('fs'),
-      //   PDFParser = require("pdf2json");
-      //
-      // let pdfParser = new PDFParser();
-      //
-      // pdfParser.on("pdfParser_dataError", errData => console.error(errData.parserError) );
-      // pdfParser.on("pdfParser_dataReady", pdfData => {
-      //     // fs.writeFile("./pdf2json/test/F1040EZ.json", JSON.stringify(pdfData));
-      //     // fs.writeFile("./test/111.json", JSON.stringify(pdfData));
-      //     console.log('20180805 - pdf parsing string : ', JSON.stringify(pdfData))
-      //     console.log('20180805 - pdf parsing json : ', pdfData)
-      // });
-      //
-      // pdfParser.loadPDF("../assets/elec.pdf");
-      // const fs = require('fs');
-      // const pdf = require('pdf-parse');
-      // console.log("\n *STARTING* \n");
-      // // var text = fs.readFileSync('/tmp/hey.txt', 'utf8');
-      //
-      // let dataBuffer = fs.readFileSync('../assets/elec.pdf', 'utf8');
-      //
-      // pdf(dataBuffer).then(function(data) {
-      //
-      //     // number of pages
-      //     console.log(data.numpages);
-      //     // number of rendered pages
-      //     console.log(data.numrender);
-      //     // PDF info
-      //     console.log(data.info);
-      //     // PDF metadata
-      //     console.log(data.metadata);
-      //     // PDF.js version
-      //     // check https://mozilla.github.io/pdf.js/getting_started/
-      //     console.log(data.version);
-      //     // PDF text
-      //     console.log(data.text);
-      //
-      // });
 
-      // var pdfParser = require('pdf-parser');
-      //
-      // var PDF_PATH = '../assets/elec.pdf';
-      //
-      // pdfParser.pdf2json(PDF_PATH, function (error, pdf) {
-      //     if(error != null){
-      //         console.log(error);
-      //     }else{
-      //         console.log(JSON.stringify(pdf));
-      //     }
-      // });
-
-      // this.pdfToText('../assets/elec.pdf').then(function(result) {
-      // console.log("PDF done!", result);
-      // let file =
-
-      // let file = '../assets/20.txt';
-      // var fs = require('fs');
-      //
-      // fs.readFile(file, 'utf8', function(err, data) {
-      //     if (err) throw err;
-      //     console.log(data);
-      // });
       axios.get(p_env.BASE_URL+'/vue/readText')
       .then(res=>{
         console.log(res.data.data)
       })
 
   }, // parsing
+
+  routeToAnalytics() {
+    this.$router.push({name: 'googleAnalytics'})
+  },
 
   openFile(event){
     var input = event.target;

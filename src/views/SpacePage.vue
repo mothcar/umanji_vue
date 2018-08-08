@@ -10,7 +10,7 @@
     </v-toolbar>
     <!-- toolbar *******************************************************************************  -->
 
-    <!-- top info box *******************************************************************************  -->
+    <!-- info top image box *******************************************************************************  -->
     <div class="p_title_div">
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
@@ -34,7 +34,7 @@
             </div>
 
     </div>
-    <!-- top info box *******************************************************************************  -->
+    <!-- info top image box *******************************************************************************  -->
 
     <!-- tab and contents ***************************************************************************  -->
     <div>
@@ -47,21 +47,13 @@
         slider-color="red"
         fixed-tabs
       >
-        <v-tab
-          v-for="name in item_name"
-          :key="name"
-          :href="`#tab-${name}`"
-        >
+        <v-tab v-for="name in item_name" :key="name" :href="`#tab-${name}`" >
            {{ name }}
         </v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="model.id">
-        <v-tab-item
-          v-for="(name, index) in item_name"
-          :id="`tab-${name}`"
-          :key="name"
-        >
+        <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
         <!-- create Post Button ********************************************************* -->
         <div>
           <v-btn color="success" @click="changeTab" >{{ button_title[index] }}</v-btn>
@@ -471,6 +463,7 @@ export default {
         console.log('20180727 - BUILDING ')
 
         this.place_type = 'place'
+        this.item_name = ['Post', 'Person', '시설정보']
 
         // this.place_name = this.$store.state.p_place_name
         let placeType = getData.place_type
