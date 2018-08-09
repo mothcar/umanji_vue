@@ -3,24 +3,40 @@ export default {
   areaToLevel(area) {
     switch(area){
       case 'world':
-        return 3
+        return 5
       break
       case 'country':
-        return 6
+        return 8
       break
       case 'city_do':
-        return 12
+        return 11
       break
       case 'gu_gun':
-        return 15
+        return 14
       break
       case 'adminDong':
-        return 18
+        return 17
       break
     }
     console.log('FUNCTION CALLED - AREATOLEVEL', area )
 
-  } // areaToLevel
+  }, // areaToLevel
+
+  setToStandardAddress(address) {
+
+    return new Promise(function (resolve, reject) {
+      let placeAddress = {}
+      placeAddress.place_type = 'infocenter'
+      placeAddress.place_name = address.adminDong
+      placeAddress.country = 'KR'
+      placeAddress.locality = address.city_do
+      placeAddress.sublocality_level_1 = address.gu_gun
+      placeAddress.sublocality_level_2 = address.adminDong
+      placeAddress.sublocality_level_3 = address.ri
+      resolve(placeAddress);
+    });
+
+  } // setToStandardAddress
 
 
 

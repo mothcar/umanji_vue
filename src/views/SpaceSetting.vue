@@ -48,7 +48,7 @@ export default {
     },
 
     uploadPhoto: function() {
-      let _this = this 
+      let _this = this
       var cloudinary = require('cloudinary')
       cloudinary.config({
         cloud_name: 'mothcar',
@@ -63,6 +63,7 @@ export default {
         console.log('20180726 - cloudinary result : ', result.url)
 
         axios.post(p_env.BASE_URL+'/vue/updateSpacePhotos', {
+          place_type: _this.routed_data.place_type,
           id: _this.routed_data.s_rid,
           photos: result.url
         })

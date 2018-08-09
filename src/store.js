@@ -38,23 +38,6 @@ export default new Vuex.Store({
     ri: '',
     bunji: '',
     building_name: 'some name',
-    // Map Plcae Info
-    p_place_type: '',
-    p_id: '',
-    p_place_name: '',
-    p_about_info: {},
-    p_admin_dong_code: '',
-    p_admin_id: '',
-    p_building_index: '',
-    p_country: '',
-    p_locality : '',
-    p_sublocality1 : '',
-    p_sublocality2: '',
-    p_sublocality3 : '',
-    p_creator_id : '',
-    p_creator_name : '',
-    p_valuation: '',
-    p_political_type: '',
 
     //Marker Info
     content: '',
@@ -70,8 +53,8 @@ export default new Vuex.Store({
     map_ref:{},
 
     // new Current Place (address)
-    current_place: '',
-    infocenter_data: '',
+    current_place: {},
+    // infocenter_data: '',
     placeInfo: ''
   },
 
@@ -165,40 +148,13 @@ export default new Vuex.Store({
       state.tabState = payload
     },
 
-    setForPostData(state, payload) {
-      state.p_place_type = payload.placeType
-      state.p_id = payload.id
-      state.p_place_name = payload.portal_name
-      state.p_about_info = payload.about_info
-      state.p_admin_id  = payload.admin_id
-      state.p_country = payload.country
-      state.p_locality = payload.locality
-      state.p_sublocality1  = payload.sublocality_level_1
-      state.p_sublocality2 = payload.sublocality_level_2
-      state.p_sublocality3  = payload.sublocality_level_3
-      state.p_political_type  = payload.political_type
-    },
-
-    setForPostData_fromPost(state, payload) {
-      state.p_place_type = payload.place_type
-      state.p_id = payload.s_rid
-      state.p_place_name = payload.place_name
-      state.p_admin_id  = payload.creator_id
-      state.p_country = payload.country
-      state.p_locality = payload.locality
-      state.p_sublocality1  = payload.sublocality_level_1
-      state.p_sublocality2 = payload.sublocality_level_2
-      state.p_sublocality3  = payload.sublocality_level_3
-      // state.p_political_type  = payload.political_type
-    },
-
     setReverseRouteData(state, payload) {
       state.reverse_route_data = payload
     },
 
-    setCenterData(state, payload) {
-      state.infocenter_data = payload
-    },
+    // setCenterData(state, payload) {
+    //   state.infocenter_data = payload
+    // },
 
     setMarkers(state, payload) {
 

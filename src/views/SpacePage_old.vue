@@ -467,15 +467,6 @@ export default {
           getData.s_rid = getData.id
         }
 
-        axios.get(p_env.BASE_URL+'/vue/findOnePlace',{
-          params: {id: getData.s_rid}
-        })
-        .then(result=>{
-          this.data_image = result.data.data.photos
-          console.log('20180809 - get place data : ', result )
-
-        })
-
         let spaceParams = {}
         // spaceParams.place_type = placeType
         spaceParams.s_rid = getData.s_rid
@@ -630,7 +621,7 @@ export default {
   /* background: url(../assets/images/default_info_center.jpg) center center no-repeat; */
   /* background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat; */
 
-  background-position: center;
+  /* background-position: center center; */
   /* background-repeat: no-repeat; */
   /* background-attachment: fixed; */
   background-size: cover;

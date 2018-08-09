@@ -203,6 +203,7 @@
 import Home from './PostContainer.vue'
 // import MapContainer from './MapContainer.vue'
 import PMap from './PMap.vue'
+import Util from '../plugins/levels'
 
 export default {
 
@@ -252,7 +253,7 @@ export default {
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
       console.log("MainContainer : updated............ but Nothing To do. ", )
     } else {
-      console.log("MainContainer : updated............", this.$store.state.infocenter_data.location)
+      console.log("MainContainer : updated............", this.$store.state.current_place)
     }
 
     // passingData
@@ -321,29 +322,13 @@ export default {
     },
 
     infocenterRouter: function() {
-      // let info = {
-      //   place_type: this.$store.state.p_place_type,
-      //   s_rid: this.$store.state.p_id,
-      //   place_name: this.$store.state.p_place_name,
-      //   about_info: this.$store.state.p_about_info,
-      //   admin_id: this.$store.state.p_admin_id,
-      //   country: this.$store.state.p_country,
-      //   locality: this.$store.state.p_locality,
-      //   sublocality1: this.$store.state.p_sublocality1,
-      //   sublocality2: this.$store.state.p_sublocality2,
-      //   sublocality3: this.$store.state.p_sublocality3,
-      //   political_type: this.$store.state.p_political_type,
-      //   latitude: this.$store.state.latitude,
-      //   longitude: this.$store.state.longitude
-      //
-      // }
-      let info = this.$store.state.infocenter_data
+      let info = this.$store.state.current_place
       info.place_type = 'infocenter'
-      // info.place_name = this.$store.state.infocenter_data.place_name
+      // info.place_name = this.$store.state.current_place.place_name
       // info.photos = this.$store.state.photos
       // info.id = this.$store.state.id
       // info.user_name = this.$store.state.user_name
-      info.place_name = this.$store.state.infocenter_data.portal_name
+      info.place_name = this.$store.state.current_place.portal_name
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
       console.log('20180727 - PASSING DATA ....check s_rid = id ')
@@ -353,13 +338,13 @@ export default {
     changeTab (current) {
       this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
-      console.log("on Tab clicked....")
+      console.log("on Tab clicked....", current)
       // console.log("MainContainer - Stored Data : ", this.$store.state)
 
     },
 
     autoDetectArea (area) {
-      // console.log("MainContainer : autoDetectArea : " + area)
+      console.log("MainContainer : autoDetectArea : " + this.$store.state.current_place.locality)
       switch(area) {
         case 'world':
           this.$store.commit('changeTabState','world')
@@ -376,21 +361,21 @@ export default {
           break;
         case 'city_do':
           this.$store.commit('changeTabState','city_do')
-          this.center_name = this.$store.state.current_place.city_do
-          this.params.id = this.$store.state.current_place.city_do
-          this.getPortalData(this.$store.state.current_place.city_do, 'city_do')
+          this.center_name = this.$store.state.current_place.locality
+          this.params.id = this.$store.state.current_place.locality
+          this.getPortalData(this.$store.state.current_place.locality, 'locality')
           break;
         case 'gu_gun':
           this.$store.commit('changeTabState','gu_gun')
-          this.center_name = this.$store.state.current_place.gu_gun
-          this.params.id = this.$store.state.current_place.gu_gun
-          this.getPortalData(this.$store.state.current_place.gu_gun, 'gu_gun')
+          this.center_name = this.$store.state.current_place.sublocality_level_1
+          this.params.id = this.$store.state.current_place.sublocality_level_1
+          this.getPortalData(this.$store.state.current_place.sublocality_level_1, 'sublocality_level_1')
           break;
         case 'adminDong':
           this.$store.commit('changeTabState','adminDong')
-          this.center_name = this.$store.state.current_place.adminDong
-          this.params.id = this.$store.state.current_place.adminDong
-          this.getPortalData(this.$store.state.current_place.adminDong, 'adminDong')
+          this.center_name = this.$store.state.current_place.sublocality_level_2
+          this.params.id = this.$store.state.current_place.sublocality_level_2
+          this.getPortalData(this.$store.state.current_place.sublocality_level_2, 'sublocality_level_2')
           break;
 
       }
@@ -416,8 +401,7 @@ export default {
         let currentInfo = res.data.data
         currentInfo.placeType = 'infocenter'
         currentInfo.s_rid = res.data.data.id
-        _this.$store.commit('setCenterData', currentInfo)
-
+        _this.$store.commit('setCurrentPlace', currentInfo)
 
         _this.center_name = areaName
         _this.params.id = res.data.data.id
@@ -432,16 +416,16 @@ export default {
             portal_type = 'country'
             // portal_name = _this.$store.state.country
           break;
-          case 'city_do':
+          case 'locality':
             portal_type = 'locality'
             // portal_name = _this.$store.state.city_do
           break;
-          case 'gu_gun':
-            portal_type = 'sublocality1'
+          case 'sublocality_level_1':
+            portal_type = 'sublocality_level_1'
             // portal_name = _this.$store.state.gu_gun
           break;
-          case 'adminDong':
-            portal_type = 'sublocality2'
+          case 'sublocality_level_2':
+            portal_type = 'sublocality_level_2'
             // portal_name = _this.$store.state.adminDong
           break;
 
@@ -484,8 +468,8 @@ export default {
             obj.info.creator_name = this.$store.state.user_name,
             obj.info.photos = res.data.data[i].photos
             obj.info.place_type = res.data.data[i].place_type
-            obj.info.sublocality1 = res.data.data[i].sublocality_level_1
-            obj.info.sublocality2 = res.data.data[i].sublocality_level_2
+            obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
+            obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
             obj.info.location = res.data.data[i].location
             obj.info.link_url = res.data.data[i].link_url
 
@@ -582,119 +566,105 @@ export default {
             .then(res => {
               _this.center_name = res.data.addressInfo.adminDong
               // _this.params.id = res.data.addressInfo.adminDong
-              _this.$store.commit('setCurrentPlace', res.data.addressInfo)
-
-              let placeInfo = {}
-              placeInfo.place_type = 'infocenter'
-              placeInfo.place_name = res.data.addressInfo.adminDong
-              placeInfo.country = payloadCountry
-              placeInfo.locality = res.data.addressInfo.city_do
-              placeInfo.sublocality1 = res.data.addressInfo.gu_gun
-              placeInfo.sublocality2 = res.data.addressInfo.adminDong
-              placeInfo.sublocality3 = res.data.addressInfo.ri
-              _this.$store.commit('setPlaceInfo', placeInfo)
-
-              console.log('20180716 - MainContainer SKT DATA : ',res.data.addressInfo)
-
-              let st_country_code = payloadCountry
-              let sk_city_do = res.data.addressInfo.city_do
-              let sk_gu_gun = res.data.addressInfo.gu_gun
-              let sk_adminDong = res.data.addressInfo.adminDong
-              let sk_eup_myun = res.data.addressInfo.eup_myun
-              let sk_ri = res.data.addressInfo.ri
-              let sk_building_name = res.data.addressInfo.buildingName
-
-              let infoParams = {}
-              infoParams.country_code = 'KR',
-              infoParams.city_do = sk_city_do,
-              infoParams.gu_gun = sk_gu_gun,
-              infoParams.adminDong = sk_adminDong,
-              infoParams.eup_myun = sk_eup_myun,
-              infoParams.latitude = _this.$store.state.latitude,
-              infoParams.longitude = _this.$store.state.longitude
-
-              // Get Postal Basic Info : findOne
-              axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-                params: infoParams
-                // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
-              })
-              .then(res => {
-                let currentInfo = res.data.data
-                currentInfo.placeType = 'infocenter'
-                currentInfo.s_rid = res.data.data.id
-                _this.$store.commit('setCenterData', currentInfo)
-
-                console.log ('Skt send request and get data below ************************************************')
-                console.log('20180727 - MainContainer First setForPostData: ',_this.$store.state)
-                console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
-                console.log('MainContainer 20180722 - , Get info center : ', _this.$store.state.current_place.adminDong)
-
-                let currentLatLng = {}
-                // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
-                // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
-                currentLatLng.latitude = res.data.data.location.coordinates[1]
-                currentLatLng.longitude = res.data.data.location.coordinates[0]
-                console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
-                _this.$store.commit('setCurrentLocation', currentLatLng)
-                // console.log('MainContainer 2, Get info center : ', res.data.data.id)
-              }) // end of axios vue/getInfoCenter
-              .then(res => {
+              // let currentStAddress = Util.setToStandardAddress(res.data.addressInfo)
 
 
-                // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+              let getInfocenterParams = {}
+              Util.setToStandardAddress(res.data.addressInfo).then(function (currentStAddress) {
+                getInfocenterParams = currentStAddress
+                // console.log('20180809 - STANDARD ADDRESS : ',currentStAddress)
+                // console.log('20180809 - STANDARD ADDRESS params : ',getInfocenterParams)
+                // console.log('20180809 - STANDARD ADDRESS locality : ',currentStAddress.locality)
+                getInfocenterParams.latitude = _this.$store.state.latitude,
+                getInfocenterParams.longitude = _this.$store.state.longitude
 
-                // created
-                axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
-                  portalType: 'sublocality2', //sublocality2
-                  portalName: _this.$store.state.current_place.adminDong, // 대방동
-                  view_level: _this.$store.state.zoom_level
-                  }
+                // Get Postal Basic Info : findOne
+                console.log('20180809 - getInfocenterParams: ',getInfocenterParams)
+
+                axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+                  params: getInfocenterParams
+                  // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
                 })
                 .then(res => {
-                  let moment = require('moment')
+                  let currentInfo = res.data.data
+                  currentInfo.placeType = 'infocenter'
+                  currentInfo.s_rid = res.data.data.id
+                  _this.$store.commit('setCurrentPlace', currentInfo)
 
-                  for(var i=0; res.data.data.length> i; i++){
-                    let old_date = res.data.data[i].createdAt
-                    let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
-                    res.data.data[i].createdAt = new_date
-                  }
+                  console.log ('Skt send request and get data below ************************************************')
+                  console.log('20180727 - MainContainer First : ',_this.$store.state)
+                  console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
+                  console.log('MainContainer 20180722 - , Get info center : ', _this.$store.state.current_place.sublocality_level_2)
 
-                  _this.postLists = res.data.data
+                  let currentLatLng = {}
+                  // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
+                  // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
+                  currentLatLng.latitude = res.data.data.location.coordinates[1]
+                  currentLatLng.longitude = res.data.data.location.coordinates[0]
+                  console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+                  _this.$store.commit('setCurrentLocation', currentLatLng)
+                  // console.log('MainContainer 2, Get info center : ', res.data.data.id)
+                }) // end of axios vue/getInfoCenter
+                .then(res => {
 
-                  _this.markers = []
-                  // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
 
-                  console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
-                  // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+                  // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+                  // created
+                  axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
+                    portalType: 'sublocality2', //sublocality2
+                    portalName: _this.$store.state.current_place.sublocality_level_2, // 대방동
+                    view_level: _this.$store.state.zoom_level
+                    }
+                  })
+                  .then(res => {
+                    let moment = require('moment')
+
+                    for(var i=0; res.data.data.length> i; i++){
+                      let old_date = res.data.data[i].createdAt
+                      let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
+                      res.data.data[i].createdAt = new_date
+                    }
+
+                    _this.postLists = res.data.data
+
+                    _this.markers = []
+                    // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
+
+                    console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
+                    // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
 
-                  for (var i = 0, len = res.data.data.length; i < len; i++) {
+                    for (var i = 0, len = res.data.data.length; i < len; i++) {
 
-                    // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+                      // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
 
-                    let obj = { position:{}, info:{}}
-                    obj.position.lat = res.data.data[i].location.coordinates[1]
-                    obj.position.lng = res.data.data[i].location.coordinates[0]
-                    obj.info.s_rid = res.data.data[i].s_rid
-                    obj.info.place_name = res.data.data[i].place_name
-                    obj.info.zoom_level = _this.$store.state.zoom_level
+                      let obj = { position:{}, info:{}}
+                      obj.position.lat = res.data.data[i].location.coordinates[1]
+                      obj.position.lng = res.data.data[i].location.coordinates[0]
+                      obj.info.s_rid = res.data.data[i].s_rid
+                      obj.info.place_name = res.data.data[i].place_name
+                      obj.info.zoom_level = _this.$store.state.zoom_level
 
-                    obj.info.creator_id = res.data.data[i].creator_id
-                    obj.info.creator_name = _this.$store.state.user_name,
-                    obj.info.photos = res.data.data[i].photos
-                    obj.info.place_type = res.data.data[i].place_type
-                    obj.info.sublocality1 = res.data.data[i].sublocality_level_1
-                    obj.info.sublocality2 = res.data.data[i].sublocality_level_2
-                    obj.info.location = res.data.data[i].location
-                    obj.info.link_url = res.data.data[i].link_url
-                    _this.markers[i] = obj
-                    // console.log("content lat lng : ", _this.markers)
-                  } // for
-                  _this.$store.commit('setMarkers', _this.markers)
+                      obj.info.creator_id = res.data.data[i].creator_id
+                      obj.info.creator_name = _this.$store.state.user_name,
+                      obj.info.photos = res.data.data[i].photos
+                      obj.info.place_type = res.data.data[i].place_type
+                      obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
+                      obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
+                      obj.info.location = res.data.data[i].location
+                      obj.info.link_url = res.data.data[i].link_url
+                      _this.markers[i] = obj
+                      // console.log("content lat lng : ", _this.markers)
+                    } // for
+                    _this.$store.commit('setMarkers', _this.markers)
 
-                }) // axios then
+                  }) // axios then
 
-              }) // second then
+                }) // second then
+              }) // promise then
+
+
 
               // console.log('MainContainer 5 :: store info : ', _this.$store.state)
             }) // axios SKT
@@ -712,10 +682,10 @@ export default {
       // when back to Home
       console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
 
-      this.center_name = this.$store.state.current_place.adminDong
+      this.center_name = this.$store.state.current_place.sublocality_level_2
 
       let portal_type = this.$store.state.tabState
-      let portal_name = this.$store.state.current_place.adminDong
+      let portal_name = this.$store.state.current_place.sublocality_level_2
 
       switch(portal_type){
         case 'country':
@@ -724,15 +694,15 @@ export default {
         break;
         case 'city_do':
           portal_type = 'locality'
-          portal_name = this.$store.state.current_place.city_do
+          portal_name = this.$store.state.current_place.locality
         break;
         case 'gu_gun':
-          portal_type = 'sublocality1'
-          portal_name = this.$store.state.current_place.gu_gun
+          portal_type = 'sublocality_level_1'
+          portal_name = this.$store.state.current_place.sublocality_level_1
         break;
         case 'adminDong':
-          portal_type = 'sublocality2'
-          portal_name = this.$store.state.current_place.adminDong
+          portal_type = 'sublocality_level_2'
+          portal_name = this.$store.state.current_place.sublocality_level_2
         break;
 
       }

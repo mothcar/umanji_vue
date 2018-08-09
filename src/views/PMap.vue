@@ -158,6 +158,7 @@
 
 <script>
 import isPlace from '../plugins/placeDictionary'
+import Util from '../plugins/levels'
 // import mapSettings from '../plugins/mapSettings';
 
 export default {
@@ -244,7 +245,6 @@ export default {
       //
       // this.$store.commit('setRouterParams', r_params)
       // let placeType = this.$store.state.markers[index].place_type
-      // send place type to spacepage
       // console.log("20180722 - Store DATA .....", this.$store.state )
       this.$router.push({ name: 'spacePage', params:{id: info}})
 
@@ -291,25 +291,34 @@ export default {
           // console.log('get CENTER : ',  map)
 
           //****************************************************************************************
+          let _this = this
           axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+map.center.lng()+"&lat=" +map.center.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
           .then(res => {
 
             let buildingName = res.data.addressInfo.buildingName
 
             console.log('20180809 - PMap Data from skt : ',res.data.addressInfo)
-            this.$store.commit('setCurrentPlace', res.data.addressInfo)
+
+            Util.setToStandardAddress(res.data.addressInfo).then(function (currentStAddress) {
+              let currentPlace = {}
+
+              currentPlace = currentStAddress
+
+              currentPlace.latitude = map.center.lat(),
+              currentPlace.longitude = map.center.lng()
+
+              _this.$store.commit('setCurrentPlace', currentPlace)
+              console.log('20180809 - STANDARD ADDRESS MAP  : ',currentPlace)
+
+              let placeParams = {}
+              placeParams = currentPlace
+              placeParams.zoom = _this.$store.state.zoom_level
+
+              _this.findPostMarkers(placeParams)
+            }) // promise
 
           }) // then
           //****************************************************************************************
-
-          // console.log('get marker params adminDong : ', this.$store.state.adminDong+' & zoom level is : '+this.$store.state.zoom_level)
-
-          let placeParams = {}
-          placeParams.latitude = map.center.lat()
-          placeParams.longitude = map.center.lng()
-          placeParams.zoom = this.$store.state.zoom_level
-
-          this.findPostMarkers(placeParams)
 
 
       }) // $refs
@@ -343,8 +352,8 @@ export default {
            obj.info.place_type = uniqList[i].place_type
            obj.info.country = uniqList[i].country
            obj.info.locality = uniqList[i].locality
-           obj.info.sublocality1 = uniqList[i].sublocality_level_1
-           obj.info.sublocality2 = uniqList[i].sublocality_level_2
+           obj.info.sublocality_level_1 = uniqList[i].sublocality_level_1
+           obj.info.sublocality_level_2 = uniqList[i].sublocality_level_2
            obj.info.location = uniqList[i].location
            obj.info.link_url = uniqList[i].link_url
            obj.info.content = uniqList[i].content
@@ -465,9 +474,9 @@ export default {
               placeInfo.building_index = res.data.data.building_index
               placeInfo.country = res.data.data.country
               placeInfo.locality = res.data.data.locality
-              placeInfo.sublocality1 = res.data.data.sublocality_level_1
-              placeInfo.sublocality2 = res.data.data.sublocality_level_2
-              placeInfo.sublocality3 = res.data.data.sublocality_level_3
+              placeInfo.sublocality_level_1 = res.data.data.sublocality_level_1
+              placeInfo.sublocality_level_2 = res.data.data.sublocality_level_2
+              placeInfo.sublocality_level_3 = res.data.data.sublocality_level_3
               placeInfo.creator_id = res.data.data.creator_id
               placeInfo.valuation = res.data.data.valuation
               _this.$store.commit('setReverseRouteData', placeInfo)
@@ -515,9 +524,9 @@ export default {
               infoCenterInfo.location = location
               infoCenterInfo.country = res.data.data.country
               infoCenterInfo.locality = res.data.data.locality
-              infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
-              infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
-              infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
+              infoCenterInfo.sublocality_level_1 = res.data.data.sublocality_level_1
+              infoCenterInfo.sublocality_level_2 = res.data.data.sublocality_level_2
+              infoCenterInfo.sublocality_level_3 = res.data.data.sublocality_level_3
               infoCenterInfo.admin_id = res.data.data.admin_id
               _this.$store.commit('setReverseRouteData', infoCenterInfo)
 
@@ -563,9 +572,9 @@ export default {
             infoCenterInfo.location = location
             infoCenterInfo.country = res.data.data.country
             infoCenterInfo.locality = res.data.data.locality
-            infoCenterInfo.sublocality1 = res.data.data.sublocality_level_1
-            infoCenterInfo.sublocality2 = res.data.data.sublocality_level_2
-            infoCenterInfo.sublocality3 = res.data.data.sublocality_level_3
+            infoCenterInfo.sublocality_level_1 = res.data.data.sublocality_level_1
+            infoCenterInfo.sublocality_level_2 = res.data.data.sublocality_level_2
+            infoCenterInfo.sublocality_level_3 = res.data.data.sublocality_level_3
             infoCenterInfo.admin_id = res.data.data.admin_id
             _this.$store.commit('setReverseRouteData', infoCenterInfo)
 
