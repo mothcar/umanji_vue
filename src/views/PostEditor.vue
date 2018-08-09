@@ -139,7 +139,7 @@ export default {
           paramsData.sublocality2 = paramsData.sublocality_level_2
         }
 
-        axios.post(p_env.BASE_URL+'/vue/createPost', {
+        let postParams = {
           // create_type: 'exist',
           // portalRid: '',
           view_level: this.$store.state.zoom_level,
@@ -159,8 +159,13 @@ export default {
           place_type: paramsData.place_type,
           place_name: paramsData.place_name,
           s_rid: paramsData.s_rid
-        })
+        }
+
+        console.log("20180809 - CREATE POST PARAMS : ", postParams)
+
+        axios.post(p_env.BASE_URL+'/vue/createPost', postParams)
           .then(res => {
+            console.log('20180809 - SERVER RESPONSE : ', res)
               window.history.back()
           }).catch(error => {
             console.log(error.message);

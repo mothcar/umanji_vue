@@ -296,7 +296,7 @@ export default {
 
             let buildingName = res.data.addressInfo.buildingName
 
-            console.log('Lottelia  Data from skt : ',res.data.addressInfo)
+            console.log('20180809 - PMap Data from skt : ',res.data.addressInfo)
             this.$store.commit('setCurrentPlace', res.data.addressInfo)
 
           }) // then

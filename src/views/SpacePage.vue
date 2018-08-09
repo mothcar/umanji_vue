@@ -11,7 +11,7 @@
     <!-- toolbar *******************************************************************************  -->
 
     <!-- info top image box *******************************************************************************  -->
-    <div class="p_title_div">
+    <div class="p_title_div" :style="{ backgroundImage: 'url(' + data_image + ')' }">
       <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
           <!-- <div class="p_portal_container"> -->
           <!-- $t("portal_page.title")  -->
@@ -263,7 +263,8 @@ export default {
         admin_name: '관리자 없음',
         owner_photo: require('../assets/images/default_user.jpg'),
         owner_name: '소유자 없음',
-        isOfficer: false
+        isOfficer: false,
+        data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0'
 
 
       } // return
@@ -371,6 +372,7 @@ export default {
           var location = res.data.data.location
           this.routed_data.location = location
           console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
+          this.data_image = res.data.data.photos
 
 
           // Is there a Admin?
@@ -643,7 +645,7 @@ export default {
   width: 100%;
   height: 100%;
   /* background: url(../assets/images/default_info_center.jpg) center center no-repeat; */
-  background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat;
+  /* background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat; */
 
   /* background-position: center center; */
   /* background-repeat: no-repeat; */

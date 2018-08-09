@@ -168,7 +168,7 @@ export default {
     // this.busData = []
     // this.$bus.$on('bus-data', this.transData)
 
-    // console.log('PostContainer : Props in Post Containser ', this.props)
+    console.log('20180809 - HERE IS PostContainer CREATED')
   }, //created
 
   methods: {
@@ -281,6 +281,7 @@ export default {
   },
 
   mounted() {
+    console.log('20180809 - HERE IS PostContainer MOUNTED')
 
     // this.$store.watch(this.$store.getters.firstCheck, admindong => {
     //   console.log('watched: ddddddd', admindong)
