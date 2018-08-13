@@ -22,6 +22,8 @@
       <div class="p_main_container">
         <h2 class="p_p" v-show="isName"> 이름 :{{ user_name }} <v-btn @click="showInput">수정</v-btn></h2>
         <h2 class="p_p" v-show="isName == false "> 이름 : <span> <input v-model="new_name" placeholder="이름입력"/><v-btn @click="update_name">수정</v-btn></span></h2>
+        <h2 class="p_p" v-show="isPhone"> 휴대폰번호 :{{ phone_number }} <v-btn @click="showPhoneInput">수정</v-btn></h2>
+        <h2 class="p_p" v-show="isPhone == false "> 휴대폰번호 : <span> <input v-model="phone_number" placeholder="전화번호"/><v-btn @click="update_phone">수정</v-btn></span></h2>
         <h3 class="p_p">admin Level : 5</h3>
         <h3 class="p_p">Money : {{ money }}</h3>
         <h3 class="p_p">Wallet <span> <v-btn color="success" @click="routeWallet" >Wallet</v-btn> </span> </h3>
@@ -77,7 +79,9 @@ export default {
       isName: true,
       new_name: '',
       test_url: '',
-      news_result: ''
+      news_result: '',
+      isPhone: true,
+      phone_number: ''
     } // return
   },
 
@@ -104,9 +108,13 @@ export default {
       if(res.data.data.user_name == ''){
         this.isName = false
       }
+      if(res.data.data.phone == ''){
+        this.isPhone = false
+      }
 
       this.user_data = res.data.data
       this.user_name = res.data.data.user_name
+      this.phone_number = res.data.data.phone
       this.money = this.thousandComma(res.data.data.money)
     }) // axios then
   }, // mounted
@@ -225,9 +233,28 @@ export default {
 
     showInput() {
       this.isName = false
+    },
+
+    showPhoneInput() {
+      this.isPhone = false
+    },
+
+    update_phone() {
+      let newPhone = this.phone_number
+      // console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
+      axios.post(p_env.BASE_URL+'/vue/updatePhone', {
+        user_id: this.$store.state.user_junk.user.id,
+        phone: newPhone
+      })
+      .then(res=>{
+        this.user_name = res.data.data.user_name
+        this.isName = true
+
+        console.log('20180805 - update name ', res)
+      })
     }
 
-  },
+  }, // methods
 
   components: {
     LinkPrevue

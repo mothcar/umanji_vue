@@ -164,10 +164,6 @@ export default {
 
   created: function () {
 
-    // this.busData = this.oData
-    // this.busData = []
-    // this.$bus.$on('bus-data', this.transData)
-
     console.log('20180809 - HERE IS PostContainer CREATED')
   }, //created
 
@@ -176,31 +172,24 @@ export default {
     spaceRouter: function(idx) {
 
       let info = this.postLists[idx]
+      info.from_type = 'postContainer'
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
       console.log('20180727 - ROUTE DATA FROM POSTContainer PLACE TYPE  ....', info)
-    //
-    //
-    // this.busData.push(info);
-    // this.$nextTick(() => {
-    //  /*  UI update here */
-    //
-    //
-    //  console.log('20180727 - BUS DATA ....')
-    // });
 
     },
 
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
-        let info = this.$store.state.infocenter_data
-        info.place_type = 'infocenter'
+        console.log('20180912 - current place data : ', this.$store.state.current_place)
+        let info = this.$store.state.current_place
+        // info.place_type = 'infocenter'
         // info.place_name = this.$store.state.infocenter_data.place_name
         info.photos = this.$store.state.photos
         info.id = this.$store.state.id
         info.user_name = this.$store.state.user_name
-        info.place_name = this.$store.state.infocenter_data.portal_name
+        info.place_name = info.portal_name
         console.log("PostContainer : beforORE SEND PARAMS : ", info)
         this.$router.push({name: 'postEditor', params: {data: info}})
         // console.log("PostContainer : dialog is true")

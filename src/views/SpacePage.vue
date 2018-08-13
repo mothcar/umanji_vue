@@ -264,7 +264,8 @@ export default {
         owner_photo: require('../assets/images/default_user.jpg'),
         owner_name: '소유자 없음',
         isOfficer: false,
-        data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0'
+        data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0',
+        place_name: ''
 
 
       } // return
@@ -275,11 +276,10 @@ export default {
       // this.$bus.$emit('bus-data', someData)
 
       let getData
-      let infoName = ''
-      let politicalType = ''
-      let politicalLevel = 5
 
       console.log('20180728 - NOT REVERSE CHECK : ', typeof this.$route.params.id)
+      console.log('20180811 - STORE currentTabName CHECK : ',  this.$store.state.currentTabName)
+      console.log('20180811 - STORE currentTabType CHECK : ',  this.$store.state.currentTabType)
 
       if(typeof this.$route.params.id == 'object'){
         console.log('20180728 - NOT REVERSE')
@@ -293,10 +293,196 @@ export default {
 
       this.routed_data = getData
       console.log('20180803 - getData : ', getData)
+      console.log('20180803 - getData.from_type : ', getData.from_type)
 
-      // INFOCENTER **********************************************************************
-      if(getData.place_type == 'infocenter') {
-        // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
+      if(getData.from_type == 'mainInfoTab') {
+            let political_type = this.$store.state.currentTabType // political_type = sublocality2
+            let portal_name = this.$store.state.currentTabName
+            let queryParams = {
+              portal_name: portal_name+' 정보센터',
+              political_type: political_type
+            }
+
+            axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+              params: queryParams
+            })
+            .then(res => {
+              console.log('20180812 - get data : ', res.data.data )
+              this.routed_data = res.data.data
+              this.routed_data.s_rid = res.data.data.id
+              this.routed_data.place_name = res.data.data.portal_name
+              this.place_name = res.data.data.portal_name
+              // this.completeInfoSpace(res)
+            })
+
+
+      } else {
+        // from_type == 'postContainer' ==============================================================================
+            // INFOCENTER **********************************************************************
+            if(getData.place_type == 'infocenter') {
+              // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
+              console.log('20180812 - Space page if else infocenter ')
+
+              this.completeInfoSpace(getData)
+
+            } else {
+              // place ********************************************************************************************************************
+              console.log('20180727 - BUILDING ')
+
+              this.place_type = 'place'
+              this.item_name = ['Post', 'Person', '시설정보']
+
+              // this.place_name = this.$store.state.p_place_name
+              let placeType = getData.place_type
+              this.place_title = getData.place_name
+
+              if(getData.s_rid == undefined){
+                getData.s_rid = getData.id
+              }
+
+              axios.get(p_env.BASE_URL+'/vue/findOnePlace',{
+                params: {id: getData.s_rid}
+              })
+              .then(result=>{
+                this.data_image = result.data.data.photos
+                console.log('20180809 - get place data : ', result )
+
+              })
+
+              let spaceParams = {}
+              // spaceParams.place_type = placeType
+              spaceParams.s_rid = getData.s_rid
+              // spaceParams.user_name = getData.creator_name
+              // this.rid = ''
+              axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
+                params: spaceParams
+              })
+              .then(res =>{
+                console.log('20180721 - returned data : ', res.data.data)
+                this.model.lists = res.data.data
+                this.getData = this.$store.state.building_name
+
+              }) // inner then
+
+            } // Big if else **********************************************************************
+
+      }
+
+
+
+    }, // mounted
+
+    watch: {
+      model: {
+         handler(val){
+           // do stuff
+           switch(val.id){
+             case 'tab-Post':
+             this.selectval = 'createPost'
+              // console.log("switch Post")
+             break;
+             case 'tab-Person':
+             console.log('20180730 - WATCH HANDLER : ', val.id )
+             this.selectval = 'addPerson'
+              // console.log("switch Person")
+             break;
+             case 'tab-커뮤니티':
+             this.selectval = 'createCommunity'
+              // console.log("switch Some")
+             break;
+           }
+         },
+         deep: true
+       }, // model
+
+       'this.$route' (to, from){
+         console.log('20170728 - to.params.id on SPCE : ', to.params.id)
+       }
+
+    },
+
+    components: {
+      LinkPrevue,
+      dialogSetAdmin
+    },
+
+    methods: {
+      logout: function () {
+        this.$store.commit('auth', false)
+        this.rightDrawer = !this.rightDrawer
+      },
+
+      changeTab: function() {
+        let idx = this.selectval
+        switch(idx){
+          case 'createPost':
+            this.createPost()
+          break
+          case 'addPerson':
+            this.addPerson()
+          break
+          case 'createCommunity':
+            this.createCommunity()
+          break
+
+        }
+      },
+
+      createPost: function() {
+        // @click.stop="dialog = true"
+        let info = this.routed_data
+        console.log('created param on spacepage : ', info)
+        this.$store.commit('setReverseRouteData', info)
+        if(this.$store.state.authenticated == true) {
+          this.$router.push({name: 'postEditor', params: {data: info}})
+          // console.log("PostContainer : dialog is true")
+        } else {
+          this.dialog = true
+        }
+        // console.log("PostContainer : Write post clicked...")
+      },
+
+      addPerson: function() {
+        console.log('ADD PERSON........')
+      },
+
+      createCommunity: function() {
+        console.log('CREATE COMMUNITY........')
+      },
+
+      showProfile(idx){
+        let info = this.model.lists[idx]
+        let r_params = {}
+        console.log("20180724 - Store DATA .....", info )
+        r_params.creator_id = info.creator_id
+
+        this.$store.commit('setCreatorId', r_params)
+
+        // send Profile id to Store
+        this.$router.push({name: 'profile'})
+      },
+
+      space_setting: function() {
+        let info = this.routed_data
+        this.$store.commit('setReverseRouteData', info)
+
+        this.$router.push({ name: 'spaceSetting', params:{data: info}})
+
+        this.rightDrawer = !this.rightDrawer
+      },
+
+      login: function() {
+        this.dialog = false
+      },
+
+      setAdmin () {
+        this.$refs.dialog_set_admin.dialog = true
+      },
+
+      completeInfoSpace(getData){
+        let infoName = ''
+        let politicalType = ''
+        let politicalLevel = 5
 
         this.place_type = 'infocenter'
 
@@ -359,7 +545,12 @@ export default {
 
         let spaceParams = {}
         spaceParams.place_type = 'infocenter'
-        spaceParams.id = getData.s_rid
+        if(getData.s_rid == undefined){
+          spaceParams.id = getData.id
+        } else {
+          spaceParams.id = getData.s_rid
+        }
+
         spaceParams.political_type = politicalType
 
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
@@ -452,157 +643,7 @@ export default {
           }) // inner then
         }) // axios then
 
-      } else {
-        // place ********************************************************************************************************************
-        console.log('20180727 - BUILDING ')
-
-        this.place_type = 'place'
-        this.item_name = ['Post', 'Person', '시설정보']
-
-        // this.place_name = this.$store.state.p_place_name
-        let placeType = getData.place_type
-        this.place_title = getData.place_name
-
-        if(getData.s_rid == undefined){
-          getData.s_rid = getData.id
-        }
-
-        axios.get(p_env.BASE_URL+'/vue/findOnePlace',{
-          params: {id: getData.s_rid}
-        })
-        .then(result=>{
-          this.data_image = result.data.data.photos
-          console.log('20180809 - get place data : ', result )
-
-        })
-
-        let spaceParams = {}
-        // spaceParams.place_type = placeType
-        spaceParams.s_rid = getData.s_rid
-        // spaceParams.user_name = getData.creator_name
-        // this.rid = ''
-        axios.get(p_env.BASE_URL+'/vue/findSpacePosts', {
-          params: spaceParams
-        })
-        .then(res =>{
-          console.log('20180721 - returned data : ', res.data.data)
-          this.model.lists = res.data.data
-          this.getData = this.$store.state.building_name
-
-        }) // inner then
-
-      } // Big if else **********************************************************************
-
-      // infowindow_rid
-
-
-    }, // mounted
-
-    watch: {
-      model: {
-         handler(val){
-           // do stuff
-           switch(val.id){
-             case 'tab-Post':
-             this.selectval = 'createPost'
-              // console.log("switch Post")
-             break;
-             case 'tab-Person':
-             console.log('20180730 - WATCH HANDLER : ', val.id )
-             this.selectval = 'addPerson'
-              // console.log("switch Person")
-             break;
-             case 'tab-커뮤니티':
-             this.selectval = 'createCommunity'
-              // console.log("switch Some")
-             break;
-           }
-         },
-         deep: true
-       }, // model
-
-       'this.$route' (to, from){
-         console.log('20170728 - to.params.id on SPCE : ', to.params.id)
-       }
-
-    },
-
-    components: {
-      LinkPrevue,
-      dialogSetAdmin
-    },
-
-    methods: {
-      logout: function () {
-        this.$store.commit('auth', false)
-        this.rightDrawer = !this.rightDrawer
-      },
-
-      changeTab: function() {
-        let idx = this.selectval
-        switch(idx){
-          case 'createPost':
-            this.createPost()
-          break
-          case 'addPerson':
-            this.addPerson()
-          break
-          case 'createCommunity':
-            this.createCommunity()
-          break
-
-        }
-      },
-
-      createPost: function() {
-        // @click.stop="dialog = true"
-        let info = this.routed_data
-        this.$store.commit('setReverseRouteData', info)
-        if(this.$store.state.authenticated == true) {
-          this.$router.push({name: 'postEditor', params: {data: info}})
-          // console.log("PostContainer : dialog is true")
-        } else {
-          this.dialog = true
-        }
-        // console.log("PostContainer : Write post clicked...")
-      },
-
-      addPerson: function() {
-        console.log('ADD PERSON........')
-      },
-
-      createCommunity: function() {
-        console.log('CREATE COMMUNITY........')
-      },
-
-      showProfile(idx){
-        let info = this.model.lists[idx]
-        let r_params = {}
-        console.log("20180724 - Store DATA .....", info )
-        r_params.creator_id = info.creator_id
-
-        this.$store.commit('setCreatorId', r_params)
-
-        // send Profile id to Store
-        this.$router.push({name: 'profile'})
-      },
-
-      space_setting: function() {
-        let info = this.routed_data
-        this.$store.commit('setReverseRouteData', info)
-
-        this.$router.push({ name: 'spaceSetting', params:{data: info}})
-
-        this.rightDrawer = !this.rightDrawer
-      },
-
-      login: function() {
-        this.dialog = false
-      },
-
-      setAdmin () {
-        this.$refs.dialog_set_admin.dialog = true
-      }
+      } // completeInfoSpace()
 
     }, //methods
 
@@ -614,7 +655,11 @@ export default {
 
     created: function () {
 
-    } // created
+    }, // created
+
+    updated () {
+      console.log('20180812 - Space Page UPDATED............')
+    }
   } // export
 
 </script>

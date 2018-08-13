@@ -389,14 +389,15 @@ export default {
            // This is checking to see if the Geoeode Status is OK before proceeding
            if (status == google.maps.GeocoderStatus.OK) {
                // console.log(results);
+               let placeId = results[0].place_id
                var address = (results[0].formatted_address);
-               // console.log('COUNTRY ADDRESS IS :: ', address);
+               // console.log('COUNTRY ADDRESS IS :: ', results[0].place_id);
                let isKorea = ''
                isKorea = address.search("South Korea")
                // console.log('isKorea IS in function isKorea :: ', isKorea);
                // console.log('isKorea IS in function Address :: ', address);
                if(isKorea >= 0){
-                 _this.sub_createPlace(e)
+                 _this.sub_createPlace(e, placeId)
                } else {
                  if (address.search("China") >= 0){
                    alert('중국서비스 준비중')
@@ -411,17 +412,14 @@ export default {
        }) // Geocoder
      }, // createPlace
 
-    sub_createPlace: function(e) {
+    sub_createPlace: function(e, id) {
       let _this = this
+      let placeId = id
       let clickedZoom = this.$store.state.zoom_level
 
       //if KOREA service only abable
       axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+e.latLng.lng()+"&lat=" +e.latLng.lat()+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        let buildingName = res.data.addressInfo.buildingName
-
-        console.log('P Map Data from skt : ',res.data.addressInfo)
-        console.log('P Map Data from skt BUILDING NAME  : ',buildingName)
 
         let st_country_code = 'KR'
         let sk_city_do = res.data.addressInfo.city_do
@@ -431,7 +429,12 @@ export default {
         let sk_ri = res.data.addressInfo.ri
         let sk_building_name = res.data.addressInfo.buildingName
 
+        if(sk_building_name == ''){
+          sk_building_name = '일반장소'
+        }
+
         let placeParams = {
+          place_type: 'place',
           latitude:e.latLng.lat(),
           longitude: e.latLng.lng(),
           country: st_country_code,
@@ -441,157 +444,103 @@ export default {
           sublocality_level_3: sk_ri,
           place_name: sk_building_name,
           admin_dong_code: res.data.addressInfo.adminDongCode,
-          building_index: res.data.addressInfo.buildingIndex
+          building_index: res.data.addressInfo.buildingIndex,
+          place_id: placeId
           // portal_name: res.data.addressInfo.adminDong +' 정보센터',
           // countryCode: 'KR',
           // political_type: 'adminDong'
         }
 
+        let infoParams = {}
+        infoParams.country = 'KR',
+        infoParams.place_type = 'infocenter',
+        infoParams.locality = sk_city_do,
+        infoParams.sublocality_level_1 = sk_gu_gun,
+        infoParams.sublocality_level_2 = sk_adminDong,
+        infoParams.sublocality_level_3 = sk_eup_myun,
+        infoParams.place_id = placeId,
+        infoParams.latitude = e.latLng.lat(),
+        infoParams.longitude = e.latLng.lng()
+
         let location = {}
         location['@class'] = 'OPoint'
         location.coordinates = [e.latLng.lng(), e.latLng.lat()]
 
+        console.log('P Map Data from skt : ',res.data.addressInfo)
+        console.log('P Map Data from skt BUILDING NAME  : ',sk_building_name)
+
         if(clickedZoom >= 12){
-          // Place or Info center
-          if(isPlace.getPlace(clickedZoom, buildingName)) {
 
-            // big Place
-            console.log('This is BUILDING  .........................')
+            // Place or Info center
+            if(isPlace.getPlace(clickedZoom, sk_building_name)) {
+              console.log('This is PLACE from Parse  .........................')
+              this.getPlace(placeParams)
+            } else {
+              // info center END DIVIDE PLACE TYPE infocenter / place
+              console.log('This is INFO CENTER from Parse .........................')
+              this.getInfoCenter(infoParams, clickedZoom)
+            } // inner if else
 
-            // find Place create Place New API
-            axios.get(p_env.BASE_URL+'/vue/getPlace', {
-              params: placeParams
-            })
-            .then(res => {
-              let placeInfo = {}
-              placeInfo.place_type = 'place'
-              placeInfo.id = res.data.data.id
-              placeInfo.place_name = res.data.data.place_name
-              placeInfo.about_info = res.data.data.about_info
-              placeInfo.admin_dong_code = res.data.data.admin_dong_code
-              placeInfo.admin_id = res.data.data.admin_id
-              placeInfo.location = location
-              placeInfo.building_index = res.data.data.building_index
-              placeInfo.country = res.data.data.country
-              placeInfo.locality = res.data.data.locality
-              placeInfo.sublocality_level_1 = res.data.data.sublocality_level_1
-              placeInfo.sublocality_level_2 = res.data.data.sublocality_level_2
-              placeInfo.sublocality_level_3 = res.data.data.sublocality_level_3
-              placeInfo.creator_id = res.data.data.creator_id
-              placeInfo.valuation = res.data.data.valuation
-              _this.$store.commit('setReverseRouteData', placeInfo)
-
-              console.log ('get Place  data below ************************************************')
-              console.log('PMap Place  : ', res.data.data)
-              // Dialog on
-              _this.dialog_title = res.data.data.place_name
-              _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
-              _this.dialog = true
-            }) // end of axios vue/getInfoCenter
-          } else {
-            // info center END DIVIDE PLACE TYPE infocenter / place
-            console.log('This is INFO CENTER .........................')
-            switch(clickedZoom){
-              case 12, 13, 14, 15: // gu_gun
-              break
-
-              case 16, 17, 18, 19, 20: // adminDong
-              break
-
-            } // switch
-
-            let infoParams = {}
-            infoParams.country_code = 'KR',
-            infoParams.city_do = sk_city_do,
-            infoParams.gu_gun = sk_gu_gun,
-            infoParams.adminDong = sk_adminDong,
-            infoParams.eup_myun = sk_eup_myun,
-            infoParams.latitude = e.latLng.lat(),
-            infoParams.longitude = e.latLng.lng()
-
-            // Get Postal Basic Info
-            axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-              // same params up above
-              params: infoParams
-            })
-            .then(res => {
-              let infoCenterInfo = {}
-              infoCenterInfo.place_type = 'infocenter'
-              infoCenterInfo.id = res.data.data.id
-              infoCenterInfo.place_name = res.data.data.portal_name
-              infoCenterInfo.about_info = res.data.data.about_info
-              infoCenterInfo.admin_id = res.data.data.admin_id
-              infoCenterInfo.location = location
-              infoCenterInfo.country = res.data.data.country
-              infoCenterInfo.locality = res.data.data.locality
-              infoCenterInfo.sublocality_level_1 = res.data.data.sublocality_level_1
-              infoCenterInfo.sublocality_level_2 = res.data.data.sublocality_level_2
-              infoCenterInfo.sublocality_level_3 = res.data.data.sublocality_level_3
-              infoCenterInfo.admin_id = res.data.data.admin_id
-              _this.$store.commit('setReverseRouteData', infoCenterInfo)
-
-
-              console.log ('Skt send request and get data below ************************************************')
-              console.log('PMap 1, Get info center : ', res.data.data)
-              console.log('PMap 1, Get info center : ', res.data.data.id)
-              console.log('PMap 1, Get info center : ', _this.$store.state.place_name)
-              // Dialog on
-              _this.dialog_title = res.data.data.portal_name
-              _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
-              _this.dialog = true
-            }) // end of axios vue/getInfoCenter
-          }
         } else {
-          // info Center
-          // NOT YET
-          // Get Postal Basic Info
-          let infoParams = {}
-          infoParams.country_code = 'KR'
-          infoParams.city_do = sk_city_do
-          infoParams.gu_gun = sk_gu_gun
-          infoParams.adminDong = sk_adminDong
-          infoParams.eup_myun = sk_eup_myun
-          infoParams.latitude = e.latLng.lat()
-          infoParams.longitude = e.latLng.lng()
-
-          // let location = {}
-          // location['@class'] = 'OPoint'
-          // location.coordinates = [e.latLng.lng(), e.latLng.lat()]
-
+          // zoom level < 12  : info Center
+          // NOT YET big Area
           console.log('This is OUtter INFO CENTER .........................')
-          axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
-            params: infoParams
-          })
-          .then(res => {
-            let infoCenterInfo = {}
-            infoCenterInfo.place_type = 'infocenter'
-            infoCenterInfo.id = res.data.data.id
-            infoCenterInfo.place_name = res.data.data.portal_name
-            infoCenterInfo.about_info = res.data.data.about_info
-            infoCenterInfo.admin_id = res.data.data.admin_id
-            infoCenterInfo.location = location
-            infoCenterInfo.country = res.data.data.country
-            infoCenterInfo.locality = res.data.data.locality
-            infoCenterInfo.sublocality_level_1 = res.data.data.sublocality_level_1
-            infoCenterInfo.sublocality_level_2 = res.data.data.sublocality_level_2
-            infoCenterInfo.sublocality_level_3 = res.data.data.sublocality_level_3
-            infoCenterInfo.admin_id = res.data.data.admin_id
-            _this.$store.commit('setReverseRouteData', infoCenterInfo)
-
-            console.log ('Skt send request and get data below ************************************************')
-            console.log('PMap 2, Get info center : ', res.data.data)
-            console.log('PMap 2, Get info center : ', res.data.data.id)
-            console.log('PMap 2, Get info center : ', _this.$store.state.place_name)
-
-            _this.dialog_title = res.data.data.portal_name
-            _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
-            _this.dialog = true
-          }) // end of axios vue/getInfoCenter
-
+          this.getInfoCenter(infoParams, clickedZoom)
         } // Outter if
 
       }) // SKT then
     }, // sub_createPlace
+
+    getPlace(placeParams) {
+      // find Place create Place New API
+      axios.get(p_env.BASE_URL+'/vue/getPlace', {
+        params: placeParams
+      })
+      .then(res => {
+        let placeInfo = {}
+        placeInfo = res.data.data
+        this.$store.commit('setReverseRouteData', placeInfo)
+
+        console.log ('get Place  data below ************************************************')
+        console.log('PMap Place  : ', res.data.data)
+        // Dialog on
+        this.dialog_title = res.data.data.place_name
+        this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
+        this.dialog = true
+      }) // end of axios
+
+    }, // getPlace
+
+    getInfoCenter(infoParams, clickedZoom) {
+
+      switch(clickedZoom){
+        case 12, 13, 14, 15: // gu_gun
+        break
+
+        case 16, 17, 18, 19, 20: // adminDong
+        break
+
+      } // switch
+
+      axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+        // same params up above
+        params: infoParams
+      })
+      .then(res => {
+        let infoCenterInfo = {}
+        infoCenterInfo = res.data.data
+        this.$store.commit('setReverseRouteData', infoCenterInfo)
+
+        console.log ('Skt send request and get data below ************************************************')
+        console.log('PMap 1, Get info center : ', res.data.data)
+        console.log('PMap 1, Get info center : ', this.$store.state.place_name)
+        // Dialog on
+        this.dialog_title = res.data.data.portal_name
+        this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
+        this.dialog = true
+      }) // end of axios vue/getInfoCenter
+
+    }, // getInfoCenter
 
     enterPlace: function() {
       let info = this.$store.state.reverse_route_data

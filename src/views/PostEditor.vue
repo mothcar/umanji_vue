@@ -95,7 +95,7 @@ export default {
     },
 
     submitPost: function() {
-      console.log('20180728 - POST PARAMS : ', this.routed_data)
+      console.log('20180813 - POST PARAMS : ', this.routed_data)
 
       var checkNull = this.content.replace(/\s|\r?\n|\r/g, '')
 
@@ -121,14 +121,14 @@ export default {
         console.log("visible : ", this.$store.state.visible)
         let paramsData = this.routed_data
 
-        if(this.$store.state.visible) {
-          portal_rid = this.$store.state.p_id
-          console.log("LOGIC PASS HERE..........")
-        } else {
-          place_rid = this.$store.state.p_id
-        }
+        // if(this.$store.state.visible) {
+        //   portal_rid = this.routed_data.s_rid
+        //   console.log("LOGIC PASS HERE..........")
+        // } else {
+        //   place_rid = this.routed_data.s_rid
+        // }
 
-        // console.log('20180728 - sublocolity type : ', typeof paramsData.sublocality1)
+        console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
 
         if(paramsData.photos == undefined){
           paramsData.photos = this.$store.state.user_junk.user.photos

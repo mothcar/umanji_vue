@@ -13,9 +13,12 @@
       <v-spacer></v-spacer>
 
       <v-btn icon>
-        <v-icon @click="">search</v-icon>
+        <v-icon @click="findSomething">search</v-icon>
       </v-btn>
 
+      <v-btn icon>
+        <v-icon @click="openManual">priority_high</v-icon>
+      </v-btn>
       <v-btn icon>
         <v-icon @click="openManageDialog">gavel</v-icon>
       </v-btn>
@@ -253,7 +256,8 @@ export default {
       // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
       console.log("MainContainer : updated............ but Nothing To do. ", )
     } else {
-      console.log("MainContainer : updated............", this.$store.state.current_place)
+      console.log("MainContainer : updated............and getInfoCenter ..", this.$store.state.current_place)
+      this.getInfoCenter()
     }
 
     // passingData
@@ -286,6 +290,16 @@ export default {
 
     openManageDialog() {
       this.manageDialog = true
+    },
+
+    openManual() {
+      let adsUrl = 'https://namu.wiki/w/%EC%9A%B0%EB%A7%8C%EC%A7%80'
+      // window.location.href = adsUrl
+      window.open(adsUrl , '_blank' )
+    },
+
+    findSomething() {
+      alert('검색서비스 준비중입니다')
     },
 
     routerToManagement () {
@@ -323,169 +337,214 @@ export default {
 
     infocenterRouter: function() {
       let info = this.$store.state.current_place
-      info.place_type = 'infocenter'
+      console.log('20180811 - info center clicked and data : ', info)
       // info.place_name = this.$store.state.current_place.place_name
       // info.photos = this.$store.state.photos
       // info.id = this.$store.state.id
       // info.user_name = this.$store.state.user_name
-      info.place_name = this.$store.state.current_place.portal_name
+      // info.place_name = this.$store.state.current_place.portal_name
+      info.from_type = 'mainInfoTab'
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
-      console.log('20180727 - PASSING DATA ....check s_rid = id ')
       console.log('20180728 - INFO CENTER CLICKED.........')
     },
 
     changeTab (current) {
-      this.autoDetectArea(current)
       this.$store.commit('changeZoomLevel', current)
       console.log("on Tab clicked....", current)
       // console.log("MainContainer - Stored Data : ", this.$store.state)
+      let portal_type = ''
+      let portal_name = ''
+      let tabObject = {}
 
-    },
-
-    autoDetectArea (area) {
-      console.log("MainContainer : autoDetectArea : " + this.$store.state.current_place.locality)
-      switch(area) {
+      switch(current) {
         case 'world':
-          this.$store.commit('changeTabState','world')
-          // this.$store.commit('setViewLevel',)
+          portal_name = '세계'
+          portal_type = 'world'
+          tabObject.portal_name = portal_name
+          tabObject.political_type = portal_type
+          this.$store.commit('changeTabState',tabObject)
           this.center_name = '세계'
-          this.getPortalData('세계', 'world')
           this.params.id = 'world'
           break;
         case 'country':
-          this.$store.commit('changeTabState','country')
+          portal_name = '대한민국'
+          portal_type = 'country'
+          tabObject.portal_name = portal_name
+          tabObject.political_type = portal_type
+          this.$store.commit('changeTabState',tabObject)
           this.center_name = '대한민국'
-          this.getPortalData('대한민국', 'country')
           this.params.id = 'country'
           break;
         case 'city_do':
-          this.$store.commit('changeTabState','city_do')
+          portal_name = this.$store.state.current_place.locality
+          portal_type = 'locality'
+          tabObject.portal_name = portal_name
+          tabObject.political_type = portal_type
+          this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.locality
           this.params.id = this.$store.state.current_place.locality
-          this.getPortalData(this.$store.state.current_place.locality, 'locality')
           break;
         case 'gu_gun':
-          this.$store.commit('changeTabState','gu_gun')
+          portal_name = this.$store.state.current_place.sublocality_level_1
+          portal_type = 'sublocality1'
+          tabObject.portal_name = portal_name
+          tabObject.political_type = portal_type
+          this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.sublocality_level_1
           this.params.id = this.$store.state.current_place.sublocality_level_1
-          this.getPortalData(this.$store.state.current_place.sublocality_level_1, 'sublocality_level_1')
           break;
         case 'adminDong':
-          this.$store.commit('changeTabState','adminDong')
+          portal_name = this.$store.state.current_place.sublocality_level_2
+          portal_type = 'sublocality2'
+          tabObject.portal_name = portal_name
+          tabObject.political_type = portal_type
+          this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.sublocality_level_2
           this.params.id = this.$store.state.current_place.sublocality_level_2
-          this.getPortalData(this.$store.state.current_place.sublocality_level_2, 'sublocality_level_2')
           break;
-
       }
-    }, // autoDetectArea
 
-    getPortalData: function(areaName, areaType) {
-      console.log('20180718 - Check area type : ', areaName)
-      var _this = this
+      let getMainPostParams = {
+        portalType: portal_type, //sublocality2
+        portalName: portal_name, // 대방동
+        view_level: this.$store.state.zoom_level
+      }
 
-      // New api
-      axios.get(p_env.BASE_URL+'/vue/getTabInfoCenter', { params: {
-        // latitude: this.$store.state.latitude,
-        // longitude: this.$store.state.longitude
-        // areaType Later query for detail ............
-        portal_name: areaName
-        // countryCode: 'KR'
-        // political_type: area
+      this.getMainPosts(getMainPostParams)
+    }, // changeTab()
+
+    // getPortalData: function(areaName, areaType) {
+    //   console.log('20180718 - Check area areaName : ', areaName)
+    //   var _this = this
+    //
+    //   // New api
+    //   axios.get(p_env.BASE_URL+'/vue/getTabInfoCenter', { params: {
+    //     // latitude: this.$store.state.latitude,
+    //     // longitude: this.$store.state.longitude
+    //     // areaType Later query for detail ............
+    //     portal_name: areaName
+    //     // countryCode: 'KR'
+    //     // political_type: area
+    //     }
+    //   })
+    //   .then(res => {
+    //     // Tab select Info Center Level and Find info Center data
+    //     console.log('20180728 - Tab selected INFOCENTER DATA : ',res.data.data)  // GOOOOOOOOOOD lat lng
+    //     let currentInfo = res.data.data
+    //     currentInfo.s_rid = res.data.data.id
+    //     // _this.$store.commit('setCurrentPlace', currentInfo)
+    //
+    //
+    //     let portal_type = areaType
+    //     let portal_name = areaName
+    //
+    //     switch(portal_type){
+    //       case 'country':
+    //         portal_type = 'country'
+    //         // portal_name = _this.$store.state.country
+    //       break;
+    //       case 'locality':
+    //         portal_type = 'locality'
+    //         // portal_name = _this.$store.state.city_do
+    //       break;
+    //       case 'sublocality_level_1':
+    //         portal_type = 'sublocality_level_1'
+    //         // portal_name = _this.$store.state.gu_gun
+    //       break;
+    //       case 'sublocality_level_2':
+    //         portal_type = 'sublocality_level_2'
+    //         // portal_name = _this.$store.state.adminDong
+    //       break;
+    //     }
+    //
+    //     // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+    //
+    //   }) // end of axios
+    // }, // getPortalData()
+
+    getMainPosts(getMainPostParams) {
+      //getInfodata
+      axios.get(p_env.BASE_URL+'/vue/main/posts', { params: getMainPostParams})
+      .then(res => {
+        let moment = require('moment')
+
+        for(var i=0; res.data.data.length> i; i++){
+          let old_date = res.data.data[i].createdAt
+          let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
+          res.data.data[i].createdAt = new_date
         }
+
+        this.postLists = res.data.data
+        // _this.markers = res.data.Data
+        this.markers = []
+        console.log('20180728 - MainContainer params s-rid : ', res.data.data )
+        for (var i = 0, len = res.data.data.length; i < len; i++) {
+
+          let obj = { position:{}, info:{}}
+          // obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
+          // obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
+          obj.position.lat = this.$store.state.latitude
+          obj.position.lng = this.$store.state.longitude
+          obj.info.s_rid = res.data.data[i].s_rid
+          obj.info.place_name = res.data.data[i].place_name
+          obj.info.zoom_level = this.$store.state.zoom_level
+
+          obj.info.creator_id = res.data.data[i].creator_id
+          obj.info.creator_name = this.$store.state.user_name,
+          obj.info.photos = res.data.data[i].photos
+          obj.info.place_type = res.data.data[i].place_type
+          obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
+          obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
+          obj.info.location = res.data.data[i].location
+          obj.info.link_url = res.data.data[i].link_url
+
+          obj.info.content = res.data.data[i].content
+
+          this.markers[i] = obj
+          // console.log("content lat lng : ", _this.markers)
+           // this.params.id = areaType
+        } // for
+        this.$store.commit('setMarkers', this.markers)
+
+        // console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
+
+      }) // axios then
+    }, // getMainPosts()
+
+    getInfoCenter(){
+      let getInfocenterParams = this.$store.state.current_place
+      axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+        params: getInfocenterParams
+        // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
       })
       .then(res => {
-        // Tab select Info Center Level and Find info Center data
-        console.log('20180728 - Tab selected INFOCENTER DATA : ',res.data.data)  // GOOOOOOOOOOD lat lng
         let currentInfo = res.data.data
-        currentInfo.placeType = 'infocenter'
+        // currentInfo.placeType = 'infocenter'
         currentInfo.s_rid = res.data.data.id
-        _this.$store.commit('setCurrentPlace', currentInfo)
+        this.$store.commit('setCurrentPlace', currentInfo)
+        console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
-        _this.center_name = areaName
-        _this.params.id = res.data.data.id
-        _this.params.id = areaType
+        let tabObject = {}
+        tabObject.portal_name = res.data.data.sublocality_level_2
+        tabObject.political_type = 'sublocality2'
+        this.$store.commit('changeTabState',tabObject)
 
+        console.log ('Skt send request and get data below ************************************************')
+        console.log('20180727 - MainContainer First : ',this.$store.state)
+        console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
+        console.log('MainContainer 20180722 - , Get info center : ', this.$store.state.current_place.sublocality_level_2)
 
-        let portal_type = areaType
-        let portal_name = areaName
+        let currentLatLng = {}
+        // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
+        // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
+        currentLatLng.latitude = res.data.data.location.coordinates[1]
+        currentLatLng.longitude = res.data.data.location.coordinates[0]
+        console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+        this.$store.commit('setCurrentLocation', currentLatLng)
+      })
 
-        switch(portal_type){
-          case 'country':
-            portal_type = 'country'
-            // portal_name = _this.$store.state.country
-          break;
-          case 'locality':
-            portal_type = 'locality'
-            // portal_name = _this.$store.state.city_do
-          break;
-          case 'sublocality_level_1':
-            portal_type = 'sublocality_level_1'
-            // portal_name = _this.$store.state.gu_gun
-          break;
-          case 'sublocality_level_2':
-            portal_type = 'sublocality_level_2'
-            // portal_name = _this.$store.state.adminDong
-          break;
-
-        }
-
-        // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
-
-        //getInfodata
-        axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
-          portalType: portal_type, //sublocality2
-          portalName: portal_name, // 대방동
-          view_level: this.$store.state.zoom_level
-          }
-        })
-        .then(res => {
-          let moment = require('moment')
-
-          for(var i=0; res.data.data.length> i; i++){
-            let old_date = res.data.data[i].createdAt
-            let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
-            res.data.data[i].createdAt = new_date
-          }
-
-          _this.postLists = res.data.data
-          // _this.markers = res.data.Data
-          _this.markers = []
-          console.log('20180728 - MainContainer params s-rid : ', res.data.data )
-          for (var i = 0, len = res.data.data.length; i < len; i++) {
-
-            let obj = { position:{}, info:{}}
-            // obj.position.lat = parseFloat(res.data.data[i].location.coordinates[1])
-            // obj.position.lng = parseFloat(res.data.data[i].location.coordinates[0])
-            obj.position.lat = this.$store.state.latitude
-            obj.position.lng = this.$store.state.longitude
-            obj.info.s_rid = res.data.data[i].s_rid
-            obj.info.place_name = res.data.data[i].place_name
-            obj.info.zoom_level = _this.$store.state.zoom_level
-
-            obj.info.creator_id = res.data.data[i].creator_id
-            obj.info.creator_name = this.$store.state.user_name,
-            obj.info.photos = res.data.data[i].photos
-            obj.info.place_type = res.data.data[i].place_type
-            obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
-            obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
-            obj.info.location = res.data.data[i].location
-            obj.info.link_url = res.data.data[i].link_url
-
-            obj.info.content = res.data.data[i].content
-
-            _this.markers[i] = obj
-            // console.log("content lat lng : ", _this.markers)
-             _this.params.id = areaType
-          } // for
-          _this.$store.commit('setMarkers', _this.markers)
-
-          // console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
-
-        }) // axios then
-      }) // end of axios
-    } // getPortalData()
+    } // getInfoCenter()
 
 
   }, // method
@@ -587,9 +646,15 @@ export default {
                 })
                 .then(res => {
                   let currentInfo = res.data.data
-                  currentInfo.placeType = 'infocenter'
+                  // currentInfo.placeType = 'infocenter'
                   currentInfo.s_rid = res.data.data.id
                   _this.$store.commit('setCurrentPlace', currentInfo)
+                  console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
+
+                  let tabObject = {}
+                  tabObject.portal_name = res.data.data.sublocality_level_2
+                  tabObject.political_type = 'sublocality2'
+                  _this.$store.commit('changeTabState',tabObject)
 
                   console.log ('Skt send request and get data below ************************************************')
                   console.log('20180727 - MainContainer First : ',_this.$store.state)
@@ -606,8 +671,6 @@ export default {
                   // console.log('MainContainer 2, Get info center : ', res.data.data.id)
                 }) // end of axios vue/getInfoCenter
                 .then(res => {
-
-
                   // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
                   // created
@@ -664,9 +727,6 @@ export default {
                 }) // second then
               }) // promise then
 
-
-
-              // console.log('MainContainer 5 :: store info : ', _this.$store.state)
             }) // axios SKT
 
 
@@ -679,13 +739,16 @@ export default {
       }) //google
     } else {
       // init : false middle of Service
-      // when back to Home
+      // when back to Home from Space Page    Not from Map
       console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
 
-      this.center_name = this.$store.state.current_place.sublocality_level_2
+      let resetData = this.$store.state.current_place
+      console.log('20180811 - MIDDLE OF SERVICE : reset Data : ', resetData)
+
+      this.center_name = resetData.sublocality_level_2
 
       let portal_type = this.$store.state.tabState
-      let portal_name = this.$store.state.current_place.sublocality_level_2
+      let portal_name = resetData.sublocality_level_2
 
       switch(portal_type){
         case 'country':
@@ -731,6 +794,7 @@ export default {
   }, // created
 
   mounted: function(){
+    console.log('Am i Called .. iam mounted main')
 
 
 

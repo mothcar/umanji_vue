@@ -50,7 +50,7 @@ export default {
         dictionary = ['초등학교', '중학교', '고등학교', '아파트', '삼성 래미안', '국회의사당', '국립중앙박물관', '국립서울현충원', '대학교', '공원', '에버랜드', '컨트리클럽']
       break
       default:
-        console.log('This level is  : ', zoom_level)
+        console.log('This is switch defatul - level is  : ', zoom_level)
         return this.isBuildingName(placeName)
     } // switch
 
@@ -62,27 +62,30 @@ export default {
       // console.log('.................. word isWord : ', isWord)
         if(isWord >= 0){
 
-          // console.log("From Wordservice this is BuILDING array ", placeName)
+          console.log("From Wordservice this is BuILDING array ", dictionary[i])
           // console.log(".....................From Wordservice", isWord[0])
           return returnFlag = true
         } else {
-          // console.log('......................this is info ')
+          console.log('......................dictionary  info ')
           returnFlag = false
         }
     }  // for
-    return returnFlag
   }, // getPlace
 
   isBuildingName(word){
     let infoList = ['자치회관', '주민센터', '구청', '시청', '군청', '서울특별시청']
     let checkInfo
+    console.log('20180811 - isBuildingName : ', word)
 
     for(var j=0; infoList.length>j; j++){
       checkInfo = word.search(infoList[j])
+
       if(checkInfo >= 0){
+        console.log('20180811 - for loop checkInfo if : ', checkInfo)
         return false
         break
-      } else if(word.length >= 2){
+      } else{
+        console.log('20180811 - for loop checkInfo else : ', checkInfo)
         return true
       }
     } // infoList for

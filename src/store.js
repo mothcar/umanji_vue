@@ -47,7 +47,7 @@ export default new Vuex.Store({
     reverse_route_data: '',
 
     // Etc
-    tabState: 'adminDong',
+    tabState: 'sublocality1',
     markers: [],
     infowindow_rid: '',
     map_ref:{},
@@ -55,7 +55,9 @@ export default new Vuex.Store({
     // new Current Place (address)
     current_place: {},
     // infocenter_data: '',
-    placeInfo: ''
+    placeInfo: '',
+    currentTabName: '',
+    currentTabType: ''
   },
 
   getters: {
@@ -145,7 +147,9 @@ export default new Vuex.Store({
     },
 
     changeTabState(state, payload) {
-      state.tabState = payload
+      state.currentTabName = payload.portal_name
+      state.currentTabType = payload.political_type
+      state.tabState = payload.political_type
     },
 
     setReverseRouteData(state, payload) {

@@ -15,6 +15,7 @@
     <br />
     <h3 v-if="isCitizen == false"> 관리영역 :   {{ title_roles }}</h3>
     <v-btn color="success" @click="showManager" >지역관리자 보기</v-btn>
+    <v-btn color="warning" @click="routeToWiki" >사용설명서 만들기</v-btn>
     <v-btn v-if="isCitizen" color="success" @click="joinManager" >지역관리자 신청</v-btn>
     <br />
     <hr />
@@ -166,6 +167,12 @@ export default {
       } else {
         alert('log in please')
       }
+    },
+
+    routeToWiki() {
+      let adsUrl = 'https://namu.wiki/w/%EC%9A%B0%EB%A7%8C%EC%A7%80'
+      // window.location.href = adsUrl
+      window.open(adsUrl , '_blank' )
     }
 
 

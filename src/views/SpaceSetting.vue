@@ -11,6 +11,7 @@
         <div class="image-preview" v-if="imageData.length > 0">
             <img class="preview" :src="imageData">
         </div>
+        <v-btn color="warning" @click="setAds" > 업체 광고하기 </v-btn>
     </div>
     <!-- file select *********************************************************************** -->
 
@@ -95,6 +96,10 @@ export default {
             reader.readAsDataURL(input.files[0]);
         }
     }, // previewImage
+
+    setAds() {
+      console.log('20180810 - set Ads ')
+    } // setAds
 
   },  // methods
 
