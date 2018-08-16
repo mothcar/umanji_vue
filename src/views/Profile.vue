@@ -7,16 +7,15 @@
     </div>
     <div class="p_box p_side">
       <h2> menu </h2>
-      <input v-model="test_url" placeholder="url"/><span><v-btn @click="getMetaMyData">OK</v-btn></span>
-      <!-- <LinkPrevue ref="preview" :url="test_url" :onButtonClick="getMetaMyData"></LinkPrevue> -->
+      <!-- <input v-model="test_url" placeholder="url"/><span><v-btn @click="getMetaMyData">OK</v-btn></span> -->
       <P>
         {{ news_result }}
       </P>
-      <v-btn @click="pdfParser">Election Area Parser</v-btn>
-      <input type='file' accept='text/plain' onchange='openFile(event)'>
+      <!-- <v-btn @click="pdfParser">Election Area Parser</v-btn> -->
+      <!-- <input type='file' accept='text/plain' onchange='openFile(event)'> -->
       <br>
       <div id='output'>...</div>
-      <v-btn @click="routeToAnalytics"> Analytics </v-btn>
+      <!-- <v-btn @click="routeToAnalytics"> Analytics </v-btn> -->
     </div>
     <div class="p_box p_main">
       <div class="p_main_container">

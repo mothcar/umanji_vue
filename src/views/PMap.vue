@@ -666,6 +666,7 @@ export default {
     // Therefore we need to write mapRef.$mapPromise.then(() => ...)
 
    // console.log('20180721 - mapref before : ', this.$refs.mapref)
+   console.log('20180816 - PMAP MOUNTED  : When I called ???')
 
    this.$refs.mapRef.$mapPromise.then((map) => {
      console.log('20180721 - mapref after : ', map)
