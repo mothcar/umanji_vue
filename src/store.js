@@ -9,7 +9,7 @@ export default new Vuex.Store({
     init: true,
     visible: true,
     country_code: '',
-    zoom_level: 18,
+    zoom_level: 17,
     emailentry:'',
     authenticated: false,
     // user Data

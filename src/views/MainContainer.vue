@@ -251,13 +251,30 @@ export default {
   }, // data
 
   updated: function() {
-    if(this.$store.state.adminDong.length > 1){
-      // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
-      // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
-      console.log("MainContainer : updated............ but Nothing To do. ", )
+    // if(this.$store.state.adminDong.length > 1){
+    //   // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong.length)
+    //   // console.log(" MainContainer - : Store data adminDong updated.", this.$store.state.adminDong)
+    //   console.log("MainContainer : updated............ but Nothing To do. ", )
+    // } else {
+    //   console.log("MainContainer : updated............and getInfoCenter ..", this.$store.state.current_place)
+    //
+    // }
+    let init = this.$store.state.init
+    if(init){
+      console.log("MainContainer : updated......... FIRST INIT  " )
+
     } else {
-      console.log("MainContainer : updated............and getInfoCenter ..", this.$store.state.current_place)
-      this.getInfoCenter()
+      console.log("MainContainer : updated......... INIT : FALSE   " )
+      // this.getInfoCenter()
+      let getMainPostParams = {
+        portalType: this.$store.state.current_place.political_type, //sublocality2
+        portalName: this.$store.state.current_place.portal_name, // 대방동
+        view_level: this.$store.state.zoom_level
+      }
+
+      // console.log('20180815 - STORE DATA : ', this.$store.state.tabState)
+
+      // this.getMainPosts(getMainPostParams)
     }
 
     // passingData
@@ -411,6 +428,8 @@ export default {
         view_level: this.$store.state.zoom_level
       }
 
+      console.log('20180815 - STORE DATA : ', this.$store.state.tabState)
+
       this.getMainPosts(getMainPostParams)
     }, // changeTab()
 
@@ -478,7 +497,7 @@ export default {
         this.postLists = res.data.data
         // _this.markers = res.data.Data
         this.markers = []
-        console.log('20180728 - MainContainer params s-rid : ', res.data.data )
+        // console.log('20180728 - MainContainer params s-rid : ', res.data.data )
         for (var i = 0, len = res.data.data.length; i < len; i++) {
 
           let obj = { position:{}, info:{}}
@@ -525,15 +544,10 @@ export default {
         this.$store.commit('setCurrentPlace', currentInfo)
         console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
-        let tabObject = {}
-        tabObject.portal_name = res.data.data.sublocality_level_2
-        tabObject.political_type = 'sublocality2'
-        this.$store.commit('changeTabState',tabObject)
-
         console.log ('Skt send request and get data below ************************************************')
         console.log('20180727 - MainContainer First : ',this.$store.state)
         console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
-        console.log('MainContainer 20180722 - , Get info center : ', this.$store.state.current_place.sublocality_level_2)
+        console.log('MainContainer 20180815 - , Get info center FROM GETINFOCENTER : ', this.$store.state.current_place.sublocality_level_2)
 
         let currentLatLng = {}
         // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
@@ -542,6 +556,8 @@ export default {
         currentLatLng.longitude = res.data.data.location.coordinates[0]
         console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
         this.$store.commit('setCurrentLocation', currentLatLng)
+
+
       })
 
     } // getInfoCenter()
@@ -628,9 +644,9 @@ export default {
               // let currentStAddress = Util.setToStandardAddress(res.data.addressInfo)
 
 
-              let getInfocenterParams = {}
+              // let getInfocenterParams = {}
               Util.setToStandardAddress(res.data.addressInfo).then(function (currentStAddress) {
-                getInfocenterParams = currentStAddress
+                let getInfocenterParams = currentStAddress
                 // console.log('20180809 - STANDARD ADDRESS : ',currentStAddress)
                 // console.log('20180809 - STANDARD ADDRESS params : ',getInfocenterParams)
                 // console.log('20180809 - STANDARD ADDRESS locality : ',currentStAddress.locality)
@@ -666,7 +682,7 @@ export default {
                   // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
                   currentLatLng.latitude = res.data.data.location.coordinates[1]
                   currentLatLng.longitude = res.data.data.location.coordinates[0]
-                  console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+                  // console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
                   _this.$store.commit('setCurrentLocation', currentLatLng)
                   // console.log('MainContainer 2, Get info center : ', res.data.data.id)
                 }) // end of axios vue/getInfoCenter
@@ -674,6 +690,7 @@ export default {
                   // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
                   // created
+                  console.log('20180815 - commited data setcurrentdata : ', _this.$store.state.current_place)
                   axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
                     portalType: 'sublocality2', //sublocality2
                     portalName: _this.$store.state.current_place.sublocality_level_2, // 대방동
@@ -681,6 +698,7 @@ export default {
                     }
                   })
                   .then(res => {
+                    console.log('20180815- post result :  ', res.data.data)
                     let moment = require('moment')
 
                     for(var i=0; res.data.data.length> i; i++){

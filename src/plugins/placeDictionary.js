@@ -56,39 +56,46 @@ export default {
 
     let result=[];
     let isWord
+    let returnVal = false
+    let word = ''
 
     for(var i=0; dictionary.length>i; i++){
       isWord = placeName.search(dictionary[i])
       // console.log('.................. word isWord : ', isWord)
         if(isWord >= 0){
-
+          word = dictionary[i]
           console.log("From Wordservice this is BuILDING array ", dictionary[i])
           // console.log(".....................From Wordservice", isWord[0])
-          return returnFlag = true
-        } else {
-          console.log('......................dictionary  info ')
-          returnFlag = false
-        }
+          returnVal = true
+        } 
     }  // for
+    return [returnVal, word]
   }, // getPlace
 
   isBuildingName(word){
     let infoList = ['자치회관', '주민센터', '구청', '시청', '군청', '서울특별시청']
     let checkInfo
+    let returnVal = true
+    let infoLevel = ''
     console.log('20180811 - isBuildingName : ', word)
 
     for(var j=0; infoList.length>j; j++){
       checkInfo = word.search(infoList[j])
+      console.log('20180814 - for loop INFO CENTER  CHECK : ', checkInfo)
 
       if(checkInfo >= 0){
-        console.log('20180811 - for loop checkInfo if : ', checkInfo)
-        return false
+        console.log('20180811 - for loop INFO CENTER  if : ', checkInfo)
+        infoLevel = infoList[j]
+        returnVal = false
         break
-      } else{
-        console.log('20180811 - for loop checkInfo else : ', checkInfo)
-        return true
       }
+      // else{
+      //   console.log('20180811 - for loop checkInfo else : ', checkInfo)
+      //   return true
+      //   break
+      // }
     } // infoList for
+    return [returnVal, infoLevel]
 
     // if(word.length >= 2){
     //   // console.log("From Wordservice this is BuILDING array ", word)

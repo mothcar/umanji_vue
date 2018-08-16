@@ -56,7 +56,7 @@
         <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
         <!-- create Post Button ********************************************************* -->
         <div>
-          <v-btn color="success" @click="changeTab" >{{ button_title[index] }}</v-btn>
+          <v-btn color="success" @click="excuteTab" >{{ button_title[index] }}</v-btn>
           <!--  -->
           <!-- @click.stop="dialog = true" -->
         </div>
@@ -237,7 +237,7 @@ export default {
         rightDrawer: false,
         left: true,
         place_type: 'infocenter',
-        place_title: 'PlacePage',
+        // place_title: 'PlacePage',
         item_name: ['Post', 'Person', '커뮤니티'],
         model: {
           id: 'tab-1',
@@ -265,7 +265,7 @@ export default {
         owner_name: '소유자 없음',
         isOfficer: false,
         data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0',
-        place_name: ''
+        // place_name: ''
 
 
       } // return
@@ -274,6 +274,7 @@ export default {
     mounted: function() {
       // let someData
       // this.$bus.$emit('bus-data', someData)
+      console.log('20180815 - RETURNED FROM POST EDITOR : MOUNTED ')
 
       let getData
 
@@ -285,34 +286,38 @@ export default {
         console.log('20180728 - NOT REVERSE')
         console.log('20180802 - ROUTE PARAMS DATA : ', this.$route.params.id)
         getData = this.$route.params.id
-        console.log('20180727 - GET ROUTER DATA ON SPACEPACE : ', getData )
+        console.log('20180727 - GET ROUTER DATA ON SPACEPACE from MAIN : ', getData )
       } else {
         console.log('20180728 - REVERSE')
         getData = this.$store.state.reverse_route_data
+        this.routed_data = getData
       }
 
-      this.routed_data = getData
+      // this.routed_data = getData
       console.log('20180803 - getData : ', getData)
       console.log('20180803 - getData.from_type : ', getData.from_type)
 
       if(getData.from_type == 'mainInfoTab') {
-            let political_type = this.$store.state.currentTabType // political_type = sublocality2
+            let political_type = this.$store.state.tabState // political_type = sublocality2
             let portal_name = this.$store.state.currentTabName
             let queryParams = {
               portal_name: portal_name+' 정보센터',
               political_type: political_type
             }
 
+            console.log('20180815 - mainInfoTab - get info center param : ', queryParams )
+
             axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
               params: queryParams
             })
             .then(res => {
+              // upper routed data is not yet complete , right bottom data is this space data
               console.log('20180812 - get data : ', res.data.data )
               this.routed_data = res.data.data
               this.routed_data.s_rid = res.data.data.id
               this.routed_data.place_name = res.data.data.portal_name
-              this.place_name = res.data.data.portal_name
-              // this.completeInfoSpace(res)
+              // this.place_name = res.data.data.portal_name
+              this.completeInfoSpace(res.data.data)
             })
 
 
@@ -322,6 +327,7 @@ export default {
             if(getData.place_type == 'infocenter') {
               // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
               console.log('20180812 - Space page if else infocenter ')
+              // this.place_name = getData.portal_name
 
               this.completeInfoSpace(getData)
 
@@ -334,11 +340,14 @@ export default {
 
               // this.place_name = this.$store.state.p_place_name
               let placeType = getData.place_type
-              this.place_title = getData.place_name
+              // this.place_name = getData.place_name
 
               if(getData.s_rid == undefined){
                 getData.s_rid = getData.id
               }
+              // this.routed_data = getData
+
+              console.log('20180815 - PLACE GET DATA : ', getData )
 
               axios.get(p_env.BASE_URL+'/vue/findOnePlace',{
                 params: {id: getData.s_rid}
@@ -346,6 +355,9 @@ export default {
               .then(result=>{
                 this.data_image = result.data.data.photos
                 console.log('20180809 - get place data : ', result )
+                this.routed_data = result.data.data
+                this.routed_data.s_rid = result.data.data.id
+                this.routed_data.place_name = result.data.data.place_name
 
               })
 
@@ -412,7 +424,7 @@ export default {
         this.rightDrawer = !this.rightDrawer
       },
 
-      changeTab: function() {
+      excuteTab: function() {
         let idx = this.selectval
         switch(idx){
           case 'createPost':
@@ -479,12 +491,24 @@ export default {
         this.$refs.dialog_set_admin.dialog = true
       },
 
-      completeInfoSpace(getData){
+      completeInfoSpace(getParent){
+        let getData = getParent
+        if(getData.s_rid == undefined){
+          getData.s_rid = getData.id
+        }
+
+        console.log('20180815 - complete info space get data : ', getData)
         let infoName = ''
         let politicalType = ''
         let politicalLevel = 5
 
-        this.place_type = 'infocenter'
+        this.routed_data = getData
+        this.routed_data.place_name = getData.portal_name
+        // let resObj = res.data.data
+        // this.routed_data.place_name = res.data.data.portal_name
+        // this.routed_data = {...resObj}
+
+        // this.place_type = 'infocenter'
 
         if(getData.sublocality_level_1 == undefined){
           getData.sublocality_level_1 = getData.sublocality_level_1
@@ -495,41 +519,41 @@ export default {
         switch(getData.political_type){ //'city_do'
 
           case 'world':
-            this.place_title = this.$store.state.world
+            // this.place_name = this.$store.state.world
             infoName = '세계'
             politicalType = 'world'
             politicalLevel = 5
           break
 
           case 'country':
-            this.place_title = this.$store.state.country
+            // this.place_name = this.$store.state.country
             infoName = '대한민국'
             politicalType = 'country'
             politicalLevel = 4
           break
 
           case 'locality':
-            this.place_title = getData.locality
+            // this.place_name = getData.locality
             infoName = getData.locality
             politicalType = 'locality'
             politicalLevel = 3
           break
 
           case 'sublocality1':
-            this.place_title = getData.sublocality1
+            // this.place_name = getData.sublocality1
             infoName = getData.sublocality1
             politicalType = 'sublocality1'
             politicalLevel = 2
           break
 
           case 'sublocality2':
-            this.place_title = getData.sublocality2
+            // this.place_name = getData.sublocality2
             infoName = getData.sublocality2
             politicalType = 'sublocality2'
             politicalLevel = 1
           break
           // default:
-          //   this.place_title = getData.sublocality2
+          //   this.place_name = getData.sublocality2
           //   infoName = getData.sublocality2
           //   politicalType = 'sublocality2'
           //   politicalLevel = 1
@@ -558,11 +582,14 @@ export default {
         })
         .then(res => {
           console.log('20180802 - Find INFO CENTER result :', res.data.data)
+          // this.routed_data = res.data.data
           let coords = {}
           // For Top Info Center Button
+
+          console.log('20180815 - ROUDTED DATA : ', this.routed_data)
           this.$store.commit('setNewPlaceInfo', res.data.data)
-          var location = res.data.data.location
-          this.routed_data.location = location
+          // var location = res.data.data.location
+          // this.routed_data.location = location
           console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
           this.data_image = res.data.data.photos
 
@@ -638,7 +665,6 @@ export default {
             console.log('20180721 - returned data : ', res.data.data)
             this.model.lists = res.data.data
             this.getData = this.$store.state.building_name
-            this.place_title = this.$store.state.p_place_name
 
           }) // inner then
         }) // axios then
@@ -658,7 +684,7 @@ export default {
     }, // created
 
     updated () {
-      console.log('20180812 - Space Page UPDATED............')
+      console.log('20180815 - RETURNED FROM POST EDITOR ;UPDATED ')
     }
   } // export
 

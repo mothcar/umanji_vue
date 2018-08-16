@@ -182,17 +182,36 @@ export default {
     createPost: function() {
       // @click.stop="dialog = true"
       if(this.$store.state.authenticated == true) {
-        console.log('20180912 - current place data : ', this.$store.state.current_place)
-        let info = this.$store.state.current_place
-        // info.place_type = 'infocenter'
-        // info.place_name = this.$store.state.infocenter_data.place_name
-        info.photos = this.$store.state.photos
-        info.id = this.$store.state.id
-        info.user_name = this.$store.state.user_name
-        info.place_name = info.portal_name
-        console.log("PostContainer : beforORE SEND PARAMS : ", info)
-        this.$router.push({name: 'postEditor', params: {data: info}})
-        // console.log("PostContainer : dialog is true")
+        let political_type = this.$store.state.tabState // political_type = sublocality2
+        let portal_name = this.$store.state.currentTabName
+        let queryParams = {
+          portal_name: portal_name+' 정보센터',
+          political_type: political_type
+        }
+
+        console.log('20180815 - mainInfoTab - get info center param : ', queryParams )
+
+        axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+          params: queryParams
+        })
+        .then(res => {
+          // upper routed data is not yet complete , right bottom data is this space data
+          console.log('20180812 - get data : ', res.data.data )
+
+          // console.log('20180912 - current place data : ', this.$store.state.current_place)
+          let info = res.data.data
+          info.s_rid = res.data.data.id 
+          // info.place_type = 'infocenter'
+          // info.place_name = this.$store.state.infocenter_data.place_name
+          info.photos = this.$store.state.photos
+          info.id = this.$store.state.id
+          info.user_name = this.$store.state.user_name
+          info.place_name = info.portal_name
+          console.log("PostContainer : beforORE SEND PARAMS : ", info)
+          this.$router.push({name: 'postEditor', params: {data: info}})
+          // console.log("PostContainer : dialog is true")
+        }) // axios then
+
       } else {
         this.dialog = true
       }
