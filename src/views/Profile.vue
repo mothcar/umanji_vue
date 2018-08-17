@@ -23,13 +23,15 @@
         <h2 class="p_p" v-show="isName == false "> 이름 : <span> <input v-model="new_name" placeholder="이름입력"/><v-btn @click="update_name">수정</v-btn></span></h2>
         <h2 class="p_p" v-show="isPhone"> 휴대폰번호 :{{ phone_number }} <v-btn @click="showPhoneInput">수정</v-btn></h2>
         <h2 class="p_p" v-show="isPhone == false "> 휴대폰번호 : <span> <input v-model="phone_number" placeholder="전화번호"/><v-btn @click="update_phone">수정</v-btn></span></h2>
+        <h4 style="color:gray;">'-'없이 숫자만 입력, ex)01012345678 송금할때 필요합니다.</h4>
         <h3 class="p_p">admin Level : 5</h3>
-        <h3 class="p_p">Money : {{ money }}</h3>
-        <h3 class="p_p">Wallet <span> <v-btn color="success" @click="routeWallet" >Wallet</v-btn> </span> </h3>
+        <h3 class="p_p">페이(도움)보유액 : {{ money }}</h3>
+        <h3 class="p_p">전자지갑 <span> <v-btn color="success" @click="routeWallet" >Wallet</v-btn> </span> </h3>
         <h3 class="p_p">회원관리 <span> <v-btn v-if="isAdmin" color="info" @click="adminMember" >회원관리</v-btn> </span> </h3>
-        <h3 class="p_p">Building : 5</h3>
+        <h3 class="p_p">보유건물수 :  0 채</h3>
         <h3 class="p_p">Blogs : 15</h3>
-        <h3 class="p_p">My Photo :</h3>
+        <h3 class="p_p">내사진 :</h3>
+        <h4 style="color:gray;">실제 본인 사진을 올려주세요. 지역관리자 할때 필수입니다.</h4>
         <v-list-tile-avatar>
           <img :src="photo">
         </v-list-tile-avatar>
@@ -50,7 +52,7 @@
     </div>
 
     <div class="p_box">
-      <img :src="image" />
+      <!-- <img :src="image" /> -->
     </div>
 
   </div>
@@ -216,6 +218,7 @@ export default {
 
     update_name() {
       let newName = this.new_name
+      this.user_name = newName
       console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
       axios.post(p_env.BASE_URL+'/vue/updateName', {
         user_id: this.$store.state.user_junk.user.id,
@@ -240,6 +243,7 @@ export default {
 
     update_phone() {
       let newPhone = this.phone_number
+      this.phone_number = newPhone
       // console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
       axios.post(p_env.BASE_URL+'/vue/updatePhone', {
         user_id: this.$store.state.user_junk.user.id,

@@ -108,7 +108,7 @@ export default {
         // location['@class'] = 'OPoint'
         // location.coordinates = [this.longitude, this.latitude]
 
-        console.log('20180718 - Opoint type : ', JSON.stringify(location))
+        // console.log('20180718 - Opoint type : ', JSON.stringify(location))
 
         var regContent = this.content
         regContent = regContent.replace(/\r?\n/g, '<br />');
@@ -118,7 +118,7 @@ export default {
 
         // portal check ; Info or Map -> visible
         // if place DO commit place to 'cuttentId' in store
-        console.log("visible : ", this.$store.state.visible)
+        // console.log("visible : ", this.$store.state.visible)
         let paramsData = this.routed_data
 
         // if(this.$store.state.visible) {
@@ -128,7 +128,7 @@ export default {
         //   place_rid = this.routed_data.s_rid
         // }
 
-        console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
+        // console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
 
         if(paramsData.photos == undefined){
           paramsData.photos = this.$store.state.user_junk.user.photos

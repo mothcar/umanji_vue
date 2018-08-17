@@ -16,17 +16,31 @@
         <v-icon @click="findSomething">search</v-icon>
       </v-btn>
 
-      <v-btn icon>
+      <!-- <v-btn icon>
         <v-icon @click="openManual">priority_high</v-icon>
-      </v-btn>
-      <v-btn icon>
+      </v-btn> -->
+      <button>
+          <img @click="openManual" src="../assets/images/wiki_icon.png" alt="Close Icon" height="24" width="24"/>
+          <span> &nbsp; </span>
+      </button>
+
+      <!-- <v-btn icon>
         <v-icon @click="openManageDialog">gavel</v-icon>
-      </v-btn>
+      </v-btn> -->
+      <button>
+          <img @click="openManageDialog" src="../assets/images/election_icon.png" alt="Close Icon" height="24" width="24"/>
+      </button>
       <!-- searchLocation -->
       <!-- verified_user -->
+      <v-btn icon v-if="visible===true">
+        <v-icon  @click='toMap'>map</v-icon>
+      </v-btn>
+      <v-btn icon v-if="visible===false">
+        <v-icon @click='toPost'>list_alt</v-icon>
+      </v-btn>
 
-      <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
-      <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon>
+      <!-- <v-icon v-if="visible===true" @click='toMap'>map</v-icon>
+      <v-icon v-if="visible===false" @click='toPost'>list_alt</v-icon> -->
 
       <v-tabs
         slot="extension"
@@ -135,7 +149,7 @@
         <v-list-tile-action>
           <v-icon>account_balance_wallet</v-icon>
         </v-list-tile-action>
-        <v-list-tile-title>Wallet</v-list-tile-title>
+        <v-list-tile-title>전자지갑</v-list-tile-title>
       </v-list-tile>
 
       <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'message', params: {} }" >
@@ -149,7 +163,7 @@
         <v-list-tile-action>
           <v-icon>account_box</v-icon>
         </v-list-tile-action>
-        <v-list-tile-title>Setting</v-list-tile-title>
+        <v-list-tile-title>개인정보관리</v-list-tile-title>
       </v-list-tile>
 
       <v-list-tile v-show="authenticated === true" @click="logout" :to="{ name: '', params: {} }" >

@@ -164,7 +164,7 @@ export default {
 
   created: function () {
 
-    console.log('20180809 - HERE IS PostContainer CREATED')
+    console.log('20180809 - HERE IS PostContainer CREATED', this.postLists)
   }, //created
 
   methods: {
@@ -189,7 +189,7 @@ export default {
           political_type: political_type
         }
 
-        console.log('20180815 - mainInfoTab - get info center param : ', queryParams )
+        console.log('20180817 - POSTCONTAINER BTN - get info center param : ', queryParams )
 
         axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
           params: queryParams
@@ -200,7 +200,7 @@ export default {
 
           // console.log('20180912 - current place data : ', this.$store.state.current_place)
           let info = res.data.data
-          info.s_rid = res.data.data.id 
+          info.s_rid = res.data.data.id
           // info.place_type = 'infocenter'
           // info.place_name = this.$store.state.infocenter_data.place_name
           info.photos = this.$store.state.photos

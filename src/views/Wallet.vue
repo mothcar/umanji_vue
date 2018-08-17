@@ -7,7 +7,7 @@
     >
       <v-toolbar-side-icon></v-toolbar-side-icon>
 
-      <v-toolbar-title>Wallet</v-toolbar-title>
+      <v-toolbar-title>내지갑</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -42,7 +42,7 @@
     <div>
       <v-btn color="error" @click="openSender" >송금</v-btn>
       <v-btn color="info" @click="buyMoney" >구매</v-btn>
-      <h2>{{ title_money }}</h2>
+      <h2><span>현재 보유금액</span>{{ title_money }}<span>페이(도움:Doum)</span></h2>
       <!--  -->
       <!-- @click.stop="dialog = true" -->
     </div>

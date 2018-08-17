@@ -50,8 +50,8 @@
                   id: '',
                   email: '',
                   phone: '',
-                  user_name: '',
-                  photos: '',
+                  user_name: '등록되지않은이름',
+                  photos: 'https://res.cloudinary.com/mothcar/image/upload/v1534492757/default_user_image_yz6zdk.png',
                   money: 0
               },
             } // return
@@ -67,7 +67,9 @@
               // Native form submission is not yet supported
               axios.post(p_env.BASE_URL+'/vue/auth/signup', {
                 email: this.email,
-                password: this.input.password
+                password: this.input.password,
+                user_name: this.input.user_name,
+                photos: this.input.photos
               }) // axios /v1/auth/signup
               .then(res=>{
                   console.log('SecureLogin - login : ', res.data.data)
