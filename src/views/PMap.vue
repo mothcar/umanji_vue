@@ -48,22 +48,27 @@
             <img src="../assets/default_avatar.jpg" />
             {{ m.info.s_rid }}
           </div> -->
-          <v-flex xs12 sm12 md12>
+          <div style="width: 120px;">
           <v-avatar
               slot="activator"
               size="36px"
             >
               <img :src="m.info.photos[0]" @click="showProfile(index)">
+              <div>
+                <span>&ensp;</span>
+                <span @click="linkToPage(index)" v-html="m.info.content" style="display:block;text-overflow: ellipsis;width: 80px;overflow: hidden; white-space: nowrap;">
+                   {{ m.info.s_rid }}
+                </span>
+              </div>
+
             </v-avatar>
 
-            <div @click="linkToPage(index)">
+            <!-- <div @click="linkToPage(index)">
               {{ m.info.s_rid }}
-            </div>
-            <div @click="linkToPage(index)" v-html="m.info.content">
-              {{ m.info.s_rid }}
-            </div>
+            </div> -->
 
-          </v-flex>
+
+          </div>
 
           </GmapInfoWindow>
 
