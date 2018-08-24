@@ -102,76 +102,81 @@ export default {
       if(checkNull.length < 1) {
         alert("내용을 입력해 주세요")
       } else {
-        // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
-        // var location = '{\"@class\":\"OPoint\",\"coordinates\":['+this.longitude+','+this.latitude+']}'
-        // var location = {}
-        // location['@class'] = 'OPoint'
-        // location.coordinates = [this.longitude, this.latitude]
+            if(this.routed_data.s_rid != '' || this.routed_data.s_rid != undefined){
+              // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'
+              // var location = '{\"@class\":\"OPoint\",\"coordinates\":['+this.longitude+','+this.latitude+']}'
+              // var location = {}
+              // location['@class'] = 'OPoint'
+              // location.coordinates = [this.longitude, this.latitude]
 
-        // console.log('20180718 - Opoint type : ', JSON.stringify(location))
+              // console.log('20180718 - Opoint type : ', JSON.stringify(location))
 
-        var regContent = this.content
-        regContent = regContent.replace(/\r?\n/g, '<br />');
+              var regContent = this.content
+              regContent = regContent.replace(/\r?\n/g, '<br />');
 
-        let portal_rid = ''
-        let place_rid = ''
+              let portal_rid = ''
+              let place_rid = ''
 
-        // portal check ; Info or Map -> visible
-        // if place DO commit place to 'cuttentId' in store
-        // console.log("visible : ", this.$store.state.visible)
-        let paramsData = this.routed_data
+              // portal check ; Info or Map -> visible
+              // if place DO commit place to 'cuttentId' in store
+              // console.log("visible : ", this.$store.state.visible)
+              let paramsData = this.routed_data
 
-        // if(this.$store.state.visible) {
-        //   portal_rid = this.routed_data.s_rid
-        //   console.log("LOGIC PASS HERE..........")
-        // } else {
-        //   place_rid = this.routed_data.s_rid
-        // }
+              // if(this.$store.state.visible) {
+              //   portal_rid = this.routed_data.s_rid
+              //   console.log("LOGIC PASS HERE..........")
+              // } else {
+              //   place_rid = this.routed_data.s_rid
+              // }
 
-        // console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
+              // console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
 
-        if(paramsData.photos == undefined){
-          paramsData.photos = this.$store.state.user_junk.user.photos
-        }
+              if(paramsData.photos == undefined){
+                paramsData.photos = this.$store.state.user_junk.user.photos
+              }
 
-        if(paramsData.sublocality1 == undefined){
-          paramsData.sublocality1 = paramsData.sublocality_level_1
-          paramsData.sublocality2 = paramsData.sublocality_level_2
-        }
+              if(paramsData.sublocality1 == undefined){
+                paramsData.sublocality1 = paramsData.sublocality_level_1
+                paramsData.sublocality2 = paramsData.sublocality_level_2
+              }
 
-        let postParams = {
-          // create_type: 'exist',
-          // portalRid: '',
-          view_level: this.$store.state.zoom_level,
-          creator_id: this.$store.state.id,
-          creator_name: this.$store.state.user_name,
-          photos: this.$store.state.photos[0],
-          content: regContent,
-          link_url: this.link_url,
-          // latitude: this.latitude,
-          // longitude: this.longitude,
-          country_code: this.country_code,
-          location: paramsData.location,
-          country: paramsData.country,
-          locality: paramsData.locality,
-          sublocality_level_1: paramsData.sublocality1,
-          sublocality_level_2: paramsData.sublocality2,
-          place_type: paramsData.place_type,
-          place_name: paramsData.place_name,
-          s_rid: paramsData.s_rid
-        }
+              let postParams = {
+                // create_type: 'exist',
+                // portalRid: '',
+                view_level: this.$store.state.zoom_level,
+                creator_id: this.$store.state.id,
+                creator_name: this.$store.state.user_name,
+                photos: this.$store.state.photos[0],
+                content: regContent,
+                link_url: this.link_url,
+                // latitude: this.latitude,
+                // longitude: this.longitude,
+                country_code: this.country_code,
+                location: paramsData.location,
+                country: paramsData.country,
+                locality: paramsData.locality,
+                sublocality_level_1: paramsData.sublocality1,
+                sublocality_level_2: paramsData.sublocality2,
+                place_type: paramsData.place_type,
+                place_name: paramsData.place_name,
+                s_rid: paramsData.s_rid
+              }
 
-        console.log("20180809 - CREATE POST PARAMS : ", postParams)
+              console.log("20180809 - CREATE POST PARAMS : ", postParams)
 
-        axios.post(p_env.BASE_URL+'/vue/createPost', postParams)
-          .then(res => {
-            console.log('20180809 - SERVER RESPONSE : ', res)
-              window.history.back()
-          }).catch(error => {
-            console.log(error.message);
-        }) // axios
+              axios.post(p_env.BASE_URL+'/vue/createPost', postParams)
+                .then(res => {
+                  console.log('20180809 - SERVER RESPONSE : ', res)
+                    window.history.back()
+                }).catch(error => {
+                  console.log(error.message);
+              }) // axios
 
-      } // end of if else
+            } else {
+              alert("Check Login")
+            }
+
+      } //  check null of content end of if else
 
       // var location = '{\"@class\":\"OPoint\",\"coordinates\":[126.9194521,37.4997197]}'
       // var location = '{"@class":"OPoint","coordinates":['+this.longitude+','+this.latitude+']}'

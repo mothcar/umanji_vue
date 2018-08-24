@@ -205,7 +205,7 @@ export default {
         }
       },
       mapInit: false,
-      default_user: require('../assets/images/default_user.jpg'),
+      // default_user: require('../assets/images/default_user.jpg'),
       ads: true
     }
   },

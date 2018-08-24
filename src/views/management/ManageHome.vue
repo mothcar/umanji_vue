@@ -114,31 +114,35 @@ export default {
     if(authenticated) this.auth = true
     let refData = this.$refs.manaApply.dialog
     // this.apply_dialog = refData
-    this.title_roles = this.$store.state.user_junk.user.roles
-    let o = {}
-    o = this.title_roles
-    // var match = "politician"
-    // var val = o.find( function(item) { return item.key == match } );
+    console.log('role check this.$store.state.user_junk.user.roles.politician typeof : ', typeof this.$store.state.user_junk.user.roles.politician)
+    console.log('role check this.$store.state.user_junk.user.roles.politician : ', this.$store.state.user_junk.user.roles.politician)
+    if(this.$store.state.user_junk.user.roles.politician != undefined){
+      this.title_roles = this.$store.state.user_junk.user.roles
+      let o = {}
+      o = this.title_roles
+      // var match = "politician"
+      // var val = o.find( function(item) { return item.key == match } );
 
-    for(var prop in o) {
-      console.log('20180802 - KEY VALUE : ', prop,o[prop]);
-    }
-
-
-
-    let oSize = Object.keys(o).length
-    // console.log(val);
-    console.log('20180802 - SUBTRACT ROLES : ', value)
-    console.log('20180802 - SUBTRACT SIZE : ', oSize)
-    console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
-    if(this.$store.state.user_junk != '' ){
-      if(oSize > 1) {
-        var key = "politician";
-        var value = util.getMapValue(o,key);      // value 2
-
-        this.isCitizen = false
+      for(var prop in o) {
+        console.log('20180802 - KEY VALUE : ', prop,o[prop]);
       }
-    }
+
+
+
+      let oSize = Object.keys(o).length
+      // console.log(val);
+      console.log('20180802 - SUBTRACT ROLES : ', value)
+      console.log('20180802 - SUBTRACT SIZE : ', oSize)
+      console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
+      if(this.$store.state.user_junk != '' ){
+        if(oSize > 1) {
+          var key = "politician";
+          var value = util.getMapValue(o,key);      // value 2
+
+          this.isCitizen = false
+        }
+      }
+    } // if
 
     console.log('20180731 - managemanet ref : ', refData)
 

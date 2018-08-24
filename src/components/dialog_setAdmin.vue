@@ -52,7 +52,7 @@ export default {
       dialog: false,
       // phone_number: '',
       email: '',
-      infoData: ''
+      infoData: '',
 
     }
   },
@@ -76,7 +76,8 @@ export default {
         // phone_number: this.phone_number,
         email: this.email,
         s_rid: this.infoData.id,
-        portal_name: this.infoData.portal_name
+        portal_name: this.infoData.portal_name,
+        role_class: this.infoData.political_type
       }
       console.log('20180802 - submitParams : ', submitParams)
       axios.post(p_env.BASE_URL+'/vue/setAdmin', submitParams)

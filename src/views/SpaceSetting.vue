@@ -12,20 +12,62 @@
             <img class="preview" :src="imageData">
         </div>
         <v-btn color="warning" @click="setAds" > 업체 광고하기 </v-btn>
+        <v-btn v-show="isWorld"  color="success" @click="setSuperRole" > 역할 Setting </v-btn>
+        <br/>
     </div>
+    <dialogSetCheckSuper ref="dialog_set_super" @eee="dataBackfromChild"></dialogSetCheckSuper>
+    <!-- file select *********************************************************************** -->
+
+    <!-- file select *********************************************************************** -->
+    <div v-show="readyToUpdate">
+      <v-flex xs6 class="grey lighten-4">
+        <div>
+          Roles : {{ roles }}
+        </div>
+        <v-text-field prepend-icon="email" name="Email" label="Email" v-model="email"> </v-text-field>
+        <v-text-field prepend-icon="how_to_reg" name="RoleName" label="RoleName" v-model="role_name"> </v-text-field>
+        <v-text-field prepend-icon="stars" name="RoleClass" label="RoleClass" v-model="role_class"> </v-text-field>
+      </v-flex>
+      <div>
+        {{ result }}
+      </div>
+      <v-btn color="success" @click="updateRole" > update </v-btn>
+    </div>
+
+    <!-- file select *********************************************************************** -->
+
+    <!-- Check Super *********************************************************************** -->
     <!-- file select *********************************************************************** -->
 
   </div>
 </template>
 
 <script>
+import dialogSetCheckSuper from '../components/dialog_check_super.vue'
+
 export default {
   data() {
     return {
       routed_data: '',
       imageData: '',
       readyToUpload: false,
+      isWorld: false,
+      email:'',
+      role_name: '',
+      role_class: '',
+      readyToUpdate: false,
+      result: '',
+      roles:'',
     }
+  },
+
+  events: {
+
+
+  },
+
+  watch: {
+
   },
 
   created () {
@@ -38,9 +80,23 @@ export default {
   mounted() {
     console.log('20180728 - GET DATA : ', this.$route.params.data)
     this.routed_data = this.$route.params.data
+    if(this.routed_data.political_type == 'world'){
+      this.isWorld = true
+    }
   }, // mounted
 
   methods: {
+
+    dataBackfromChild: function (argument) {
+      console.log('parent get msg : ', argument)
+      if(argument != 'denied'){
+        this.readyToUpdate = true
+        this.roles = argument
+
+      }
+        // logic
+    },
+
     sendBackData: function() {
       console.log('20180728 - BACK BUTOTN')
       let info = this.routed_data
@@ -99,11 +155,36 @@ export default {
 
     setAds() {
       console.log('20180810 - set Ads ')
-    } // setAds
+    }, // setAds
+
+    setSuperRole() {
+      this.$refs.dialog_set_super.dialog = true
+      // console.log('20180818 - set Super Role  ')
+    },
+
+    updateRole() {
+      let roleObj = {}
+      let key1 = this.role_name
+      roleObj[key1] = this.role_class
+
+      let reqParams = {
+        email: this.email,
+        roles: roleObj
+      }
+
+      axios.post(p_env.BASE_URL+'/vue/updateSuperRole', reqParams)
+      .then(res=>{
+        this.result = res.data.data[0].roles
+        console.log('20180819 - update role result  : ', res.data.data)
+      })
+
+
+    }
 
   },  // methods
 
   components: {
+    dialogSetCheckSuper
 
   }
 
