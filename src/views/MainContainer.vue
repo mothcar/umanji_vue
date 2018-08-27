@@ -246,7 +246,7 @@ export default {
       tab: null,
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
       center_name: '',
-      selec: 'gugun',
+      selec: 'gu_gun',
       content: 'default',
       clipped: true,
       fixed: true,
@@ -836,7 +836,7 @@ export default {
       }) // axios then
     }
 
-    this.selec = "adminDong"
+    this.selec = "gu_gun"
 
   }, // created
 

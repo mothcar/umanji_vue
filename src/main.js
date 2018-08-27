@@ -8,6 +8,7 @@ import lang from './plugins/lang.js'
 import VueI18n from 'vue-i18n'
 import env from "../config/env.js"
 import * as VueGoogleMaps from 'vue2-google-maps'
+import 'babel-polyfill'
 
 
 // axios NOT Going *************************************************************
