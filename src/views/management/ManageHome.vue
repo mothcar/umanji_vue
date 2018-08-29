@@ -110,8 +110,12 @@ export default {
   },
 
   mounted() {
-    let authenticated = this.$store.state.authenticated
-    if(authenticated) this.auth = true
+    // let authenticated = this.$store.state.authenticated
+    let userToken = localStorage.getItem('userToken')
+    if(userToken != null) {
+      this.auth = true
+    }
+    // if(authenticated) this.auth = true
     let refData = this.$refs.manaApply.dialog
     // this.apply_dialog = refData
     console.log('role check this.$store.state.user_junk.user.roles.politician typeof : ', typeof this.$store.state.user_junk.user.roles.politician)

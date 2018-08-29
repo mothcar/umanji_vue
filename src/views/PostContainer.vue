@@ -55,6 +55,38 @@
                       </v-card>
                     </template>
                   </link-prevue>
+                </br>
+                </div>
+
+                <div >
+                  <v-flex xs12 sm6>
+                    <v-text-field class="p_text_field" @click="create_reply(index)"
+                      v-model="message[index]"
+                      box
+                      label=""
+                      :clearable="repley_clear"
+                    ></v-text-field>
+
+                    <v-btn color="success" @click="createReply(index)">제출</v-btn>
+
+                  </v-flex>
+
+                  <v-expansion-panel >
+                    <v-expansion-panel-content>
+                      <div slot="header" @click="getReplys(index)">
+                      <v-badge right>
+                        <span slot="badge" >{{ item.replys }}</span>
+                        <span>댓글</span>
+                      </v-badge>
+                      </div>
+                      <v-card
+                          v-for="(reply,i) in replyLists"
+                          :key="i"
+                      >
+                        <v-card-text class="grey lighten-3">{{ reply.content }}</v-card-text>
+                      </v-card>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
                 </div>
 
                 <!-- <v-card-media
@@ -157,12 +189,21 @@ export default {
       dialog: false,
       default_user: require('../assets/images/default_user.jpg'),
       busData: '',
-      link_url: ''
+      link_url: '',
+      message: [],
+      repley_clear: true,
+      replyLists: [],
 
 
   }),
 
   created: function () {
+    console.log('message length : ', this.postLists.length)
+    for(var i=0; this.postLists.length>i; i++){
+      this.message[i] = '댓글을 입력하세요'
+      // this.reply_number[i] = this.postLists[i].replys
+    }
+    //'댓글을 입력하세요'
 
     console.log('20180809 - HERE IS PostContainer CREATED', this.postLists)
   }, //created
@@ -181,7 +222,9 @@ export default {
 
     createPost: function() {
       // @click.stop="dialog = true"
-      if(this.$store.state.authenticated == true) {
+      // if(this.$store.state.authenticated == true) {
+      let userToken = localStorage.getItem('userToken')
+      if(userToken != null) {
         let political_type = this.$store.state.tabState // political_type = sublocality2
         let portal_name = this.$store.state.currentTabName
         let queryParams = {
@@ -233,6 +276,72 @@ export default {
       // send creator_id to Profile
       this.$router.push({name: 'otherprofile'})
     },
+
+    create_reply(index) {
+      this.message[index]= ''
+      console.log('create reply index : ', index)
+      console.log('create userdata : ', this.$store.state.user_junk.user)
+    },
+
+    createReply(index){
+
+      let reply_data = this.postLists[index]
+      let creator_data = this.$store.state.user_junk.user
+      axios.post(p_env.BASE_URL+'/vue/reply/create', {
+    		content                 : this.message[index],
+    		link_url                : '',
+    		photos                  : '',
+    		properties              : '',
+    		country                 : reply_data.country,
+    		locality                : reply_data.locality,
+    		sublocality_level_1     : reply_data.sublocality_level_1,
+    		sublocality_level_2     : reply_data.sublocality_level_2,
+    		sublocality_level_3     : reply_data.sublocality_level_3,
+    		creator_name            : creator_data.user_name,
+    		creator_id              : creator_data.id,
+    		creator_photo           : creator_data.photo,
+    		s_rid                   : reply_data.id
+      }) // axios /v1/auth/signup
+      .then(res=>{
+          this.repley_clear = true
+          console.log('REPLY retuen data  : ', res.data.data)
+
+
+          // this.$store.commit('setUserInfo', res.data.data)
+          // window.history.back()
+      })
+
+      // console.log('create reply parent : ', this.postLists[index])
+
+    },
+
+    getReplys(index) {
+        let rid = this.postLists[index].id
+        let queryParams = {
+            id: rid
+        }
+
+        axios.get(p_env.BASE_URL+'/vue/reply/getReplys', {
+          params: queryParams
+        })
+        .then(res => {
+
+            let newarr=[]
+            for(var i=0; res.data.data.length>i; i++){
+                if(res.data.data[i]['@class']=='Reply'){
+                    var readyObj = res.data.data[i]
+                    newarr.push(readyObj)
+                }
+                // console.log('GET REPLY new DATA : ', newarr)
+            }
+            this.replyLists = newarr
+            console.log('GET REPLY new DATA : ', newarr)
+
+
+        })
+        console.log("GET REPLY DATA ")
+    }
+
 
 
   }, // methods
@@ -332,5 +441,9 @@ export default {
   color: #333;
 }
 
+.p_text_field {
+  font-size: 12px;
+  color: gray;
+}
 
 </style>

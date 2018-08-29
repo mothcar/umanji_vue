@@ -264,7 +264,7 @@ export default {
         id: 'adminDong'
       },
       markers: [],
-      manageDialog: false
+      manageDialog: false,
 
     } // end of return
   }, // data
@@ -360,9 +360,18 @@ export default {
 
     logout: function () {
       this.$store.commit('auth', false)
-      let resetData = {}
-      resetData.user.id = ''
-      this.$store.commit('setUserInfo', resetData)
+      localStorage.removeItem('userToken')
+      this.authenticated = false
+      console.log('LOG OUT : ', localStorage.getItem('userToken'))
+      /*
+      localStorage.removeItem('redirectUrl');
+      this.authSource.next(false);
+      this.snackBar.open("로그아웃하였습니다.", null, {duration: 2000});
+      this.router.navigateByUrl('/');
+      */
+      // let resetData = {}
+      // resetData.user.id = ''
+      // this.$store.commit('setUserInfo', resetData)
       this.rightDrawer = !this.rightDrawer
     },
 
@@ -593,8 +602,23 @@ export default {
       return this.$store.state.isPost
     },
 
-    authenticated () {
-      return this.$store.state.authenticated
+    authenticated : {
+
+      get: function () {
+        let userToken = localStorage.getItem('userToken')
+        console.log('USER TOKEN : ', userToken)
+           if(userToken != null) {
+             return true
+           } else {
+             return false
+           }
+      },
+
+
+      // return this.$store.state.authenticated
+      set: function (newValue) {
+        return false
+      }
     },
 
     zoom_level () {

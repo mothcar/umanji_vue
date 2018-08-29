@@ -74,6 +74,8 @@
               .then(res=>{
                   console.log('SecureLogin - login : ', res.data.data)
                   this.$store.commit('setUserInfo', res.data.data)
+                  let userData_ori = res.data.data.token
+                  localStorage.setItem('userToken', userData_ori)
                   window.history.back()
               })
 
@@ -86,6 +88,11 @@
                   .then(res => {
                       this.$store.commit('setUserInfo', res.data.data)
                       this.$store.commit('auth', true)
+                      let userData_ori = res.data.data.token
+                      localStorage.setItem('userToken', userData_ori)
+                      var userToken = localStorage.getItem('userToken')
+                      // console.log('User Data 22: ', userToken)
+
                       console.log('SecureLogin - login : ', res.data.data)
                       console.log('SecureLogin - login : ', this.$store.state)
                       // this.$router.push({name: 'home'})

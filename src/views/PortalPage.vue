@@ -202,7 +202,9 @@ export default {
     methods: {
       createPost: function() {
         // @click.stop="dialog = true"
-        if(this.$store.state.authenticated == true) {
+        // if(this.$store.state.authenticated == true) {
+        let userToken = localStorage.getItem('userToken')
+        if(userToken != null) {
           this.$router.push({name: 'postEditor'})
           // console.log("PostContainer : dialog is true")
         } else {

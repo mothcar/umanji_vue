@@ -445,7 +445,9 @@ export default {
         let info = this.routed_data
         console.log('created param on spacepage : ', info)
         this.$store.commit('setReverseRouteData', info)
-        if(this.$store.state.authenticated == true) {
+        // if(this.$store.state.authenticated == true) {
+        let userToken = localStorage.getItem('userToken')
+        if(userToken != null) {
           this.$router.push({name: 'postEditor', params: {data: info}})
           // console.log("PostContainer : dialog is true")
         } else {
@@ -675,7 +677,11 @@ export default {
 
     computed: {
       authenticated () {
-        return this.$store.state.authenticated
+        let userToken = localStorage.getItem('userToken')
+        if(userToken != null) {
+          return true
+        }
+        // return this.$store.state.authenticated
       },
     },
 

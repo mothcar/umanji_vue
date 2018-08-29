@@ -215,7 +215,11 @@ export default {
 
   computed: {
     authenticated () {
-      return this.$store.state.authenticated
+      let userToken = localStorage.getItem('userToken')
+         if(userToken != null) {
+           return true
+         }
+      // return this.$store.state.authenticated
     },
   },
 

@@ -1,46 +1,98 @@
 <template>
-  <div>
+  <div class="p_container">
 
-    <!-- file select *********************************************************************** -->
-    <div>
-        <div class="file-upload-form">
-            Upload an image file:
-            <input type="file" @change="previewImage" accept="image/*">
-        </div>
-        <v-btn v-show="readyToUpload" color="success" @click="uploadPhoto" > Update Photo </v-btn>
-        <div class="image-preview" v-if="imageData.length > 0">
-            <img class="preview" :src="imageData">
-        </div>
-        <v-btn color="warning" @click="setAds" > 업체 광고하기 </v-btn>
-        <v-btn v-show="isWorld"  color="success" @click="setSuperRole" > 역할 Setting </v-btn>
-        <br/>
-    </div>
-    <dialogSetCheckSuper ref="dialog_set_super" @eee="dataBackfromChild"></dialogSetCheckSuper>
-    <!-- file select *********************************************************************** -->
 
-    <!-- file select *********************************************************************** -->
-    <div v-show="readyToUpdate">
-      <v-flex xs6 class="grey lighten-4">
-        <div>
-          Roles : {{ roles }}
-        </div>
-        <v-text-field prepend-icon="email" name="Email" label="Email" v-model="email"> </v-text-field>
-        <v-text-field prepend-icon="how_to_reg" name="RoleName" label="RoleName" v-model="role_name"> </v-text-field>
-        <v-text-field prepend-icon="stars" name="RoleClass" label="RoleClass" v-model="role_class"> </v-text-field>
-      </v-flex>
-      <div>
-        {{ result }}
-      </div>
-      <v-btn color="success" @click="updateRole" > update </v-btn>
-    </div>
-
-    <!-- file select *********************************************************************** -->
 
     <!-- Check Super *********************************************************************** -->
     <!-- file select *********************************************************************** -->
 
+    <!-- CSS tutorial *********************************************************************** -->
+    <div class="p_item">
+      <ul>
+        <li><a @click="show_upload_image"> 장소이미지</a></li>
+        <li><a @click="show_ads"> 광고</a></li>
+      </ul>
+
+    </div>
+    <div class="p_item">
+      <!-- file select *********************************************************************** -->
+      <div v-show="v_upload_image">
+          <div class="file-upload-form">
+              Upload an image file:
+              <input type="file" @change="previewImage" accept="image/*">
+          </div>
+          <v-btn v-show="readyToUpload" color="success" @click="uploadPhoto" > Update Photo </v-btn>
+          <div class="image-preview" v-if="imageData.length > 0">
+              <img class="preview" :src="imageData">
+          </div>
+      </div>
+      <div v-show="v_ads">
+        <v-btn color="warning" @click="setAds" > 업체 광고하기 </v-btn>
+      </div>
+      <div v-show="isWorld">
+        <v-btn color="success" @click="setSuperRole" > 역할 Setting </v-btn>
+      </div>
+
+
+          <br/>
+
+      <dialogSetCheckSuper ref="dialog_set_super" @eee="dataBackfromChild"></dialogSetCheckSuper>
+      <!-- file select *********************************************************************** -->
+
+      <!-- file select *********************************************************************** -->
+      <div v-show="readyToUpdate">
+        <v-flex xs6 class="grey lighten-4">
+          <div>
+            Roles : {{ roles }}
+          </div>
+          <v-text-field prepend-icon="email" name="Email" label="Email" v-model="email"> </v-text-field>
+          <v-text-field prepend-icon="how_to_reg" name="RoleName" label="RoleName" v-model="role_name"> </v-text-field>
+          <v-text-field prepend-icon="stars" name="RoleClass" label="RoleClass" v-model="role_class"> </v-text-field>
+        </v-flex>
+        <div>
+          {{ result }}
+        </div>
+        <v-btn color="success" @click="updateRole" > update </v-btn>
+      </div>
+      <!-- file select *********************************************************************** -->
+    </div>
+    <!-- CSS tutorial *********************************************************************** -->
+
+
+
   </div>
 </template>
+
+<style>
+li{
+  margin: 10px 0;
+}
+
+.p_container{
+  padding: 10px;
+  background-color: powderblue;
+  /* height:200px; */
+  display:flex;
+  flex-direction:row;
+}
+.p_item{
+  padding: 10px;
+  background-color: white;
+  /* color:white; */
+  border:1px solid gray;
+  flex-grow: 1;
+}
+.p_item:nth-child(1){
+    flex-basis: 150px;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+.p_item:nth-child(2){
+    /* flex-basis: 150px; */
+    flex-grow: 4;
+    flex-shrink: 3;
+}
+</style>
 
 <script>
 import dialogSetCheckSuper from '../components/dialog_check_super.vue'
@@ -58,6 +110,8 @@ export default {
       readyToUpdate: false,
       result: '',
       roles:'',
+      v_upload_image: true,
+      v_ads: false,
     }
   },
 
@@ -177,9 +231,17 @@ export default {
         this.result = res.data.data[0].roles
         console.log('20180819 - update role result  : ', res.data.data)
       })
+    }, // updateRole()
 
+    show_upload_image() {
+      this.v_upload_image = true
+      this.v_ads = false
+    },
 
-    }
+    show_ads() {
+      this.v_upload_image = false
+      this.v_ads = true
+    },
 
   },  // methods
 
@@ -191,6 +253,3 @@ export default {
 } // export default
 
 </script>
-
-<style>
-</style>

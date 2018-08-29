@@ -549,7 +549,9 @@ export default {
         // @click.stop="dialog = true"
         let info = this.routed_data
         this.$store.commit('setReverseRouteData', info)
-        if(this.$store.state.authenticated == true) {
+        // if(this.$store.state.authenticated == true) {
+        let userToken = localStorage.getItem('userToken')
+        if(userToken != '') {
           this.$router.push({name: 'postEditor', params: {data: info}})
           // console.log("PostContainer : dialog is true")
         } else {
@@ -599,7 +601,11 @@ export default {
 
     computed: {
       authenticated () {
-        return this.$store.state.authenticated
+        let userToken = localStorage.getItem('userToken')
+        if(userToken != null) {
+          return true
+        }
+        // return this.$store.state.authenticated
       },
     },
 
