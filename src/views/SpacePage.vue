@@ -1,49 +1,62 @@
 <template>
-  <v-app>
+    <div  data-app class="pause_container">
 
-    <!-- toolbar *******************************************************************************  -->
-    <v-toolbar color="cyan" dark  tabs  fixed >
-      <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
-      <v-toolbar-title>{{ routed_data.place_name }}</v-toolbar-title>
 
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <!-- toolbar *******************************************************************************  -->
 
-    <!-- info top image box *******************************************************************************  -->
-    <div class="p_title_div" :style="{ backgroundImage: 'url(' + data_image + ')' }">
-      <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
-          <!-- <div class="p_portal_container"> -->
-          <!-- $t("portal_page.title")  -->
-            <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1>
-            <h3>{{ routed_data.place_name}}</h3>
+    <div id="header" :style="{ backgroundImage: 'url(' + data_image + ')' }">
+      <!-- toolbar *******************************************************************************  -->
+      <!-- <v-toolbar color="white" dark  tabs  fixed >
+        <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
+        <v-toolbar-title>{{ routed_data.place_name }}</v-toolbar-title>
 
-            <div v-if="place_type == 'infocenter' ">
-              <v-list-tile-avatar>
-                  <img :src="admin_photo" @click="showProfile(user_index)">
-              </v-list-tile-avatar>
-              <v-btn v-show="isOfficer" @click="setAdmin"> 임명 </v-btn>
-              <h3>{{ admin_name }}</h3>
-            </div>
+        <v-spacer></v-spacer>
+      </v-toolbar> -->
+      <!-- <md-toolbar class="md-accent" md-elevation="1">
+        <h3 class="md-title" style="flex: 1"></h3>
+        <md-button>Refresh</md-button>
+        <md-button class="md-primary">Create</md-button>
+      </md-toolbar> -->
+      {{ routed_data.place_name }}
+      <span><v-btn v-show="authenticated === true" @click="space_setting"> 편집 </v-btn></span>
+      <p>
+          가치 5,000
+      </p>
 
-            <div v-if="place_type == 'place' ">
-              <v-list-tile-avatar>
-                  <img :src="owner_photo" @click="showProfile(user_index)">
-              </v-list-tile-avatar>
-              <h3>{{ owner_name }}</h3>
-            </div>
+      <div v-if="place_type == 'infocenter' ">
+        <!-- <v-list-tile-avatar>
+            <img :src="admin_photo" @click="showProfile(user_index)">
+        </v-list-tile-avatar> -->
+        <v-chip :close="chip_close">
+            <v-avatar>
+              <img :src="owner_photo" @click="showProfile(user_index)" >
+            </v-avatar>
+            {{ owner_name }}
+        </v-chip>
+        <v-btn v-show="isOfficer" @click="setAdmin"> 임명 </v-btn>
+        <!-- <h3>{{ admin_name }}</h3> -->
 
-    </div>
-    <!-- info top image box *******************************************************************************  -->
+      </div>
 
-    <!-- tab and contents ***************************************************************************  -->
-    <div>
-      <!-- before was fixed-tabs -->
+      <div v-if="place_type == 'place' ">
+        <!-- <v-list-tile-avatar>
+            <img :src="owner_photo" @click="showProfile(user_index)"> <span>{{ owner_name }}</span>
+        </v-list-tile-avatar> -->
+
+        <v-chip :close="chip_close">
+            <v-avatar>
+              <img :src="owner_photo" @click="showProfile(user_index)" alt="trevor">
+            </v-avatar>
+            {{ owner_name }}
+        </v-chip>
+        <!-- <v-btn v-show="authenticated === true" @click="space_setting"> 편집 </v-btn> -->
+
+      </div>
+
       <v-tabs
         slot="extension"
         v-model="model.id"
         centered
-        color="blue"
+        color="white"
         slider-color="red"
         fixed-tabs
       >
@@ -52,55 +65,81 @@
         </v-tab>
       </v-tabs>
 
-      <v-tabs-items v-model="model.id">
-        <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
-        <!-- create Post Button ********************************************************* -->
-        <div>
-          <v-btn color="success" @click="excuteTab" >{{ button_title[index] }}</v-btn>
-          <!--  -->
-          <!-- @click.stop="dialog = true" -->
-        </div>
-        <!-- create Post Button ********************************************************* -->
-
-        <!-- content ******************************************************************** -->
-        <v-card class="p_card" v-for="(item, user_index) in model.lists"
-          :key="user_index"
-          avatar
-          @click="">
-
-            <v-card-title primary-title>
-              <v-list-tile-avatar>
-                  <img :src="item.photos[0]" @click="showProfile(user_index)">
-
-              </v-list-tile-avatar>
-              <div>
-                <div v-html="item.content">{{  }}</div>
-              </div>
-            </v-card-title>
-            <div>
-              <link-prevue :url="item.link_url">
-                <template slot-scope="props">
-                  <div class="card" style="width: 20rem;">
-
-                    <div class="card-block">
-                      <h4 class="card-title" >{{props.title}}</h4>
-                      <p class="card-text">{{props.description}}</p>
-                      <a v-bind:href="props.url" class="btn btn-primary">More</a>
-                      <img class="card-img-top" :src="props.img" :alt="props.title">
-                    </div>
-                  </div>
-                </template>
-              </link-prevue>
-            </div>
-
-        </v-card>
-        <!-- content ******************************************************************** -->
-
-        </v-tab-item>
-      </v-tabs-items>
-
     </div>
-    <!-- tab and contents ***************************************************************************  -->
+    <!-- toolbar *******************************************************************************  -->
+
+    <!-- <div class="pause_item" id="pause_content"> -->
+        <!-- info top image box *******************************************************************************  -->
+        <!-- <div  class="p_title_div" > -->
+          <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
+              <!-- <div class="p_portal_container"> -->
+              <!-- $t("portal_page.title")  -->
+                <!-- <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1> -->
+
+
+
+        <!-- </div> -->
+        <!-- info top image box *******************************************************************************  -->
+
+        <!-- tab and contents ***************************************************************************  -->
+        <div class="pause_item pause_content" >
+          <!-- before was fixed-tabs -->
+
+
+          <v-tabs-items v-model="model.id">
+            <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
+            <!-- create Post Button ********************************************************* -->
+            <div class="pause_content_button">
+              <v-btn color="success" @click="excuteTab" >{{ button_title[index] }}</v-btn>
+              <!--  -->
+              <!-- @click.stop="dialog = true" -->
+            </div>
+            <!-- create Post Button ********************************************************* -->
+
+            <!-- content ******************************************************************** -->
+            <v-card class="p_card" v-for="(item, user_index) in model.lists"
+              :key="user_index"
+              avatar
+              @click="">
+
+                <v-card-title primary-title>
+                  <v-list-tile-avatar>
+                      <img :src="item.photos[0]" @click="showProfile(user_index)">
+
+                  </v-list-tile-avatar>
+                  <div>
+                    <div v-html="item.content">{{  }}</div>
+                  </div>
+                </v-card-title>
+                <div>
+                  <link-prevue :url="item.link_url">
+                    <template slot-scope="props">
+                      <div class="card" style="width: 20rem;">
+
+                        <div class="card-block">
+                          <h4 class="card-title" >{{props.title}}</h4>
+                          <p class="card-text">{{props.description}}</p>
+                          <a v-bind:href="props.url" class="btn btn-primary">More</a>
+                          <img class="card-img-top" :src="props.img" :alt="props.title">
+                        </div>
+                      </div>
+                    </template>
+                  </link-prevue>
+                </div>
+
+            </v-card>
+            <!-- content ******************************************************************** -->
+
+            </v-tab-item>
+          </v-tabs-items>
+
+        </div>
+        <!-- tab and contents ***************************************************************************  -->
+
+    <!-- </div> -->
+
+
+
 
     <!-- Dialog ******************************************************************************** -->
     <v-layout row justify-center>
@@ -214,11 +253,118 @@
   <!-- RIGHT MENU ********************************** -->
   <dialogSetAdmin ref="dialog_set_admin"></dialogSetAdmin>
 
-  </v-app>
+  <!-- </v-app> -->
+</div>
 
 
 
 </template>
+
+<style >
+/* @charset "utf-8";
+.card-block .card-title .card-text{
+
+} */
+#header {
+  background-color: #f1f1f1;
+  padding: 100px 10px 10px 10px;
+  color: white;
+  text-shadow: 0 0 3px #111111;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition: 0.3s;
+  z-index:99;
+
+  background-position: center;
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
+  background-size: cover;
+  background-color: #464646;
+}
+
+#header p {
+    font-size: 20px;
+    color: white;
+    text-shadow: 0 0 3px #111111;
+}
+
+.pause_content {
+    margin: auto;
+    width: 60%;
+}
+.pause_content .pause_content_button {
+    margin: auto;
+    width: 30%;
+}
+
+/* .pause_content div{
+    margin: auto;
+    width: 60%;
+} */
+
+.pause_container{
+      display:flex;
+      flex-direction: column;
+      /* flex-wrap : wrap; */
+      /* position: relative; */
+}
+
+.pause_item {
+    /* position: absolute; */
+    margin-top: 350px;
+    flex-grow: 1;
+}
+.p_title_div {
+  /* width: 100%;
+  height: 100%; */
+  /* background: url(../assets/images/default_info_center.jpg) center center no-repeat; */
+  /* background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat; */
+
+  background-position: center;
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
+  background-size: cover;
+  background-color: #464646;
+
+  &:before {
+    content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        /* background-image: linear-gradient(to bottom right,#002f4b,#dc4225); */
+        background-image: linear-gradient(to bottom right,#555,#555);
+        opacity: .9;
+  }
+}
+
+.p_title {
+  margin: 5% 0 5% 0;
+  color: #fff;
+  text-shadow: 0 0 3px #111111;
+
+}
+
+.p_portal_container {
+  vertical-align: center;
+  margin-top: 20%;
+  text-align: center;
+  color: white;
+  text-shadow: 0 0 3px #111111;
+}
+
+.headline{
+  color: #333;
+}
+
+
+</style>
+
 
 <script>
 import LinkPrevue from 'link-prevue'
@@ -266,6 +412,8 @@ export default {
         isOfficer: false,
         data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0',
         // place_name: ''
+        scrolled: false,
+        chip_close: false,
 
 
       } // return
@@ -275,6 +423,8 @@ export default {
       // let someData
       // this.$bus.$emit('bus-data', someData)
       console.log('20180815 - RETURNED FROM POST EDITOR : MOUNTED ')
+
+      // window.onscroll = function() {scrollFunction()};
 
       let getData
 
@@ -419,6 +569,17 @@ export default {
     },
 
     methods: {
+      handleScroll () {
+        this.scrolled = window.scrollY > 0;
+        if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+            document.getElementById("header").style.fontSize = "20px";
+            document.getElementById("header").style.padding = "10px";
+        } else {
+            document.getElementById("header").style.fontSize = "50px";
+            document.getElementById("header").style.paddingTop = "100px";
+        }
+      },
+
       logout: function () {
         this.$store.commit('auth', false)
         this.rightDrawer = !this.rightDrawer
@@ -686,8 +847,13 @@ export default {
     },
 
     created: function () {
+      window.addEventListener('scroll', this.handleScroll);
 
     }, // created
+
+    destroyed () {
+      window.removeEventListener('scroll', this.handleScroll);
+    },
 
     updated () {
       console.log('20180815 - RETURNED FROM POST EDITOR ;UPDATED ')
@@ -695,55 +861,3 @@ export default {
   } // export
 
 </script>
-
-<style scoped>
-/* @charset "utf-8";
-.card-block .card-title .card-text{
-
-} */
-.p_title_div {
-  width: 100%;
-  height: 100%;
-  /* background: url(../assets/images/default_info_center.jpg) center center no-repeat; */
-  /* background:url("https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0") no-repeat; */
-
-  background-position: center;
-  /* background-repeat: no-repeat; */
-  /* background-attachment: fixed; */
-  background-size: cover;
-  background-color: #464646;
-
-  &:before {
-    content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        /* background-image: linear-gradient(to bottom right,#002f4b,#dc4225); */
-        background-image: linear-gradient(to bottom right,#555,#555);
-        opacity: .9;
-  }
-}
-
-.p_title {
-  margin: 5% 0 5% 0;
-  color: #fff;
-  text-shadow: 0 0 3px #111111;
-
-}
-
-.p_portal_container {
-  vertical-align: center;
-  margin-top: 20%;
-  text-align: center;
-  color: white;
-  text-shadow: 0 0 3px #111111;
-}
-
-.headline{
-  color: #333;
-}
-
-
-</style>
