@@ -181,6 +181,13 @@
       </v-list-tile>
 
 
+      <v-list-tile class="text-md-center" @click="testLab">
+        <v-list-tile-action>
+          <v-icon>android</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>TEST</v-list-tile-title>
+      </v-list-tile>
+
       <v-list-tile class="text-md-center" @click="rightDrawer = !rightDrawer">
         <v-list-tile-action>
           <v-icon>clear</v-icon>
@@ -588,7 +595,12 @@ export default {
 
       })
 
-    } // getInfoCenter()
+    }, // getInfoCenter()
+
+    testLab() {
+      this.$router.push({ name: 'testLab'})
+      this.rightDrawer = !this.rightDrawer
+    }
 
 
   }, // method

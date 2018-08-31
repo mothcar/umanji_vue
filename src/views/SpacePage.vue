@@ -60,7 +60,7 @@
         slider-color="red"
         fixed-tabs
       >
-        <v-tab v-for="name in item_name" :key="name" :href="`#tab-${name}`" >
+        <v-tab class="v_tab_color" v-for="name in item_name" :key="name" :href="`#tab-${name}`" >
            {{ name }}
         </v-tab>
       </v-tabs>
@@ -82,18 +82,19 @@
         <!-- info top image box *******************************************************************************  -->
 
         <!-- tab and contents ***************************************************************************  -->
-        <div class="pause_item pause_content" >
+        <!-- <div class="pause_item pause_content" > -->
+        <v-flex class="pause_item pause_content" xs12 sm6 offset-lg3>
           <!-- before was fixed-tabs -->
 
 
           <v-tabs-items v-model="model.id">
             <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
             <!-- create Post Button ********************************************************* -->
-            <div class="pause_content_button">
+            <!-- <div class="pause_content_button"> -->
               <v-btn color="success" @click="excuteTab" >{{ button_title[index] }}</v-btn>
               <!--  -->
               <!-- @click.stop="dialog = true" -->
-            </div>
+            <!-- </div> -->
             <!-- create Post Button ********************************************************* -->
 
             <!-- content ******************************************************************** -->
@@ -133,7 +134,8 @@
             </v-tab-item>
           </v-tabs-items>
 
-        </div>
+        <!-- </div> -->
+    </v-flex>
         <!-- tab and contents ***************************************************************************  -->
 
     <!-- </div> -->
@@ -292,13 +294,18 @@
     text-shadow: 0 0 3px #111111;
 }
 
+.v_tab_color {
+    color: #333;
+    text-shadow: none;
+}
+
 .pause_content {
-    margin: auto;
-    width: 60%;
+    /* margin: auto;
+    width: 60%; */
 }
 .pause_content .pause_content_button {
-    margin: auto;
-    width: 30%;
+    /* margin: auto;
+    width: 30%; */
 }
 
 /* .pause_content div{

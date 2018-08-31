@@ -17,6 +17,7 @@ import ManagerMap from './views/management/ManagerMap.vue'
 import ManageHome from './views/management/ManageHome.vue'
 import Message from './views/Message.vue'
 import GoogleAnalytics from './views/GoogleAnalytics.vue'
+import TestLab from './GARAGE/test_main.vue'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/',
       name: 'home',
       component: MainContainer
+    },
+    {
+      path: '/testLab',
+      name: 'testLab',
+      component: TestLab
     },
     {
       path: '/login',

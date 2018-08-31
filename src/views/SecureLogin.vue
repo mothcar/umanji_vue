@@ -1,28 +1,54 @@
 <template>
-    <div>
-        <div class="login_box">
-            <h1>테스트 버전입니다. 보상은 그대로 이루워집니다.</h1>
-        </div>
-        <div class="login_box">
-            <h1>Log in</h1>
-            <input :rules="emailRules" type="text" name="username" v-model="input.username" placeholder="Username" />
-            <input type="password" name="password" v-model="input.password" placeholder="Password" />
-            <button type="button" v-on:click="login">Login</button>
-        </div>
+    <!-- <v-form> -->
+    <v-container>
 
-        <div class="login_box" ref="div" v-model="valid" lazy-validation>
-            <h1>회원가입</h1>
-            <input :rules="emailRules" type="text" name="email" v-model="email" placeholder="email" />
-            <input type="password" name="signuppassword" v-model="input.password" placeholder="Password" />
-            <button type="button" v-on:click="signup">회원가입</button>
-        </div>
+        <v-layout style="min-height: 100vh" justify-center align-center class="pause_flex">
+          <v-flex xs12 sm12 lg6 xl4 >
+            <v-card class="mt-5 mb-5 ">
+              <v-card-text class="pr-5 pl-5 pause_card">
+              <h1>Log in</h1>
+              <h5>테스트 버전입니다. 보상은 그대로 이루워집니다.</h5>
+              <br/>
+                <v-form @submit.prevent="login">
+                  <v-text-field solo label="Email" name="Email" v-model="input.username" ></v-text-field>
+                  <v-text-field solo type="password" name="Password" label="Password" v-model="input.password" ></v-text-field>
+                  <!-- <v-btn block color="gray" type="submit">Let's Go!</v-btn> -->
+                  <v-btn block color="blue-grey" type="submit">Login</v-btn>
+                </v-form>
+              </v-card-text>
+            </v-card>
 
-        <div class="login_box">
-            <h3>forget password</h3>
-            <button type="button" v-on:click="forgetPsaaword">비번찾기</button>
-        </div>
+            <v-card class="mt-5 mb-5">
+              <v-card-text class="pr-5 pl-5 pause_card">
+                  <h1>회원가입</h1>
+                    <v-form @submit.prevent="signup">
+                        <v-text-field :rules="emailRules"  v-model="email"
+                          label="회원가입"
+                          hint="mo@naver.com"
+                          persistent-hint
+                          solo
+                        ></v-text-field>
 
-    </div>
+                        <v-text-field   v-model="input.password"
+                          type="password"
+                          label="password"
+                          solo
+                        ></v-text-field>
+                        <v-btn block color="error" type="submit">회원가입</v-btn>
+                    </v-form>
+                  </v-card-text>
+          </v-card>
+
+          <div class="login_box mb-5">
+              <h3>forget password</h3>
+              <button type="button" v-on:click="forgetPsaaword">비번찾기</button>
+          </div>
+
+          </v-flex>
+        </v-layout>
+
+    </v-container>
+<!-- </v-form> -->
 </template>
 
 <script>
@@ -38,7 +64,7 @@
               ],
               email: '',
               emailRules: [
-                v => !!v || 'E-mail is required',
+                v => !!v || 'E-mail 를 넣어주세요',
                 v => /.+@.+/.test(v) || '정확한 이메일을 입력해 주세요'
               ],
               input: {
@@ -129,6 +155,12 @@
 </script>
 
 <style scoped>
+    .pause_flex {
+        background-color: #aaa;
+    }
+    .pause_card {
+        background-color: #fff;
+    }
     .login_box {
         width: 500px;
         border: 1px solid #CCCCCC;
