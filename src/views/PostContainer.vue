@@ -7,15 +7,10 @@
       <v-flex xs12 sm6 offset-lg3 >
 
     <!-- create Post Button ******************************************************************************** -->
-    <!-- <div> -->
       <v-btn color="success" @click="createPost">Write Post</v-btn>
-      <!-- @click.stop="dialog = true" -->
-    <!-- </div> -->
     <!-- create Post Button ******************************************************************************** -->
 
     <!-- content ******************************************************************************** -->
-
-
             <v-card class="p_card" v-for="(item, index) in postLists"
               :key="index"
               avatar
@@ -103,10 +98,15 @@
           </v-layout>
 
 
+
+<!-- Dialog ******************************************************************************** -->
+<dialog-post ref="dialogPost"></dialog-post>
+<!-- Dialog ******************************************************************************** -->
+
 <!-- Dialog ******************************************************************************** -->
 <v-layout row justify-center>
   <v-dialog
-    v-model="dialog"
+    v-model="dialog_login"
     max-width="290"
   >
     <v-card>
@@ -122,7 +122,7 @@
         <v-btn
           color="green darken-1"
           flat="flat"
-          @click="dialog = false"
+          @click="dialog_login = false"
         >
           아니오
         </v-btn>
@@ -152,6 +152,7 @@ import Vue from 'vue'
 import LinkPrevue from 'link-prevue'
 var anchorme = require("anchorme").default
 import { mapGetters } from 'vuex'
+import DialogPost from '../components/dialog_post.vue'
 
 
 export default {
@@ -166,6 +167,7 @@ export default {
 
   data: () => ({
     clipped: true,
+    dialog2: false,
     hasUrl: true,
     notifications: false,
     sound: true,
@@ -186,7 +188,7 @@ export default {
         { avatar: 'https://s3.amazonaws.com/vuetify-docs/images/lists/5.jpg', title: 'Recipe to try', subtitle: "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos." }
       ],
       content: '',
-      dialog: false,
+      dialog_login: false,
       default_user: require('../assets/images/default_user.jpg'),
       busData: '',
       link_url: '',
@@ -221,7 +223,6 @@ export default {
     },
 
     createPost: function() {
-      // @click.stop="dialog = true"
       // if(this.$store.state.authenticated == true) {
       let userToken = localStorage.getItem('userToken')
       if(userToken != null) {
@@ -252,17 +253,19 @@ export default {
           info.place_name = info.portal_name
           console.log("PostContainer : beforORE SEND PARAMS : ", info)
           this.$router.push({name: 'postEditor', params: {data: info}})
+          // this.$refs.dialogPost.showFlag = true
+          // this.$refs.dialogPost.routed_data = info
           // console.log("PostContainer : dialog is true")
         }) // axios then
 
       } else {
-        this.dialog = true
+        this.dialog_login = true
       }
       // console.log("PostContainer : Write post clicked...")
     },
 
     login: function() {
-      this.dialog = false
+      this.dialog_login = false
     },
 
     showProfile(idx){
@@ -380,7 +383,8 @@ export default {
   },
 
   components: {
-    LinkPrevue
+    LinkPrevue,
+    DialogPost
   },
 
   mounted() {

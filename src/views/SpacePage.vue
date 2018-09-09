@@ -5,17 +5,6 @@
 
     <div id="header" :style="{ backgroundImage: 'url(' + data_image + ')' }">
       <!-- toolbar *******************************************************************************  -->
-      <!-- <v-toolbar color="white" dark  tabs  fixed >
-        <v-toolbar-side-icon @click.stop="rightDrawer = !rightDrawer"></v-toolbar-side-icon>
-        <v-toolbar-title>{{ routed_data.place_name }}</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-      </v-toolbar> -->
-      <!-- <md-toolbar class="md-accent" md-elevation="1">
-        <h3 class="md-title" style="flex: 1"></h3>
-        <md-button>Refresh</md-button>
-        <md-button class="md-primary">Create</md-button>
-      </md-toolbar> -->
       {{ routed_data.place_name }}
       <span><v-btn v-show="authenticated === true" @click="space_setting"> 편집 </v-btn></span>
       <p>
@@ -23,9 +12,6 @@
       </p>
 
       <div v-if="place_type == 'infocenter' ">
-        <!-- <v-list-tile-avatar>
-            <img :src="admin_photo" @click="showProfile(user_index)">
-        </v-list-tile-avatar> -->
         <v-chip :close="chip_close">
             <v-avatar>
               <img :src="owner_photo" @click="showProfile(user_index)" >
@@ -33,23 +19,15 @@
             {{ owner_name }}
         </v-chip>
         <v-btn v-show="isOfficer" @click="setAdmin"> 임명 </v-btn>
-        <!-- <h3>{{ admin_name }}</h3> -->
-
       </div>
 
       <div v-if="place_type == 'place' ">
-        <!-- <v-list-tile-avatar>
-            <img :src="owner_photo" @click="showProfile(user_index)"> <span>{{ owner_name }}</span>
-        </v-list-tile-avatar> -->
-
         <v-chip :close="chip_close">
             <v-avatar>
               <img :src="owner_photo" @click="showProfile(user_index)" alt="trevor">
             </v-avatar>
             {{ owner_name }}
         </v-chip>
-        <!-- <v-btn v-show="authenticated === true" @click="space_setting"> 편집 </v-btn> -->
-
       </div>
 
       <v-tabs
@@ -70,31 +48,17 @@
 
     <!-- <div class="pause_item" id="pause_content"> -->
         <!-- info top image box *******************************************************************************  -->
-        <!-- <div  class="p_title_div" > -->
-          <!-- <img src="../assets/images/default_info_center.jpg" class="p_title" /> -->
-              <!-- <div class="p_portal_container"> -->
-              <!-- $t("portal_page.title")  -->
-                <!-- <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1> -->
-
-
-
-        <!-- </div> -->
+        <!-- $t("portal_page.title")  -->
+        <!-- <h1 class="p_title" :key="suffix">{{ routed_data.place_name }} {{ suffix }}</h1> -->
         <!-- info top image box *******************************************************************************  -->
 
         <!-- tab and contents ***************************************************************************  -->
-        <!-- <div class="pause_item pause_content" > -->
         <v-flex class="pause_item pause_content" xs12 sm6 offset-lg3>
-          <!-- before was fixed-tabs -->
-
-
+        <!-- before was fixed-tabs -->
           <v-tabs-items v-model="model.id">
             <v-tab-item v-for="(name, index) in item_name" :id="`tab-${name}`" :key="name" >
             <!-- create Post Button ********************************************************* -->
-            <!-- <div class="pause_content_button"> -->
               <v-btn color="success" @click="excuteTab" >{{ button_title[index] }}</v-btn>
-              <!--  -->
-              <!-- @click.stop="dialog = true" -->
-            <!-- </div> -->
             <!-- create Post Button ********************************************************* -->
 
             <!-- content ******************************************************************** -->
@@ -183,76 +147,6 @@
     </v-layout>
     <!-- Dialog ******************************************************************************** -->
 
-    <!-- RIGHT MENU ********************************** -->
-    <v-navigation-drawer
-    temporary
-    :left="left"
-    v-model="rightDrawer"
-    fixed
-    app
-    >
-    <v-list>
-
-      <v-list-tile @click="rightDrawer = !rightDrawer" :to="{ name: 'home', params: {} }" >
-        <v-list-tile-action>
-          <v-icon>home</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Home</v-list-tile-title>
-      </v-list-tile>
-
-      <v-list-tile v-show="authenticated === false" @click="rightDrawer = !rightDrawer" :to="{ name: 'secureLogin', params: {} }" >
-        <v-list-tile-action>
-          <v-icon>perm_identity</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>로그인</v-list-tile-title>
-      </v-list-tile>
-
-      <!-- <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'wallet', params: {} }" >
-        <v-list-tile-action>
-          <v-icon>account_balance_wallet</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Wallet</v-list-tile-title>
-      </v-list-tile>
-
-      <v-list-tile v-show="authenticated === true" @click="rightDrawer = !rightDrawer" :to="{ name: 'profile', params: {} }" >
-        <v-list-tile-action>
-          <v-icon>account_box</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Setting</v-list-tile-title>
-      </v-list-tile> -->
-
-      <v-list-tile v-show="authenticated === true" @click="space_setting" >
-        <v-list-tile-action>
-          <v-icon>account_box</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Space Setting</v-list-tile-title>
-      </v-list-tile>
-
-      <v-list-tile v-show="authenticated === true" @click="logout" :to="{ name: '', params: {} }" >
-        <v-list-tile-action>
-          <v-icon>voice_over_off</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Log out</v-list-tile-title>
-      </v-list-tile>
-
-      <v-list-tile class="text-md-center" @click="">
-        <v-list-tile-action>
-          <v-icon>place</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>Current Location</v-list-tile-title>
-      </v-list-tile>
-
-
-      <v-list-tile class="text-md-center" @click="rightDrawer = !rightDrawer">
-        <v-list-tile-action>
-          <v-icon>clear</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>CLOSE</v-list-tile-title>
-      </v-list-tile>
-
-    </v-list>
-  </v-navigation-drawer>
-  <!-- RIGHT MENU ********************************** -->
   <dialogSetAdmin ref="dialog_set_admin"></dialogSetAdmin>
 
   <!-- </v-app> -->

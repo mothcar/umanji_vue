@@ -1,11 +1,7 @@
 <template>
   <div class="p_container">
-
-
-
     <!-- Check Super *********************************************************************** -->
     <!-- file select *********************************************************************** -->
-
     <!-- CSS tutorial *********************************************************************** -->
     <div class="p_item">
       <ul>
@@ -112,6 +108,7 @@ export default {
       roles:'',
       v_upload_image: true,
       v_ads: false,
+      clicked: false,
     }
   },
 
@@ -141,6 +138,15 @@ export default {
 
   methods: {
 
+    clickhandler(){
+      if(this.wait){
+        return
+      }
+      this.wait = true
+      setTimeout(() => this.wait = false, 1000)
+      //the rest of your code
+    },
+
     dataBackfromChild: function (argument) {
       console.log('parent get msg : ', argument)
       if(argument != 'denied'){
@@ -159,33 +165,41 @@ export default {
     },
 
     uploadPhoto: function() {
-      let _this = this
-      var cloudinary = require('cloudinary')
-      cloudinary.config({
-        cloud_name: 'mothcar',
-        api_key: '671637223366122',
-        api_secret: 'VeSYGpbLNeEOIfwUGf1Qvn5nwuo'
-      })
-
-      console.log('20180808 - this.routed_data : ', this.routed_data)
-
-      // cloudinary.uploader.upload("my_picture.jpg", function(result) {
-      cloudinary.uploader.upload(this.imageData, function(result) {
-        console.log('20180726 - cloudinary result : ', result.url)
-
-        axios.post(p_env.BASE_URL+'/vue/updateSpacePhotos', {
-          place_type: _this.routed_data.place_type,
-          id: _this.routed_data.s_rid,
-          photos: result.url
+      if(this.clicked == false){
+        this.clicked = true
+        let _this = this
+        var cloudinary = require('cloudinary')
+        cloudinary.config({
+          cloud_name: 'mothcar',
+          api_key: '671637223366122',
+          api_secret: 'VeSYGpbLNeEOIfwUGf1Qvn5nwuo'
         })
-        .then(res=>{
-          console.log('20180726 - send image and get result : ', res )
-        })
-        _this.readyToUpload = false
-        _this.imageData = ''
-        _this.photo = result.url
-        console.log('20180726 - send image and get cloduinary result : ', result )
-      });
+
+        console.log('20180808 - this.routed_data : ', this.routed_data)
+
+        // cloudinary.uploader.upload("my_picture.jpg", function(result) {
+        cloudinary.uploader.upload(this.imageData, function(result) {
+          console.log('20180726 - cloudinary result : ', result.url)
+
+          axios.post(p_env.BASE_URL+'/vue/updateSpacePhotos', {
+            place_type: _this.routed_data.place_type,
+            id: _this.routed_data.s_rid,
+            photos: result.url
+          })
+          .then(res=>{
+            _this.clicked = false
+            alert('정보가 업데이트 되었습니다.')
+            console.log('20180726 - send image and get result : ', res )
+          })
+          _this.readyToUpload = false
+          _this.imageData = ''
+          _this.photo = result.url
+          console.log('20180726 - send image and get cloduinary result : ', result )
+        });
+      } else {
+        alert('제출되었습니다.')
+      }
+
     }, // uploadPhoto
 
     previewImage: function(event) {

@@ -80,6 +80,7 @@
                   photos: 'https://res.cloudinary.com/mothcar/image/upload/v1534492757/default_user_image_yz6zdk.png',
                   money: 0
               },
+              clicked: false,
             } // return
         }, // data
 
@@ -89,6 +90,8 @@
         methods: {
 
           signup() {
+            if(this.clicked == false){
+              this.clicked = true
               // console.log('20180730 - REF : ', this.$refs.div)
               // Native form submission is not yet supported
               axios.post(p_env.BASE_URL+'/vue/auth/signup', {
@@ -98,20 +101,25 @@
                 photos: this.input.photos
               }) // axios /v1/auth/signup
               .then(res=>{
+                  this.clicked == false
                   console.log('SecureLogin - login : ', res.data.data)
                   this.$store.commit('setUserInfo', res.data.data)
                   let userData_ori = res.data.data.token
                   localStorage.setItem('userToken', userData_ori)
                   window.history.back()
               })
-
+            } else {
+              alert('제출되었습니다')
+            }
 
           },
 
           login() {
-
+            if(this.clicked == false){
+              this.clicked = true
               axios.post(p_env.BASE_URL+'/vue/auth/signin', { email:this.input.username, password:this.input.password })
                   .then(res => {
+                      this.clicked = false
                       this.$store.commit('setUserInfo', res.data.data)
                       this.$store.commit('auth', true)
                       let userData_ori = res.data.data.token
@@ -128,6 +136,11 @@
                       this.input.password = ''
                     console.log('SecureLogin - login : ', error.message);
                   })
+            } else {
+              alert('제출되었습니다')
+            }
+
+
 
           }, //login
 
@@ -146,6 +159,7 @@
         },
 
         forgetPsaaword() {
+          alert('준비중입니다.')
             console.log('비번찾기 준비중입니다.당분간 비번 잊어버리지 말도록 주의해 주세요.')
         }
 

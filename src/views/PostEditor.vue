@@ -1,8 +1,8 @@
 <template>
-  <div>
-      <v-app>
+  <v-app id="inspire">
+      <v-container>
       <!-- slide-x-transition -->
-        <v-card tile>
+        <v-card tile class="pa-3">
           <v-toolbar card dark color="primary">
             <v-btn icon dark @click="close">
               <v-icon>close</v-icon>
@@ -21,50 +21,72 @@
 
 
           <!-- <div> -->
-            <v-list three-line subheader>
+            <!-- <v-list three-line subheader>
               <v-subheader>Create Post</v-subheader>
             </v-list>
             <v-divider></v-divider>
             <v-list three-line subheader>
               <v-subheader>Write</v-subheader>
-
-              <v-list-tile avatar>
-
-                  <span>Content:</span>
-                  <br>
-                    <textarea class="p_textarea" v-model="content" placeholder="add multiple lines"></textarea>
-                    <p >
-                      {{ result }}
-                    </p>
-                    <span>link url</span>
-                    <textarea class="p_textarea" v-model="link_url" ></textarea>
-
-              </v-list-tile>
-            </v-list>
+            </v-list> -->
           <!-- </div> -->
 
-          <div style="flex: 1 1 auto;"></div>
+          <!-- <div style="flex: 1 1 auto;"></div> -->
+          <v-textarea
+            v-model="content"
+            name=""
+            label="게시물 작성"
+            value="우리지역에는..."
+            hint="우리지역에 도움이 되는 정보를 입력해주세요"
+          ></v-textarea>
+
+          <!-- select area *********************************************************************** -->
+          <v-card-text>
+            <v-checkbox
+              v-model="poll"
+              value="1"
+              label="투표"
+              type="checkbox"
+              required
+            ></v-checkbox>
+          </v-card-text>
+          <!-- select area *********************************************************************** -->
+
+          <!-- select area *********************************************************************** -->
+          <v-card-text>
+            <v-checkbox
+              v-model="checkbox"
+              value="1"
+              label="이지역에 전체에 알림"
+              type="checkbox"
+              required
+            ></v-checkbox>
+          </v-card-text>
+          <!-- select area *********************************************************************** -->
+
+          <!-- file select *********************************************************************** -->
+          <div>
+              <div class="file-upload-form">
+                  Upload an image file:
+                  <input type="file" @change="previewImage" accept="image/*">
+              </div>
+              <div class="image-preview" v-if="imageData.length > 0">
+                  <img class="preview" :src="imageData">
+              </div>
+          </div>
+          <!-- file select *********************************************************************** -->
         </v-card>
 
-  </v-app>
-
-  <!-- file select *********************************************************************** -->
-  <div>
-      <div class="file-upload-form">
-          Upload an image file:
-          <input type="file" @change="previewImage" accept="image/*">
-      </div>
-      <div class="image-preview" v-if="imageData.length > 0">
-          <img class="preview" :src="imageData">
-      </div>
-  </div>
-  <!-- file select *********************************************************************** -->
+  </v-container>
 
 
-</div>
+
+
+</v-app>
 </template>
 
 <script>
+var anchorme = require("anchorme").default;
+
 export default {
   data () {
     return {
@@ -76,7 +98,9 @@ export default {
       link_url: '',
       result: '',
       imageData: '',
-      routed_data: ''
+      routed_data: '',
+      checkbox: null,
+      poll: null,
 
     }
 
@@ -205,7 +229,44 @@ export default {
     } // previewImage
 
 
-  } // methods
+  }, // methods
+
+  watch: {
+      content: {
+         handler(val){
+           let _this = this
+           if(val.length > 5){
+             var getUrl = anchorme(val,{
+                          	attributes:[
+                          		{
+                          			name:"target",
+                          			value:"_blank"
+                          		},
+                          		function(urlObj){
+                          			console.log("RAW PARSER : ", urlObj.raw)
+                          			if(urlObj.raw) {
+                          				_this.link_url = urlObj.raw
+                          			}
+                          		}
+                          	]
+                          });
+             // console.log("URl parser : ", link_url)
+             // console.log("URl parser : ", link_url)
+           }
+           // console.log('WATCHER : ', val)
+         }
+       },
+       checkbox: {
+         handler(val){
+           console.log('CHECK BOX VAL ; ', val) // 1 or null
+           if(val == 1){
+             // check user level compare with this infocenter level
+             // if user level is low pay money
+           }
+         }
+       }
+     }
+
 } // export
 
 </script>

@@ -1,9 +1,7 @@
 <template>
-  <div>
-
-    This is Sample Page 
-  </div>
-
+  <v-app id="inspire">
+    This is Sample Page
+  </v-app>
 </template>
 
 <script>

@@ -45,7 +45,7 @@
       <v-tabs
         slot="extension"
         color="white"
-        v-model="selec"
+        v-model="current_key"
         centered
         grow
       >
@@ -57,29 +57,30 @@
         >
           {{ item }}
         </v-tab> -->
-        <v-tab name="adminDong" @click="changeTab('adminDong')">
+        <v-tab name="adminDong" @click="changeTab('adminDong')" :href="'#tab-1'">
           {{ $t("area_name.adminDong") }}
         </v-tab>
-        <v-tab name="gu_gun" @click="changeTab('gu_gun')">
+        <v-tab name="gu_gun" @click="changeTab('gu_gun')" :href="'#tab-2'">
           {{ $t("area_name.gu_gun") }}
         </v-tab>
-        <v-tab name="city_do" @click="changeTab('city_do')">
+        <v-tab name="city_do" @click="changeTab('city_do')" :href="'#tab-3'">
           {{ $t("area_name.city_do") }}
         </v-tab>
-        <v-tab name="country" @click="changeTab('country')">
+        <v-tab name="country" @click="changeTab('country')" :href="'#tab-4'">
           {{ $t("area_name.country") }}
         </v-tab>
-        <v-tab name="world" @click="changeTab('world')">
+        <v-tab name="world" @click="changeTab('world')" :href="'#tab-5'">
           {{ $t("area_name.world") }}
         </v-tab>
 
 
 
         <!-- upper info center ******************************************************************************** -->
-        <v-tabs-items v-show="visible === true" v-model="model">
+        <v-tabs-items v-show="visible === true" v-model="current_key">
         <v-tab-item v-for="i in 5"
           :id="`tab-${i}`"
-          :key="i">
+          :key="i"
+            >
           <v-card >
             <v-card-media
               :src="imageUrl"
@@ -105,10 +106,10 @@
     </v-toolbar>
 
   </div>
-  <GmapMap
+  <!-- <GmapMap
     :center="centerMarker"
     ref="mapRef"
-  ></GmapMap>
+  ></GmapMap> -->
 
   </v-layout>
 
@@ -249,11 +250,11 @@ export default {
 
   data () {
     return {
-      centerMarker:{lat:1.38, lng:103.8},
+      // centerMarker:{lat:1.38, lng:103.8},
       tab: null,
       imageUrl: "https://mblogthumb-phinf.pstatic.net/20160119_176/wnswo2015_1453161466962bNYC0_JPEG/DSC02491.JPG?type=w2",
       center_name: '',
-      selec: 'gu_gun',
+      // selec: 'tab-2',
       content: 'default',
       clipped: true,
       fixed: true,
@@ -263,7 +264,7 @@ export default {
       }],
       left: true,
       rightDrawer: false,
-      model: 'tab-2',
+      current_key: 'tab-2',
       text: 'Lorem ipsum dolor sit amet',
       searchAddressInput: '',
       postLists: [],
@@ -821,7 +822,6 @@ export default {
           // }) //google
 
     } else {
-      // init : false middle of Service
       // when back to Home from Space Page    Not from Map
       console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
 
@@ -872,7 +872,9 @@ export default {
       }) // axios then
     }
 
-    this.selec = "gu_gun"
+    this.current_key = "tab-3"
+    this.changeTab('city_do')
+    //  now target
 
   }, // created
 
