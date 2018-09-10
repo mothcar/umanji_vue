@@ -48,6 +48,14 @@
               type="checkbox"
               required
             ></v-checkbox>
+            <!-- <poll v-show="pollShow"></poll> -->
+            <vue-poll v-show="pollShow" v-bind="options" @addvote="addVote"
+            />
+            <!--
+            :showResults="true"  //투표 완료되었을때 결과 보여주기
+            :finalResults="true" //투표 완료되었을때 결과 보여주기, 이긴자 hightlighted
+            :multiple="true"    // 중복체크일때 아래 option에서 selected 값 false로 줘야 함
+            -->
           </v-card-text>
           <!-- select area *********************************************************************** -->
 
@@ -85,7 +93,9 @@
 </template>
 
 <script>
-var anchorme = require("anchorme").default;
+var anchorme = require("anchorme").default
+import poll from '../components/poll.vue'
+import VuePoll from 'vue-poll'
 
 export default {
   data () {
@@ -101,6 +111,16 @@ export default {
       routed_data: '',
       checkbox: null,
       poll: null,
+      pollShow: false,
+      options: {
+          question: '우리 동네 <strong>지역정보관리자 후보</strong> 로 어떤분이 좋습니까?',
+          answers: [
+              { value: 1, text: '이낙연', votes: 53 , selected: false },
+              { value: 2, text: '김경수', votes: 35 , selected: false },
+              { value: 3, text: '홍준표', votes: 30 , selected: false },
+              { value: 4, text: '황교안', votes: 10 , selected: false }
+          ]
+      },
 
     }
 
@@ -114,6 +134,18 @@ export default {
   },
 
   methods: {
+    addVote(obj){
+      this.options.answers[obj.value-1]['votes']+= 1
+      console.log('After You voted ' + this.options.answers[obj.value-1]['votes'] + '!');
+      // for(var i=0; this.options.answers.length> i; i++){
+      //   if(i+1 == obj.value){
+      //     console.log('Pre valuer You voted ' + this.options.answers[i]['votes'] + '!');
+      //     this.options.answers[i]['votes']+= 1
+      //     console.log('After You voted ' + this.options.answers[i]['votes'] + '!');
+      //   }
+      // }
+
+    },
     close: function() {
       window.history.back()
     },
@@ -264,8 +296,28 @@ export default {
              // if user level is low pay money
            }
          }
-       }
+       }, // checkbox
+       poll: {
+         handler(val) {
+           console.log('POLL - VAL ; ', val) // 1 or null
+           if(val == 1){
+             this.pollShow = true
+             // now origin
+             // check user level compare with this infocenter level
+             // if user level is low pay money
+           } else {
+             this.pollShow = false
+           }
+         }
+       } // poll
+     }, // watch
+
+     components : {
+       poll,
+       VuePoll
+
      }
+
 
 } // export
 
