@@ -64,7 +64,7 @@
             <v-checkbox
               v-model="checkbox"
               value="1"
-              label="이지역에 전체에 알림"
+              label="이지역 전체에 알림"
               type="checkbox"
               required
             ></v-checkbox>
@@ -176,7 +176,10 @@ export default {
               // portal check ; Info or Map -> visible
               // if place DO commit place to 'cuttentId' in store
               // console.log("visible : ", this.$store.state.visible)
-              let paramsData = this.routed_data
+              // let paramsData = this.routed_data
+              let paramsData = JSON.parse(localStorage.getItem('currentPlace'))
+              let userData = JSON.parse(localStorage.getItem('user'))
+              // let paramsData = {...placeData, ...userData}
 
               // if(this.$store.state.visible) {
               //   portal_rid = this.routed_data.s_rid
@@ -185,11 +188,11 @@ export default {
               //   place_rid = this.routed_data.s_rid
               // }
 
-              // console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', paramsData)
+              console.log('20180813 - PARAMS DATA = THIS.routec_data  : ', userData)
 
-              if(paramsData.photos == undefined){
-                paramsData.photos = this.$store.state.user_junk.user.photos
-              }
+              // if(paramsData.photos == undefined){
+              //   paramsData.photos = this.$store.state.user_junk.user.photos
+              // }
 
               if(paramsData.sublocality1 == undefined){
                 paramsData.sublocality1 = paramsData.sublocality_level_1
@@ -200,9 +203,9 @@ export default {
                 // create_type: 'exist',
                 // portalRid: '',
                 view_level: this.$store.state.zoom_level,
-                creator_id: this.$store.state.id,
-                creator_name: this.$store.state.user_name,
-                photos: this.$store.state.photos[0],
+                creator_id: userData.user.id,
+                creator_name: userData.user.user_name,
+                photos: userData.user.photos[0],
                 content: regContent,
                 link_url: this.link_url,
                 // latitude: this.latitude,

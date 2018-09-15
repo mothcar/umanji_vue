@@ -117,7 +117,7 @@
     <div>
       <Home v-if="visible === true" v-bind:postLists="postLists"></Home>
       <!-- <MapContainer v-show="visible === false" ></MapContainer> -->
-      <PMap v-if="visible === false" v-bind:markers="markers"></PMap>
+      <PMap v-if="visible === false" v-bind:markers="markers" @chageZoomTab="changTabByZoom"></PMap>
 
     </div>
     <!-- CONTENT ********************************** -->
@@ -273,6 +273,7 @@ export default {
       },
       markers: [],
       manageDialog: false,
+      authFlag: true,
 
     } // end of return
   }, // data
@@ -288,10 +289,10 @@ export default {
     // }
     let init = this.$store.state.init
     if(init){
-      console.log("MainContainer : updated......... FIRST INIT  " )
+      console.log("MainContainer : updated......... FIRST INIT" )
 
     } else {
-      console.log("MainContainer : updated......... INIT : FALSE   " )
+      console.log("MainContainer : updated......... INIT : FALSE" )
       // this.getInfoCenter()
       let getMainPostParams = {
         portalType: this.$store.state.current_place.political_type, //sublocality2
@@ -321,13 +322,62 @@ export default {
   name: 'App',
 
   methods: {
+    changTabByZoom(value) {
+      console.log('tab change value .... : ', value)
+      switch(value){
+        default:
+          this.current_key = "tab-5"
+          this.changeTab('world')
+        break;
+
+        case 8: case 9: case 10:
+          this.current_key = "tab-4"
+          this.changeTab('country')
+        break;
+
+        case 11: case 12: case 13:
+          this.current_key = "tab-3"
+          this.changeTab('city_do')
+        break;
+
+        case 14: case 15: case 16:
+          this.current_key = "tab-2"
+          this.changeTab('gu_gun')
+        break;
+
+        case 17: case 18: case 19: case 20:  case 21: case 22:
+          this.current_key = "tab-1"
+          this.changeTab('adminDong')
+        break;
+        /*
+        case 'world':
+          return 5
+        break
+        case 'country':
+          return 8
+        break
+        case 'city_do':
+          return 11
+        break
+        case 'gu_gun':
+          return 14
+        break
+        case 'adminDong':
+          return 17
+        break
+        */
+
+      }
+
+    },
+
     searchLocation: function() {
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({'address': this.searchAddressInput}, (results, status) => {
         if (status === 'OK') {
           // this.currentLocation.lat = results[0].geometry.location.lat();
           // this.currentLocation.lng = results[0].geometry.location.lng();
-          console.log('20180728 - search Location : ',result[0])
+          // console.log('20180728 - search Location : ',result[0])
         }
       });
     },
@@ -349,7 +399,7 @@ export default {
     routerToManagement () {
       this.manageDialog = false
       this.$router.push({name:'manageHome'})
-      console.log('20180730 - Management OFFICE : ')
+      // console.log('20180730 - Management OFFICE : ')
     },
 
     toMap: function(){
@@ -358,7 +408,7 @@ export default {
       toMapParams.placeType = 'place'
 
       this.$store.commit('toMap', toMapParams)
-      console.log("MainContainer : toMap Clicked ")
+      // console.log("MainContainer : toMap Clicked ")
     },
 
     toPost: function () {
@@ -366,11 +416,14 @@ export default {
       // console.log("MainContainer : toPost", this.$store.state.visible)
     },
 
+    // Google search word : vue logout update
     logout: function () {
       this.$store.commit('auth', false)
-      localStorage.removeItem('userToken')
-      this.authenticated = false
-      console.log('LOG OUT : ', localStorage.getItem('userToken'))
+      localStorage.removeItem('user')
+      // this.$router.push({name:'home'})
+      // this.authenticated = false
+
+      // console.log('LOG OUT : ', localStorage.getItem('userToken'))
       /*
       localStorage.removeItem('redirectUrl');
       this.authSource.next(false);
@@ -381,6 +434,7 @@ export default {
       // resetData.user.id = ''
       // this.$store.commit('setUserInfo', resetData)
       this.rightDrawer = !this.rightDrawer
+      location.reload()
     },
 
     goToCurrentPosition: function() {
@@ -389,8 +443,9 @@ export default {
     },
 
     infocenterRouter: function() {
-      let info = this.$store.state.current_place
-      console.log('20180811 - info center clicked and data : ', info)
+      let info = JSON.parse(localStorage.getItem('currentPlace'))
+      // let info = this.$store.state.current_place
+      // console.log('20180914 - STANDARD ADDRESS: ', info)
       // info.place_name = this.$store.state.current_place.place_name
       // info.photos = this.$store.state.photos
       // info.id = this.$store.state.id
@@ -399,11 +454,12 @@ export default {
       info.from_type = 'mainInfoTab'
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
-      console.log('20180728 - INFO CENTER CLICKED.........')
+      // console.log('20180728 - INFO CENTER CLICKED.........')
     },
 
     changeTab (current) {
       this.$store.commit('changeZoomLevel', current)
+      localStorage.setItem('currentPosition', current)
       console.log("on Tab clicked....", current)
       // console.log("MainContainer - Stored Data : ", this.$store.state)
       let portal_type = ''
@@ -419,6 +475,7 @@ export default {
           this.$store.commit('changeTabState',tabObject)
           this.center_name = '세계'
           this.params.id = 'world'
+          localStorage.setItem('currentKey', 'tab-5')
           break;
         case 'country':
           portal_name = '대한민국'
@@ -428,6 +485,7 @@ export default {
           this.$store.commit('changeTabState',tabObject)
           this.center_name = '대한민국'
           this.params.id = 'country'
+          localStorage.setItem('currentKey', 'tab-4')
           break;
         case 'city_do':
           portal_name = this.$store.state.current_place.locality
@@ -437,6 +495,7 @@ export default {
           this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.locality
           this.params.id = this.$store.state.current_place.locality
+          localStorage.setItem('currentKey', 'tab-3')
           break;
         case 'gu_gun':
           portal_name = this.$store.state.current_place.sublocality_level_1
@@ -446,6 +505,7 @@ export default {
           this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.sublocality_level_1
           this.params.id = this.$store.state.current_place.sublocality_level_1
+          localStorage.setItem('currentKey', 'tab-2')
           break;
         case 'adminDong':
           portal_name = this.$store.state.current_place.sublocality_level_2
@@ -455,6 +515,7 @@ export default {
           this.$store.commit('changeTabState',tabObject)
           this.center_name = this.$store.state.current_place.sublocality_level_2
           this.params.id = this.$store.state.current_place.sublocality_level_2
+          localStorage.setItem('currentKey', 'tab-1')
           break;
       }
 
@@ -470,7 +531,6 @@ export default {
     }, // changeTab()
 
     // getPortalData: function(areaName, areaType) {
-    //   console.log('20180718 - Check area areaName : ', areaName)
     //   var _this = this
     //
     //   // New api
@@ -485,7 +545,6 @@ export default {
     //   })
     //   .then(res => {
     //     // Tab select Info Center Level and Find info Center data
-    //     console.log('20180728 - Tab selected INFOCENTER DATA : ',res.data.data)  // GOOOOOOOOOOD lat lng
     //     let currentInfo = res.data.data
     //     currentInfo.s_rid = res.data.data.id
     //     // _this.$store.commit('setCurrentPlace', currentInfo)
@@ -513,7 +572,6 @@ export default {
     //       break;
     //     }
     //
-    //     // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
     //
     //   }) // end of axios
     // }, // getPortalData()
@@ -533,7 +591,6 @@ export default {
         this.postLists = res.data.data
         // _this.markers = res.data.Data
         this.markers = []
-        // console.log('20180728 - MainContainer params s-rid : ', res.data.data )
         for (var i = 0, len = res.data.data.length; i < len; i++) {
 
           let obj = { position:{}, info:{}}
@@ -557,12 +614,10 @@ export default {
           obj.info.content = res.data.data[i].content
 
           this.markers[i] = obj
-          // console.log("content lat lng : ", _this.markers)
            // this.params.id = areaType
         } // for
         this.$store.commit('setMarkers', this.markers)
 
-        // console.log('PostContainer 4 :: Continue Post Lists : ',res.data.data.length)
 
       }) // axios then
     }, // getMainPosts()
@@ -578,19 +633,17 @@ export default {
         // currentInfo.placeType = 'infocenter'
         currentInfo.s_rid = res.data.data.id
         this.$store.commit('setCurrentPlace', currentInfo)
-        console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
+        // console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
-        console.log ('Skt send request and get data below ************************************************')
-        console.log('20180727 - MainContainer First : ',this.$store.state)
-        console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
-        console.log('MainContainer 20180815 - , Get info center FROM GETINFOCENTER : ', this.$store.state.current_place.sublocality_level_2)
+        // console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
+        // console.log('MainContainer 20180815 - , Get info center FROM GETINFOCENTER : ', this.$store.state.current_place.sublocality_level_2)
 
         let currentLatLng = {}
         // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
         // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
         currentLatLng.latitude = res.data.data.location.coordinates[1]
         currentLatLng.longitude = res.data.data.location.coordinates[0]
-        console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+        // console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
         this.$store.commit('setCurrentLocation', currentLatLng)
 
 
@@ -616,22 +669,31 @@ export default {
     },
 
     authenticated : {
+        get: function () {
+          let userData = JSON.parse(localStorage.getItem('user'))
+          // console.log('CKECK TYPE ', typeof userData )
+          // console.log('CKECK TYPE ', userData )
+          if(userData) {
 
-      get: function () {
-        let userToken = localStorage.getItem('userToken')
-        console.log('USER TOKEN : ', userToken)
-           if(userToken != null) {
-             return true
-           } else {
-             return false
-           }
-      },
+            let userToken = userData.token
+            console.log('USER TOKEN : ', userToken)
+               if(userToken != null) {
+                 return true
+               } else {
+                 return false
+               }
+          } else {
+            return false
+          }
+
+        },
+
+        set: function (newValue) {
+          return false
+        }
 
 
-      // return this.$store.state.authenticated
-      set: function (newValue) {
-        return false
-      }
+
     },
 
     zoom_level () {
@@ -651,14 +713,12 @@ export default {
 
       var _this = this
 
-      // console.log("MainContainer : AUth : ", this.$store.state.authenticated)
       // console.log("MainContainer : My Env : ", p_env.production)  // ENV
 
           // *** First API call
           //*** Get Coords from Google
           // navigator.geolocation.getCurrentPosition(function(location) {
           //   _this.$store.commit('setCurrentLocation', location.coords)
-          //   console.log("20180716 - MainContainer : Current Location. ", location)
 
             // ***  Get Address from Google : return only ENGLISH
             // *** Needs : rc="https://maps.googleapis.com/maps/api/js?sensor=false" async defer
@@ -673,7 +733,7 @@ export default {
 
             axios.get('https://ipinfo.io/geo')
             .then(resCountry=> {
-              console.log('20180716 - Country Code compare : ', resCountry.data)
+              // console.log('20180716 - Country Code compare : ', resCountry.data)
 
               var loc = resCountry.data.loc.split(',');
               var location = { coords: {
@@ -681,7 +741,7 @@ export default {
                   longitude: loc[1]
                   }
               };
-              console.log('ipinfo : ', location)
+              // console.log('ipinfo : ', location)
               _this.$store.commit('setCurrentLocation', location.coords)
 
               let payloadCountry = resCountry.data.country
@@ -719,7 +779,7 @@ export default {
                     getInfocenterParams.longitude = _this.$store.state.longitude
 
                     // Get Postal Basic Info : findOne
-                    console.log('20180809 - getInfocenterParams: ',getInfocenterParams)
+                    // console.log('20180809 - getInfocenterParams: ',getInfocenterParams)
 
                     axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
                       params: getInfocenterParams
@@ -730,17 +790,12 @@ export default {
                       // currentInfo.placeType = 'infocenter'
                       currentInfo.s_rid = res.data.data.id
                       _this.$store.commit('setCurrentPlace', currentInfo)
-                      console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
+                      // console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
                       let tabObject = {}
                       tabObject.portal_name = res.data.data.sublocality_level_2
                       tabObject.political_type = 'sublocality2'
                       _this.$store.commit('changeTabState',tabObject)
-
-                      console.log ('Skt send request and get data below ************************************************')
-                      console.log('20180727 - MainContainer First : ',_this.$store.state)
-                      console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
-                      console.log('MainContainer 20180722 - , Get info center : ', _this.$store.state.current_place.sublocality_level_2)
 
                       let currentLatLng = {}
                       // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
@@ -755,7 +810,6 @@ export default {
                       // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
 
                       // created
-                      console.log('20180815 - commited data setcurrentdata : ', _this.$store.state.current_place)
                       axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
                         portalType: 'sublocality2', //sublocality2
                         portalName: _this.$store.state.current_place.sublocality_level_2, // 대방동
@@ -763,7 +817,7 @@ export default {
                         }
                       })
                       .then(res => {
-                        console.log('20180815- post result :  ', res.data.data)
+                        // console.log('20180815- post result :  ', res.data.data)
                         let moment = require('moment')
 
                         for(var i=0; res.data.data.length> i; i++){
@@ -777,7 +831,7 @@ export default {
                         _this.markers = []
                         // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
 
-                        console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
+                        // console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
                         // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
 
@@ -814,7 +868,7 @@ export default {
 
 
               } else {
-                console.log( ' Sorry Coming Soon ...............')
+                // console.log( ' Sorry Coming Soon ...............')
               }
 
             }) // get Country by googel
@@ -825,8 +879,9 @@ export default {
       // when back to Home from Space Page    Not from Map
       console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
 
-      let resetData = this.$store.state.current_place
-      console.log('20180811 - MIDDLE OF SERVICE : reset Data : ', resetData)
+      // let resetData = this.$store.state.current_place
+      let resetData = JSON.parse(localStorage.getItem('currentPlace'))
+      // console.log('20180811 - MIDDLE OF SERVICE : reset Data : ', resetData)
 
       this.center_name = resetData.sublocality_level_2
 
@@ -864,22 +919,24 @@ export default {
       })
       .then(res => {
         this.postLists = res.data.data
-        console.log('S-RID : ', res.data.data)
+        // console.log('S-RID : ', res.data.data)
 
         this.markers = this.$store.state.markers
 
 
       }) // axios then
     }
+    let currentKey = localStorage.getItem('currentKey')
+    let currentPosition = localStorage.getItem('currentPosition')
 
-    this.current_key = "tab-3"
-    this.changeTab('city_do')
+    this.current_key = currentKey //"tab-3"
+    this.changeTab(currentPosition)  // 'city_do'
     //  now target
 
   }, // created
 
   mounted: function(){
-    console.log('Am i Called .. iam mounted main')
+    // console.log('Am i Called .. iam mounted main')
 
 
 

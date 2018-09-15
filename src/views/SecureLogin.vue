@@ -102,10 +102,11 @@
               }) // axios /v1/auth/signup
               .then(res=>{
                   this.clicked == false
-                  console.log('SecureLogin - login : ', res.data.data)
-                  this.$store.commit('setUserInfo', res.data.data)
-                  let userData_ori = res.data.data.token
-                  localStorage.setItem('userToken', userData_ori)
+                  // this.$store.commit('setUserInfo', res.data.data)
+                  // let userData_ori = res.data.data.token
+                  localStorage.setItem('user', JSON.stringify(res.data.data))
+                  let userData = JSON.parse(localStorage.getItem('user'))
+                  console.log('SecureLogin - signup : ', userData.token)
                   window.history.back()
               })
             } else {
@@ -120,15 +121,15 @@
               axios.post(p_env.BASE_URL+'/vue/auth/signin', { email:this.input.username, password:this.input.password })
                   .then(res => {
                       this.clicked = false
-                      this.$store.commit('setUserInfo', res.data.data)
+                      // this.$store.commit('setUserInfo', res.data.data)
                       this.$store.commit('auth', true)
-                      let userData_ori = res.data.data.token
-                      localStorage.setItem('userToken', userData_ori)
-                      var userToken = localStorage.getItem('userToken')
-                      // console.log('User Data 22: ', userToken)
+                      // let userData_ori = res.data.data.token
+                      localStorage.setItem('user', JSON.stringify(res.data.data))
+                      // var userToken = localStorage.getItem('userToken')
 
-                      console.log('SecureLogin - login : ', res.data.data)
-                      console.log('SecureLogin - login : ', this.$store.state)
+                      // console.log('SecureLogin - login : ', res.data.data)
+                      let userData = JSON.parse(localStorage.getItem('user'))
+                      console.log('SecureLogin - login : ', userData.user)
                       // this.$router.push({name: 'home'})
                       window.history.back()
                   }).catch(error => {

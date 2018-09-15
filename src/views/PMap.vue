@@ -231,7 +231,7 @@ export default {
     showProfile(idx){
       let info = this.markers[idx].info
       let r_params = {}
-      console.log("20180724 - Store DATA .....", info )
+      // console.log("20180724 - Store DATA .....", info )
       r_params.creator_id = info.creator_id
 
       this.$store.commit('setCreatorId', r_params)
@@ -242,7 +242,7 @@ export default {
 
     linkToPage: function(index) {
       let info = this.markers[index].info
-      console.log("20180727 - Marker Clicked .....", info)
+      // console.log("20180727 - Marker Clicked .....", info)
       let r_params = {}
       // r_params.s_rid = info.s_rid
       // r_params.place_type = info.place_type
@@ -261,23 +261,24 @@ export default {
 
       this.$refs.mapRef.$mapPromise.then((map) => {
         this.$store.commit('setZoomLevel', map.zoom)
+        this.$emit('chageZoomTab', map.zoom)
         // console.log('This Store zoom level is : ', this.$store.state.zoom_level)
       })
     },
 
     dragStart: function (){
-      console.log("dragStart ..........")
+      // console.log("dragStart ..........")
     },
 
     dragEnd: function() {
-      console.log("drag End ..........")
+      // console.log("drag End ..........")
       // this.subSetCoords()
     },
 
     // EVENT MOVE ZOOM CHANGE ***************************************************************************************
     onIdle: function() {
       this.subSetCoords()
-      console.log("on Idle ..........")
+      // console.log("on Idle ..........")
     },
     // EVENT MOVE ZOOM CHANGE ***************************************************************************************
 
@@ -285,12 +286,13 @@ export default {
       // let _this = this
 
       this.$refs.mapRef.$mapPromise.then((map) => {
-        console.log("20180723 - setCurrentLocation MAP REF  : ", map )
+        // console.log("20180723 - setCurrentLocation MAP REF  : ", map )
           // console.log("20180723 - MAP CENTER : ",map.center.lat() )
           let map_coords = {}
           map_coords.latitude = map.center.lat()
           map_coords.longitude = map.center.lng()
           this.$store.commit('setCurrentLocation', map_coords)
+
           // console.log("Map ref : ", map)
           // console.log('get CENTER : ',  JSON.stringify(map_coords))
           // console.log('get CENTER : ',  map)
@@ -302,8 +304,6 @@ export default {
 
             let buildingName = res.data.addressInfo.buildingName
 
-            console.log('20180809 - PMap Data from skt : ',res.data.addressInfo)
-
             Util.setToStandardAddress(res.data.addressInfo).then(function (currentStAddress) {
               let currentPlace = {}
 
@@ -313,7 +313,8 @@ export default {
               currentPlace.longitude = map.center.lng()
 
               _this.$store.commit('setCurrentPlace', currentPlace)
-              console.log('20180809 - STANDARD ADDRESS MAP  : ',currentPlace)
+              localStorage.setItem('currentPlace', JSON.stringify(currentPlace))
+              // console.log('20180809 - STANDARD ADDRESS MAP  localStorage : ',JSON.parse(localStorage.getItem('currentPlace')))
 
               let placeParams = {}
               placeParams = currentPlace
@@ -337,11 +338,11 @@ export default {
        .then(res => {
          this.markers = []
 
-         console.log('20180723 - get Markers DATA : ', res.data.data)
+         // console.log('20180723 - get Markers DATA : ', res.data.data)
          let old_arr = res.data.data
          // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
          const uniqList = old_arr.filter((s1, pos, arr) => arr.findIndex((s2)=>s2.s_rid === s1.s_rid) === pos)
-         console.log('20180727 - uniqList: ', uniqList)
+         // console.log('20180727 - uniqList: ', uniqList)
 
          for (var i = 0, len = uniqList.length; i < len; i++) {
            // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
@@ -383,7 +384,7 @@ export default {
        coords.latitude = e.latLng.lat()
        coords.longitude = e.latLng.lng()
 
-       console.log('20180721 - latlng : ', latlng)
+       // console.log('20180721 - latlng : ', latlng)
        this.$store.commit('setCurrentLocation', coords)
        // This is making the Geocode request
        var geocoder = new google.maps.Geocoder();
@@ -471,12 +472,12 @@ export default {
         location['@class'] = 'OPoint'
         location.coordinates = [e.latLng.lng(), e.latLng.lat()]
 
-        console.log('P Map Data from skt : ',res.data.addressInfo)
-        console.log('P Map Data from skt BUILDING NAME  : ',sk_building_name)
+        // console.log('P Map Data from skt : ',res.data.addressInfo)
+        // console.log('P Map Data from skt BUILDING NAME  : ',sk_building_name)
 
         if(clickedZoom >= 12){
           let returnedVals = isPlace.getPlace(clickedZoom, sk_building_name)
-          console.log('20180815 - get RETURNED VALUE : ', returnedVals)
+          // console.log('20180815 - get RETURNED VALUE : ', returnedVals)
           let infoLevel = returnedVals[1]
           let oneInfoParams = {}
           if(clickedZoom >= 17){
@@ -505,13 +506,12 @@ export default {
                 break
               }
               this.dialog_title = sk_building_name
-              console.log('This is INFO CENTER from Parse .........................')
+              // console.log('This is INFO CENTER from Parse .........................')
               this.getInfoCenter(infoParams, clickedZoom, oneInfoParams)
             } // inner if else
 
           } else {
             // 16 ~ 13
-            console.log('준비중')
             alert('준비중')
 
           }
@@ -526,25 +526,25 @@ export default {
             case 2: case 3:
               oneInfoParams.portal_name = '세계 정보센터'
               oneInfoParams.political_type = 'world'
-              console.log('This level is 2, 3, 4, 5')
+              // console.log('This level is 2, 3, 4, 5')
             break
             case 4: case 5:
               oneInfoParams.portal_name = '대한민국 정보센터'
               oneInfoParams.political_type = 'country'
-              console.log('This level is 7')
+              // console.log('This level is 7')
             break
             case 6: case 7:
               oneInfoParams.portal_name = sk_city_do +' 정보센터'
               oneInfoParams.political_type = 'locality'
-              console.log('This level is 7')
+              // console.log('This level is 7')
             break
             case 8: case 9: case 10: case 11:
               oneInfoParams.portal_name = sk_gu_gun +' 정보센터'
               oneInfoParams.political_type = 'sublocality1'
-              console.log('This level is 8')
+              // console.log('This level is 8')
             break
           }
-          console.log('This is OUtter INFO CENTER .........................')
+          // console.log('This is OUtter INFO CENTER .........................')
           this.getInfoCenter(infoParams, clickedZoom, oneInfoParams)
         } // Outter if
 
@@ -567,8 +567,7 @@ export default {
             placeInfo = placeRes.data.data
             _this.$store.commit('setReverseRouteData', placeInfo)
 
-            console.log ('get Place  data below ************************************************')
-            console.log('PMap Place  : ', placeRes.data.data)
+            // console.log('PMap Place  : ', placeRes.data.data)
             // Dialog on
             _this.dialog_content = '부동산을 소유해 보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
             _this.dialog = true
@@ -600,7 +599,7 @@ export default {
           params: oneInfoParams
         })
         .then(res => {
-          console.log('20180815 - oneInfo result  : ', res.data.data )
+          // console.log('20180815 - oneInfo result  : ', res.data.data )
           // this.routed_data = res.data.data
           // this.routed_data.s_rid = res.data.data.id
           // this.routed_data.place_name = res.data.data.portal_name
@@ -608,11 +607,10 @@ export default {
           // this.completeInfoSpace(res)
           let infoCenterInfo = res.data.data
           _this.$store.commit('setReverseRouteData', infoCenterInfo)
-          console.log('PMap 1, Get info center : ', infoCenterInfo)
+          // console.log('PMap 1, Get info center : ', infoCenterInfo)
 
-          console.log ('Skt send request and get data below ************************************************')
-          console.log('PMap 1, Get info center : ', res.data.data)
-          console.log('PMap 1, Get info center : ', _this.$store.state.place_name)
+          // console.log('PMap 1, Get info center : ', res.data.data)
+          // console.log('PMap 1, Get info center : ', _this.$store.state.place_name)
           // Dialog on
           _this.dialog_title = res.data.data.portal_name
           _this.dialog_content = '직접민주주의를 할 수 있습니다. 동네분들과 의견을 나눠보세요. 장소로 들어가셔서 정보를 보시겠습니까?'
@@ -626,7 +624,7 @@ export default {
     enterPlace: function() {
       let info = this.$store.state.reverse_route_data
       info.from_type = 'pmap'
-      console.log('20180815 - ROUTER PARAMS : ', info )
+      // console.log('20180815 - ROUTER PARAMS : ', info )
       this.$router.push({ name: 'spacePage', params:{id: info}})
     }, // enterPlace
 
@@ -676,17 +674,17 @@ export default {
    console.log('20180816 - PMAP MOUNTED  : When I called ???')
 
    this.$refs.mapRef.$mapPromise.then((map) => {
-     console.log('20180721 - mapref after : ', map)
+     // console.log('20180721 - mapref after : ', map)
      this.$refs.mapRef.$on('zoom_changed', this.zoomChanged)
 
      let init=this.$store.state.init
 
      this.zoom_level = this.$store.state.zoom_level
 
-     console.log('20180723 - NOT LITERAL  : ', this.$store.state.latitude)
-     console.log('20180723 - NOT LITERAL TYPE : ', typeof this.$store.state.latitude)
-     console.log('20180723 - LATITUDE : ', this.$store.state.latitude)
-     console.log('20180723 - LONGITUDE : ', this.$store.state.longitude)
+     // console.log('20180723 - NOT LITERAL  : ', this.$store.state.latitude)
+     // console.log('20180723 - NOT LITERAL TYPE : ', typeof this.$store.state.latitude)
+     // console.log('20180723 - LATITUDE : ', this.$store.state.latitude)
+     // console.log('20180723 - LONGITUDE : ', this.$store.state.longitude)
 
      this.centerMarker.lat = this.$store.state.latitude
      this.centerMarker.lng = this.$store.state.longitude
@@ -701,7 +699,7 @@ export default {
    }) // map ref
 
    this.$store.watch(this.$store.getters.watchZoom, zoom_level => {
-      console.log('watched: ddddddd : ' , zoom_level)
+      // console.log('watched: ddddddd : ' , zoom_level)
 
       this.zoom_level = zoom_level
 

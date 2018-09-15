@@ -224,44 +224,52 @@ export default {
 
     createPost: function() {
       // if(this.$store.state.authenticated == true) {
-      let userToken = localStorage.getItem('userToken')
-      if(userToken != null) {
-        let political_type = this.$store.state.tabState // political_type = sublocality2
-        let portal_name = this.$store.state.currentTabName
-        let queryParams = {
-          portal_name: portal_name+' 정보센터',
-          political_type: political_type
-        }
+      let userData = JSON.parse(localStorage.getItem('user'))
+      if(userData){
+          let userToken = userData.token
+          if(userToken != null) {
+            let political_type = this.$store.state.tabState // political_type = sublocality2
+            let portal_name = this.$store.state.currentTabName
+            let queryParams = {
+              portal_name: portal_name+' 정보센터',
+              political_type: political_type
+            }
 
-        console.log('20180817 - POSTCONTAINER BTN - get info center param : ', queryParams )
+            console.log('20180817 - POSTCONTAINER BTN - get info center param : ', queryParams )
 
-        axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
-          params: queryParams
-        })
-        .then(res => {
-          // upper routed data is not yet complete , right bottom data is this space data
-          console.log('20180812 - get data : ', res.data.data )
+            axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+              params: queryParams
+            })
+            .then(res => {
+              // upper routed data is not yet complete , right bottom data is this space data
+              console.log('20180812 - get data : ', res.data.data )
 
-          // console.log('20180912 - current place data : ', this.$store.state.current_place)
-          let info = res.data.data
-          info.s_rid = res.data.data.id
-          // info.place_type = 'infocenter'
-          // info.place_name = this.$store.state.infocenter_data.place_name
-          info.photos = this.$store.state.photos
-          info.id = this.$store.state.id
-          info.user_name = this.$store.state.user_name
-          info.place_name = info.portal_name
-          console.log("PostContainer : beforORE SEND PARAMS : ", info)
-          this.$router.push({name: 'postEditor', params: {data: info}})
-          // this.$refs.dialogPost.showFlag = true
-          // this.$refs.dialogPost.routed_data = info
-          // console.log("PostContainer : dialog is true")
-        }) // axios then
+              // console.log('20180912 - current place data : ', this.$store.state.current_place)
+              let info = res.data.data
+              info.s_rid = res.data.data.id
+              // info.place_type = 'infocenter'
+              // info.place_name = this.$store.state.infocenter_data.place_name
+              info.photos = this.$store.state.photos
+              info.id = this.$store.state.id
+              info.user_name = this.$store.state.user_name
+              info.place_name = info.portal_name
+              console.log("PostContainer : beforORE SEND PARAMS : ", info)
+              this.$router.push({name: 'postEditor', params: {data: info}})
+              // this.$refs.dialogPost.showFlag = true
+              // this.$refs.dialogPost.routed_data = info
+              // console.log("PostContainer : dialog is true")
+            }) // axios then
 
+          } else {
+            this.dialog_login = true
+          }
+          // console.log("PostContainer : Write post clicked...")
       } else {
-        this.dialog_login = true
+          this.dialog_login = true
       }
-      // console.log("PostContainer : Write post clicked...")
+
+
+
     },
 
     login: function() {
