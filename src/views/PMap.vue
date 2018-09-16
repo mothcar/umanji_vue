@@ -256,7 +256,7 @@ export default {
     },
 
     zoomChanged: function(){
-      console.log("zoom changed..........")
+      console.log("PMap : who call me? zoom changed..........")
       // this.subSetCoords()
 
       this.$refs.mapRef.$mapPromise.then((map) => {
@@ -292,6 +292,12 @@ export default {
           map_coords.latitude = map.center.lat()
           map_coords.longitude = map.center.lng()
           this.$store.commit('setCurrentLocation', map_coords)
+          var location = { coords: {
+              latitude: map.center.lat(),
+              longitude: map.center.lng()
+              }
+          }
+          localStorage.setItem('location', JSON.stringify(location))
 
           // console.log("Map ref : ", map)
           // console.log('get CENTER : ',  JSON.stringify(map_coords))
@@ -702,6 +708,7 @@ export default {
       // console.log('watched: ddddddd : ' , zoom_level)
 
       this.zoom_level = zoom_level
+      console.log('PMap : when i called ? zoom level : ', zoom_level)
 
       // let e = zoom_level
       // switch(e){

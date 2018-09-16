@@ -323,7 +323,7 @@ export default {
 
   methods: {
     changTabByZoom(value) {
-      console.log('tab change value .... : ', value)
+      // console.log('tab change value .... : ', value)
       switch(value){
         default:
           this.current_key = "tab-5"
@@ -460,7 +460,7 @@ export default {
     changeTab (current) {
       this.$store.commit('changeZoomLevel', current)
       localStorage.setItem('currentPosition', current)
-      console.log("on Tab clicked....", current)
+      console.log("MainContainer : on Tab clicked....", current)
       // console.log("MainContainer - Stored Data : ", this.$store.state)
       let portal_type = ''
       let portal_name = ''
@@ -525,8 +525,9 @@ export default {
         view_level: this.$store.state.zoom_level
       }
 
-      console.log('20180815 - STORE DATA : ', this.$store.state.tabState)
+      // console.log('20180815 - STORE DATA : ', this.$store.state.tabState)
 
+      this.getInfoCenterByTab(getMainPostParams) // gu_gun
       this.getMainPosts(getMainPostParams)
     }, // changeTab()
 
@@ -622,29 +623,36 @@ export default {
       }) // axios then
     }, // getMainPosts()
 
-    getInfoCenter(){
-      let getInfocenterParams = this.$store.state.current_place
-      axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+    getInfoCenterByTab(params){
+      // let getInfocenterParams = this.$store.state.current_place
+      console.log('get info center  by tab clicked  ')
+
+      let getInfocenterParams = {}
+      getInfocenterParams.political_type = params.portalType
+      getInfocenterParams.portal_name = params.portalName + ' 정보센터'
+      axios.get(p_env.BASE_URL+'/vue/getInfoCenterByTab', {
         params: getInfocenterParams
         // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
       })
       .then(res => {
+        console.log('get info center data : ', res.data.data )
         let currentInfo = res.data.data
         // currentInfo.placeType = 'infocenter'
         currentInfo.s_rid = res.data.data.id
-        this.$store.commit('setCurrentPlace', currentInfo)
+        // this.$store.commit('setCurrentPlace', currentInfo)
+        localStorage.setItem('currentPlace', JSON.stringify(currentInfo))
         // console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
         // console.log('20180727 - MainContainer First res.data.data : ',res.data.data)
         // console.log('MainContainer 20180815 - , Get info center FROM GETINFOCENTER : ', this.$store.state.current_place.sublocality_level_2)
 
-        let currentLatLng = {}
+        // let currentLatLng = {}
         // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
         // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
-        currentLatLng.latitude = res.data.data.location.coordinates[1]
-        currentLatLng.longitude = res.data.data.location.coordinates[0]
+        // currentLatLng.latitude = res.data.data.location.coordinates[1]
+        // currentLatLng.longitude = res.data.data.location.coordinates[0]
         // console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
-        this.$store.commit('setCurrentLocation', currentLatLng)
+        // this.$store.commit('setCurrentLocation', currentLatLng)
 
 
       })
@@ -743,6 +751,8 @@ export default {
               };
               // console.log('ipinfo : ', location)
               _this.$store.commit('setCurrentLocation', location.coords)
+              // set Location
+              localStorage.setItem('location', JSON.stringify(location.coords))
 
               let payloadCountry = resCountry.data.country
               _this.$store.commit('setCountryCode', payloadCountry)
@@ -779,13 +789,16 @@ export default {
                     getInfocenterParams.longitude = _this.$store.state.longitude
 
                     // Get Postal Basic Info : findOne
-                    // console.log('20180809 - getInfocenterParams: ',getInfocenterParams)
+                    // console.log('20180816 - getInfocenterParams: ',getInfocenterParams)
 
                     axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
                       params: getInfocenterParams
                       // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
                     })
                     .then(res => {
+                      // console.log('20180816 - get infocenter after axios : ', res.data.data)
+                      //set current place
+                      localStorage.setItem('currentPlace', JSON.stringify(res.data.data))
                       let currentInfo = res.data.data
                       // currentInfo.placeType = 'infocenter'
                       currentInfo.s_rid = res.data.data.id
@@ -877,11 +890,11 @@ export default {
 
     } else {
       // when back to Home from Space Page    Not from Map
-      console.log('20180718 - MIDDLE OF SERVICE : WHEN I CALLED ??? I am "CREATED" MAY BE RETURN FROM MAP???')
+      console.log('20180916 - MIDDLE OF SERVICE : WHEN I CALLED ??? This should be False!!!!')
 
       // let resetData = this.$store.state.current_place
       let resetData = JSON.parse(localStorage.getItem('currentPlace'))
-      // console.log('20180811 - MIDDLE OF SERVICE : reset Data : ', resetData)
+      console.log('20180916 - MIDDLE OF SERVICE : init false - get data from localStorage : ', resetData)
 
       this.center_name = resetData.sublocality_level_2
 
@@ -936,7 +949,7 @@ export default {
   }, // created
 
   mounted: function(){
-    // console.log('Am i Called .. iam mounted main')
+    console.log('Am i Called .. iam mounted main')
 
 
 

@@ -100,10 +100,11 @@ import VuePoll from 'vue-poll'
 export default {
   data () {
     return {
+      userData : null,
       country_code : 'KR',
-      latitude: this.$store.state.latitude,
-      longitude: this.$store.state.longitude,
-      location: '',
+      // latitude: this.$store.state.latitude,
+      // longitude: this.$store.state.longitude,
+      location: null,
       content: '',
       link_url: '',
       result: '',
@@ -127,8 +128,14 @@ export default {
   }, //data
 
   mounted: function() {
-    this.routed_data = this.$route.params.data
-    console.log('20180728 - GET ROUTER DATA : ', this.$route.params.data)
+    // this.routed_data = this.$route.params.data
+    this.routed_data = JSON.parse(localStorage.getItem('currentPlace'))
+    this.userData = JSON.parse(localStorage.getItem('user'))
+    // this.location = JSON.parse(localStorage.getItem('location'))
+    // console.log('20180728 - GET ROUTER DATA : ', this.$route.params.data)
+    console.log('20180728 - GET ROUTER DATA : ', this.routed_data)
+    console.log('20180728 - GET user DATA : ', this.userData)
+    // console.log('20180728 - GET location DATA : ', this.location)
 
 
   },

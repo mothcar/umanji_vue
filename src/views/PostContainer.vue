@@ -400,7 +400,7 @@ export default {
 
     this.$store.watch(this.$store.getters.getN, tabState => {
 
-      console.log(".........When this triggered.........")
+      console.log("PostContainer .........When this triggered.........")
 
 
     }) // this.$store.watch
