@@ -81,6 +81,7 @@
           :id="`tab-${i}`"
           :key="i"
             >
+            <!-- TAB 아래 현재지역 인포센터 large button -->
           <v-card >
             <v-card-media
               :src="imageUrl"
@@ -328,26 +329,31 @@ export default {
         default:
           this.current_key = "tab-5"
           this.changeTab('world')
+          localStorage.setItem('currentPosition', 'world')
         break;
 
         case 8: case 9: case 10:
           this.current_key = "tab-4"
           this.changeTab('country')
+          localStorage.setItem('currentPosition', 'country')
         break;
 
         case 11: case 12: case 13:
           this.current_key = "tab-3"
           this.changeTab('city_do')
+          localStorage.setItem('currentPosition', 'city_do')
         break;
 
         case 14: case 15: case 16:
           this.current_key = "tab-2"
           this.changeTab('gu_gun')
+          localStorage.setItem('currentPosition', 'gu_gun')
         break;
 
         case 17: case 18: case 19: case 20:  case 21: case 22:
           this.current_key = "tab-1"
           this.changeTab('adminDong')
+          localStorage.setItem('currentPosition', 'adminDong')
         break;
         /*
         case 'world':
@@ -414,6 +420,7 @@ export default {
     toPost: function () {
       this.$store.commit('toPost', true)
       this.getInfocenterByMap()
+
       // console.log("MainContainer : toPost", this.$store.state.visible)
     },
 
@@ -494,7 +501,7 @@ export default {
           tabObject.portal_name = portal_name
           tabObject.political_type = portal_type
           this.$store.commit('changeTabState',tabObject)
-          this.center_name = this.$store.state.current_place.locality
+          this.center_name = JSON.parse(localStorage.getItem('currentPlace')).locality
           this.params.id = this.$store.state.current_place.locality
           localStorage.setItem('currentKey', 'tab-3')
           break;
@@ -504,7 +511,7 @@ export default {
           tabObject.portal_name = portal_name
           tabObject.political_type = portal_type
           this.$store.commit('changeTabState',tabObject)
-          this.center_name = this.$store.state.current_place.sublocality_level_1
+          this.center_name = JSON.parse(localStorage.getItem('currentPlace')).sublocality_level_1
           this.params.id = this.$store.state.current_place.sublocality_level_1
           localStorage.setItem('currentKey', 'tab-2')
           break;
@@ -514,7 +521,7 @@ export default {
           tabObject.portal_name = portal_name
           tabObject.political_type = portal_type
           this.$store.commit('changeTabState',tabObject)
-          this.center_name = this.$store.state.current_place.sublocality_level_2
+          this.center_name = JSON.parse(localStorage.getItem('currentPlace')).sublocality_level_2
           this.params.id = this.$store.state.current_place.sublocality_level_2
           localStorage.setItem('currentKey', 'tab-1')
           break;
@@ -661,7 +668,7 @@ export default {
     }, // getInfoCenter()
 
     getInfocenterByMap() {
-      let _this = this 
+      let _this = this
       console.log('get from Map center coords', JSON.parse(localStorage.getItem('location')))
       let location = JSON.parse(localStorage.getItem('location'))
       //*** Reversegeocoding from SKTelecom
@@ -669,7 +676,8 @@ export default {
       // Test
       // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
       .then(res => {
-        this.center_name = res.data.addressInfo.adminDong
+        // this.center_name = res.data.addressInfo.adminDong
+
         // _this.params.id = res.data.addressInfo.adminDong
         // let currentStAddress = Util.setToStandardAddress(res.data.addressInfo)
 
@@ -700,10 +708,12 @@ export default {
             _this.$store.commit('setCurrentPlace', currentInfo)
             // console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
 
-            let tabObject = {}
-            tabObject.portal_name = res.data.data.sublocality_level_2
-            tabObject.political_type = 'sublocality2'
-            _this.$store.commit('changeTabState',tabObject)
+
+
+            // let tabObject = {}
+            // tabObject.portal_name = res.data.data.sublocality_level_2
+            // tabObject.political_type = 'sublocality2'
+            // _this.$store.commit('changeTabState',tabObject)
 
             let currentLatLng = {}
             // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
@@ -716,6 +726,9 @@ export default {
           }) // end of axios vue/getInfoCenter
           .then(res => {
             // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+            let currentPosition = localStorage.getItem('currentPosition')
+            console.log("MainContainer : currentPosition :", localStorage.getItem('currentPosition'))
+            _this.changeTab(currentPosition)
 
             // created
             axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
