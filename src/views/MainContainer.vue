@@ -413,6 +413,7 @@ export default {
 
     toPost: function () {
       this.$store.commit('toPost', true)
+      this.getInfocenterByMap()
       // console.log("MainContainer : toPost", this.$store.state.visible)
     },
 
@@ -658,6 +659,122 @@ export default {
       })
 
     }, // getInfoCenter()
+
+    getInfocenterByMap() {
+      let _this = this 
+      console.log('get from Map center coords', JSON.parse(localStorage.getItem('location')))
+      let location = JSON.parse(localStorage.getItem('location'))
+      //*** Reversegeocoding from SKTelecom
+      axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+location.coords.longitude+"&lat=" +location.coords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+      // Test
+      // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
+      .then(res => {
+        this.center_name = res.data.addressInfo.adminDong
+        // _this.params.id = res.data.addressInfo.adminDong
+        // let currentStAddress = Util.setToStandardAddress(res.data.addressInfo)
+
+
+        // let getInfocenterParams = {}
+        Util.setToStandardAddress(res.data.addressInfo).then(function (currentStAddress) {
+          let getInfocenterParams = currentStAddress
+          // console.log('20180809 - STANDARD ADDRESS : ',currentStAddress)
+          // console.log('20180809 - STANDARD ADDRESS params : ',getInfocenterParams)
+          // console.log('20180809 - STANDARD ADDRESS locality : ',currentStAddress.locality)
+          getInfocenterParams.latitude = _this.$store.state.latitude,
+          getInfocenterParams.longitude = _this.$store.state.longitude
+
+          // Get Postal Basic Info : findOne
+          // console.log('20180816 - getInfocenterParams: ',getInfocenterParams)
+
+          axios.get(p_env.BASE_URL+'/vue/getInfoCenter', {
+            params: getInfocenterParams
+            // timeout: 10 * 1000 // 10 Sec : 60 * 4 * 1000, // Let's say you want to wait at least 4 mins
+          })
+          .then(res => {
+            // console.log('20180816 - get infocenter after axios : ', res.data.data)
+            //set current place
+            localStorage.setItem('currentPlace', JSON.stringify(res.data.data))
+            let currentInfo = res.data.data
+            // currentInfo.placeType = 'infocenter'
+            currentInfo.s_rid = res.data.data.id
+            _this.$store.commit('setCurrentPlace', currentInfo)
+            // console.log('20180809 - STANDARD ADDRESS MAINCONTAINER  : ',currentInfo)
+
+            let tabObject = {}
+            tabObject.portal_name = res.data.data.sublocality_level_2
+            tabObject.political_type = 'sublocality2'
+            _this.$store.commit('changeTabState',tabObject)
+
+            let currentLatLng = {}
+            // currentLatLng.latitude = res.data.data.location.coordinates[1].toString()
+            // currentLatLng.longitude = res.data.data.location.coordinates[0].toString()
+            currentLatLng.latitude = res.data.data.location.coordinates[1]
+            currentLatLng.longitude = res.data.data.location.coordinates[0]
+            // console.log('20180723 - TYPE OF LAT: ', typeof currentLatLng.latitude)
+            _this.$store.commit('setCurrentLocation', currentLatLng)
+            // console.log('MainContainer 2, Get info center : ', res.data.data.id)
+          }) // end of axios vue/getInfoCenter
+          .then(res => {
+            // console.log("MainContainer 3 :: Query Params Check : portal type is : ", portal_type +' and Portal Name  : '+ portal_name)
+
+            // created
+            axios.get(p_env.BASE_URL+'/vue/main/posts', { params: {
+              portalType: 'sublocality2', //sublocality2
+              portalName: _this.$store.state.current_place.sublocality_level_2, // 대방동
+              view_level: _this.$store.state.zoom_level
+              }
+            })
+            .then(res => {
+              // console.log('20180815- post result :  ', res.data.data)
+              let moment = require('moment')
+
+              for(var i=0; res.data.data.length> i; i++){
+                let old_date = res.data.data[i].createdAt
+                let new_date = moment(old_date).format('YYYY-MM-DD HH:mm:ss')
+                res.data.data[i].createdAt = new_date
+              }
+
+              _this.postLists = res.data.data
+
+              _this.markers = []
+              // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
+
+              // console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
+              // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
+
+
+              for (var i = 0, len = res.data.data.length; i < len; i++) {
+
+                // data 없을때 이 error : Uncaught (in promise) TypeError: Cannot read property 'location' of undefined
+
+                let obj = { position:{}, info:{}}
+                obj.position.lat = res.data.data[i].location.coordinates[1]
+                obj.position.lng = res.data.data[i].location.coordinates[0]
+                obj.info.s_rid = res.data.data[i].s_rid
+                obj.info.place_name = res.data.data[i].place_name
+                obj.info.zoom_level = _this.$store.state.zoom_level
+
+                obj.info.creator_id = res.data.data[i].creator_id
+                obj.info.creator_name = _this.$store.state.user_name,
+                obj.info.photos = res.data.data[i].photos
+                obj.info.place_type = res.data.data[i].place_type
+                obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
+                obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
+                obj.info.location = res.data.data[i].location
+                obj.info.link_url = res.data.data[i].link_url
+                _this.markers[i] = obj
+                // console.log("content lat lng : ", _this.markers)
+              } // for
+              _this.$store.commit('setMarkers', _this.markers)
+
+            }) // axios then
+
+          }) // second then
+        }) // promise then
+
+      }) // axios SKT
+
+    }, // getInfocenterByMap
 
     testLab() {
       this.$router.push({ name: 'testLab'})
