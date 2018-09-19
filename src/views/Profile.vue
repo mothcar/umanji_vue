@@ -88,11 +88,12 @@ export default {
 
   mounted() {
     // console.log('20180724 - GET ID :', this.$store.state.userId)
+    /*
+
     let userId = this.$store.state.id
       for(var i=0; this.$store.state.roles.length>i; i++){
         if(this.$store.state.roles[i] == 'politician') this.isAdmin = true
       }
-
 
     axios.get(p_env.BASE_URL+'/vue/getUserData', {
       params: {id: userId}
@@ -113,11 +114,21 @@ export default {
         this.isPhone = false
       }
 
-      this.user_data = res.data.data
+      this.user_data = JSON.parse(localStorage.getItem('user')).user
       this.user_name = res.data.data.user_name
       this.phone_number = res.data.data.phone
-      this.money = this.thousandComma(res.data.data.money)
+      this.money = this.thousandComma(user_data.money)
+
     }) // axios then
+    */
+
+    let userData = JSON.parse(localStorage.getItem('user')).user
+    console.log('20180919 - USET data :', userData)
+    this.user_data = userData
+    this.photo = userData.photos
+    this.user_name = userData.user_name
+    this.phone_number = userData.phone
+    this.money = this.thousandComma(userData.money)
   }, // mounted
 
   methods: {
@@ -219,16 +230,18 @@ export default {
     update_name() {
       let newName = this.new_name
       this.user_name = newName
-      console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
+      // console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
       axios.post(p_env.BASE_URL+'/vue/updateName', {
-        user_id: this.$store.state.user_junk.user.id,
+        user_id: this.user_data.id,
         user_name: newName
       })
       .then(res=>{
-        this.user_name = res.data.data.user_name
+        this.user_name = res.data.data[0].user_name
+        console.log('update name and response : ', res.data.data[0])
+        let userData = JSON.parse(localStorage.getItem('user'))
+        userData['user'] = res.data.data[0]
+        localStorage.setItem('user', JSON.stringify(userData))
         this.isName = true
-
-        console.log('20180805 - update name ', res)
       })
 
     },
@@ -246,14 +259,17 @@ export default {
       this.phone_number = newPhone
       // console.log('20180805 - user id from junk DATA  : ', this.$store.state.user_junk.user.id)
       axios.post(p_env.BASE_URL+'/vue/updatePhone', {
-        user_id: this.$store.state.user_junk.user.id,
+        user_id: this.user_data.id,
         phone: newPhone
       })
       .then(res=>{
-        this.user_name = res.data.data.user_name
+        this.user_name = res.data.data[0].user_name
+        console.log('update name and response : ', res.data.data[0])
+        let userData = JSON.parse(localStorage.getItem('user'))
+        userData['user'] = res.data.data[0]
+        localStorage.setItem('user', JSON.stringify(userData))
         this.isName = true
 
-        console.log('20180805 - update name ', res)
       })
     }
 

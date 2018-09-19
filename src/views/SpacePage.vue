@@ -108,43 +108,25 @@
 
 
     <!-- Dialog ******************************************************************************** -->
+    <v-container >
     <v-layout row justify-center>
-      <v-dialog
-        v-model="dialog"
-        max-width="290"
-      >
-        <v-card>
+      <v-dialog v-model="loginShow" max-width="290" >
+        <v-card class="pause_bg">
           <v-card-title class="headline">로그인 하시겠습니까?</v-card-title>
-
-          <v-card-text class="p_portal_page">
-            동네사람들에게 좋은 정보를 제공하시면 계급이 승급됩니다.
-          </v-card-text>
-
+          <v-card-text class="p_portal_page">동네사람들에게 좋은 정보를 제공하시면 계급이 승급됩니다.</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-
-            <v-btn
-              color="green darken-1"
-              flat="flat"
-              @click="dialog = false"
-            >
-              아니오
-            </v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="loginShow = false" >아니오</v-btn>
 
             <router-link :to="{ name: 'secureLogin', params: {} }">
-              <v-btn
-                color="green darken-1"
-                flat="flat"
-                @click="login"
-              >
-                예
-              </v-btn>
+              <v-btn color="green darken-1" flat="flat" @click="login" >예</v-btn>
             </router-link>
 
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-layout>
+    </v-container>
     <!-- Dialog ******************************************************************************** -->
 
   <dialogSetAdmin ref="dialog_set_admin"></dialogSetAdmin>
@@ -212,6 +194,11 @@
       flex-direction: column;
       /* flex-wrap : wrap; */
       /* position: relative; */
+}
+
+.pause_bg {
+    background-color: #fff;
+
 }
 
 .pause_item {
@@ -300,7 +287,7 @@ export default {
             src: require('../assets/images/default_info_center.jpg')
           }
         ],
-        dialog: false,
+        loginShow: false,
         getData: 'Some Data..',
         suffix: '',
         rid: '',
@@ -508,13 +495,20 @@ export default {
         console.log('created param on spacepage : ', info)
         this.$store.commit('setReverseRouteData', info)
         // if(this.$store.state.authenticated == true) {
-        let userToken = localStorage.getItem('userToken')
-        if(userToken != null) {
-          this.$router.push({name: 'postEditor', params: {data: info}})
-          // console.log("PostContainer : dialog is true")
+        if(localStorage.getItem('user') != null){
+            console.log("PostContainer : user not NULL")
+            let userData = JSON.parse(localStorage.getItem('user'))
+            let userToken = userData.token
+            if(userToken != null) {
+              this.$router.push({name: 'postEditor', params: {data: info}})
+              // console.log("PostContainer : dialog is true")
+            } else {
+              this.loginShow = true
+            }
         } else {
-          this.dialog = true
+            this.loginShow = true
         }
+
         // console.log("PostContainer : Write post clicked...")
       },
 
@@ -548,7 +542,7 @@ export default {
       },
 
       login: function() {
-        this.dialog = false
+        this.loginShow = false
       },
 
       setAdmin () {
