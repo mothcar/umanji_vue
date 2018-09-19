@@ -263,7 +263,7 @@ export default {
         phone: newPhone
       })
       .then(res=>{
-        this.user_name = res.data.data[0].user_name
+        this.phone_number = res.data.data[0].phone 
         console.log('update name and response : ', res.data.data[0])
         let userData = JSON.parse(localStorage.getItem('user'))
         userData['user'] = res.data.data[0]

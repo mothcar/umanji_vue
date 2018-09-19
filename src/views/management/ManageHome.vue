@@ -111,17 +111,18 @@ export default {
 
   mounted() {
     // let authenticated = this.$store.state.authenticated
-    let userToken = localStorage.getItem('userToken')
+    let userData = JSON.parse(localStorage.getItem('user'))
+    let userToken = userData.token
     if(userToken != null) {
       this.auth = true
     }
     // if(authenticated) this.auth = true
     let refData = this.$refs.manaApply.dialog
     // this.apply_dialog = refData
-    console.log('role check this.$store.state.user_junk.user.roles.politician typeof : ', typeof this.$store.state.user_junk.user.roles.politician)
-    console.log('role check this.$store.state.user_junk.user.roles.politician : ', this.$store.state.user_junk.user.roles.politician)
-    if(this.$store.state.user_junk.user.roles.politician != undefined){
-      this.title_roles = this.$store.state.user_junk.user.roles
+    console.log('role check this.$store.state.user_junk.user.roles.politician typeof : ', typeof userData.user.roles.politician)
+    console.log('role check this.$store.state.user_junk.user.roles.politician : ', userData.user.roles.politician)
+    if(userData.user.roles.politician != undefined){
+      this.title_roles = userData.user.roles
       let o = {}
       o = this.title_roles
       // var match = "politician"
