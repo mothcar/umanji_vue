@@ -188,6 +188,12 @@ export default {
               let userData = JSON.parse(localStorage.getItem('user'))
               // let paramsData = {...placeData, ...userData}
 
+              if(paramsData.place_type == 'infocenter'){
+                paramsData['place_name'] = paramsData.portal_name
+              } else {
+
+              }
+
               // if(this.$store.state.visible) {
               //   portal_rid = this.routed_data.s_rid
               //   console.log("LOGIC PASS HERE..........")
