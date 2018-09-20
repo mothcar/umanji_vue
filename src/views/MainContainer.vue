@@ -324,7 +324,7 @@ export default {
 
   methods: {
     changTabByZoom(value) {
-      // console.log('tab change value .... : ', value)
+      console.log('20180920 ... tab change value .... : ', value)
       switch(value){
         default:
           this.current_key = "tab-5"
@@ -904,8 +904,7 @@ export default {
                 // Test
                 // axios.get('http://api2.sktelecom.com/tmap/geo/reversegeocoding?lon='+testCoords.longitude+"&lat=" +testCoords.latitude+'&version=1&appKey=c296f457-55ef-40a6-8a48-e1dab29fd9b3&coordType=WGS84GEO&addressType=A10')
                 .then(res => {
-                  _this.center_name = res.data.addressInfo.adminDong
-                  // _this.params.id = res.data.addressInfo.adminDong
+                  // _this.center_name = res.data.addressInfo.adminDong
                   // let currentStAddress = Util.setToStandardAddress(res.data.addressInfo)
 
 
