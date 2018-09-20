@@ -3,8 +3,8 @@
 
     <v-content>
 
-    <v-layout class="p_margin_top">
-      <v-flex xs12 sm6 offset-lg3 >
+    <v-layout class="p_margin_top" row justify-center>
+      <v-flex xs12 sm12 offset-lg3 >
 
     <!-- create Post Button ******************************************************************************** -->
       <v-btn color="success" @click="createPost">Write Post</v-btn>
@@ -398,9 +398,9 @@ export default {
   mounted() {
     console.log('20180809 - HERE IS PostContainer MOUNTED')
 
-    this.$store.watch(this.$store.getters.getN, tabState => {
+    this.$store.watch(this.$store.getters.getN, aaa => {
 
-      console.log("PostContainer .........When this triggered.........")
+      console.log("PostContainer .........When this triggered.........aaa: ", aaa)
 
 
     }) // this.$store.watch
