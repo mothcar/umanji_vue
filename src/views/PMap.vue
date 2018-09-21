@@ -390,7 +390,7 @@ export default {
        coords.latitude = e.latLng.lat()
        coords.longitude = e.latLng.lng()
 
-       console.log('20180920 - coords.latitude : ', coords.latitude)
+       // console.log('20180721 - latlng : ', latlng)
        this.$store.commit('setCurrentLocation', coords)
        // This is making the Geocode request
        var geocoder = new google.maps.Geocoder();
@@ -634,14 +634,18 @@ export default {
       this.$router.push({ name: 'spacePage', params:{id: info}})
     }, // enterPlace
 
-    // createPost: function() {
-    //   let userToken = localStorage.getItem('userToken')
-    //   if(userToken != null) {
-    //     this.$router.push({name: 'postEditor'})
-    //   } else {
-    //     this.dialog = true
-    //   }
-    // },
+    createPost: function() {
+      // @click.stop="dialog = true"
+      // if(this.$store.state.authenticated == true) {
+      let userToken = localStorage.getItem('userToken')
+      if(userToken != null) {
+        this.$router.push({name: 'postEditor'})
+        // console.log("PostContainer : dialog is true")
+      } else {
+        this.dialog = true
+      }
+      // console.log("PostContainer : Write post clicked...")
+    },
 
     login: function() {
       this.dialog = false
