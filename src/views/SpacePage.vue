@@ -308,7 +308,6 @@ export default {
     }, // data
 
     mounted: function() {
-      // test for reverse 
       // let someData
       // this.$bus.$emit('bus-data', someData)
       console.log('20180815 - RETURNED FROM POST EDITOR : MOUNTED ')
