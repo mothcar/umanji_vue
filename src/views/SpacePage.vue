@@ -308,7 +308,6 @@ export default {
     }, // data
 
     mounted: function() {
-        // 현재까지 한 작업을 취소하고 전에 commit한 상태로 돌아가고 싶다~~~~~!
       // let someData
       // this.$bus.$emit('bus-data', someData)
       console.log('20180815 - RETURNED FROM POST EDITOR : MOUNTED ')
