@@ -308,8 +308,7 @@ export default {
     }, // data
 
     mounted: function() {
-        // 2 
-        // 1
+        // 1 
       // let someData
       // this.$bus.$emit('bus-data', someData)
       console.log('20180815 - RETURNED FROM POST EDITOR : MOUNTED ')
