@@ -308,7 +308,8 @@ export default {
     }, // data
 
     mounted: function() {
-        // 2 
+        // 3 
+        // 2
         // 1
       // let someData
       // this.$bus.$emit('bus-data', someData)
