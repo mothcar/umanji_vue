@@ -299,7 +299,6 @@ export default {
         owner_name: '소유자 없음',
         isOfficer: false,
         data_image: 'https://unsplash.imgix.net/uploads%2F14115409319165441c030%2Fa1d0230a?q=75&fm=jpg&auto=format&s=b6975e3020e4ec063ec03250904506e0',
-        // place_name: ''
         scrolled: false,
         chip_close: false,
 
@@ -316,24 +315,24 @@ export default {
 
       let getData
 
-      console.log('20180728 - NOT REVERSE CHECK : ', typeof this.$route.params.id)
-      console.log('20180811 - STORE currentTabName CHECK : ',  this.$store.state.currentTabName)
-      console.log('20180811 - STORE currentTabType CHECK : ',  this.$store.state.currentTabType)
+      // console.log('20180728 - NOT REVERSE CHECK : ', typeof this.$route.params.id)
+      // console.log('20180811 - STORE currentTabName CHECK : ',  this.$store.state.currentTabName)
+      // console.log('20180811 - STORE currentTabType CHECK : ',  this.$store.state.currentTabType)
 
       if(typeof this.$route.params.id == 'object'){
-        console.log('20180728 - NOT REVERSE')
-        console.log('20180802 - ROUTE PARAMS DATA : ', this.$route.params.id)
+        // console.log('20180728 - NOT REVERSE')
+        // console.log('20180802 - ROUTE PARAMS DATA : ', this.$route.params.id)
         getData = this.$route.params.id
-        console.log('20180727 - GET ROUTER DATA ON SPACEPACE from MAIN : ', getData )
+        // console.log('20180727 - GET ROUTER DATA ON SPACEPACE from MAIN : ', getData )
       } else {
-        console.log('20180728 - REVERSE')
+        // console.log('20180728 - REVERSE')
         getData = this.$store.state.reverse_route_data
         this.routed_data = getData
       }
 
       // this.routed_data = getData
-      console.log('20180803 - getData : ', getData)
-      console.log('20180803 - getData.from_type : ', getData.from_type)
+      console.log('20180922 - getData : ', getData)
+      // console.log('20180803 - getData.from_type : ', getData.from_type)
 
       if(getData.from_type == 'mainInfoTab') {
             let political_type = this.$store.state.tabState // political_type = sublocality2
@@ -343,18 +342,17 @@ export default {
               political_type: political_type
             }
 
-            console.log('20180815 - mainInfoTab - get info center param : ', queryParams )
+            // console.log('20180815 - mainInfoTab - get info center param : ', queryParams )
 
             axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
               params: queryParams
             })
             .then(res => {
               // upper routed data is not yet complete , right bottom data is this space data
-              console.log('20180812 - get data : ', res.data.data )
+              // console.log('20180812 - get data : ', res.data.data )
               this.routed_data = res.data.data
               this.routed_data.s_rid = res.data.data.id
               this.routed_data.place_name = res.data.data.portal_name
-              // this.place_name = res.data.data.portal_name
               this.completeInfoSpace(res.data.data)
             })
 
@@ -364,38 +362,34 @@ export default {
             // INFOCENTER **********************************************************************
             if(getData.place_type == 'infocenter') {
               // this.suffix = this.$i18n._vm.messages.kr.portal_page.title // '정보센터' FOR LANG TEST
-              console.log('20180812 - Space page if else infocenter ')
-              // this.place_name = getData.portal_name
+              // console.log('20180812 - Space page if else infocenter ')
 
               this.completeInfoSpace(getData)
 
             } else {
               // place ********************************************************************************************************************
-              console.log('20180727 - BUILDING ')
+              // console.log('20180727 - BUILDING ')
 
               this.place_type = 'place'
               this.item_name = ['Post', 'Person', '시설정보']
 
-              // this.place_name = this.$store.state.p_place_name
               let placeType = getData.place_type
-              // this.place_name = getData.place_name
 
               if(getData.s_rid == undefined){
                 getData.s_rid = getData.id
               }
               // this.routed_data = getData
 
-              console.log('20180815 - PLACE GET DATA : ', getData )
+              // console.log('20180815 - PLACE GET DATA : ', getData )
 
               axios.get(p_env.BASE_URL+'/vue/findOnePlace',{
                 params: {id: getData.s_rid}
               })
               .then(result=>{
                 this.data_image = result.data.data.photos
-                console.log('20180809 - get place data : ', result )
+                // console.log('20180809 - get place data : ', result )
                 this.routed_data = result.data.data
                 this.routed_data.s_rid = result.data.data.id
-                this.routed_data.place_name = result.data.data.place_name
 
               })
 
@@ -408,7 +402,7 @@ export default {
                 params: spaceParams
               })
               .then(res =>{
-                console.log('20180721 - returned data : ', res.data.data)
+                // console.log('20180721 - returned data : ', res.data.data)
                 this.model.lists = res.data.data
                 this.getData = this.$store.state.building_name
 
@@ -446,7 +440,7 @@ export default {
        }, // model
 
        'this.$route' (to, from){
-         console.log('20170728 - to.params.id on SPCE : ', to.params.id)
+         // console.log('20170728 - to.params.id on SPCE : ', to.params.id)
        }
 
     },
@@ -492,11 +486,11 @@ export default {
       createPost: function() {
         // @click.stop="dialog = true"
         let info = this.routed_data
-        console.log('created param on spacepage : ', info)
+        // console.log('created param on spacepage : ', info)
         this.$store.commit('setReverseRouteData', info)
         // if(this.$store.state.authenticated == true) {
         if(localStorage.getItem('user') != null){
-            console.log("PostContainer : user not NULL")
+            // console.log("PostContainer : user not NULL")
             let userData = JSON.parse(localStorage.getItem('user'))
             let userToken = userData.token
             if(userToken != null) {
@@ -523,7 +517,7 @@ export default {
       showProfile(idx){
         let info = this.model.lists[idx]
         let r_params = {}
-        console.log("20180724 - Store DATA .....", info )
+        // console.log("20180724 - Store DATA .....", info )
         r_params.creator_id = info.creator_id
 
         this.$store.commit('setCreatorId', r_params)
@@ -555,15 +549,13 @@ export default {
           getData.s_rid = getData.id
         }
 
-        console.log('20180815 - complete info space get data : ', getData)
+        // console.log('20180815 - complete info space get data : ', getData)
         let infoName = ''
         let politicalType = ''
         let politicalLevel = 5
 
         this.routed_data = getData
-        this.routed_data.place_name = getData.portal_name
         // let resObj = res.data.data
-        // this.routed_data.place_name = res.data.data.portal_name
         // this.routed_data = {...resObj}
 
         // this.place_type = 'infocenter'
@@ -623,7 +615,7 @@ export default {
           // political_type: politicalType
           id: getData.s_rid
         }
-        console.log('CHECK PRE PARAMS : ', params)
+        // console.log('CHECK PRE PARAMS : ', params)
 
         let spaceParams = {}
         spaceParams.place_type = 'infocenter'
@@ -639,16 +631,16 @@ export default {
           params: params
         })
         .then(res => {
-          console.log('20180802 - Find INFO CENTER result :', res.data.data)
+          // console.log('20180802 - Find INFO CENTER result :', res.data.data)
           // this.routed_data = res.data.data
           let coords = {}
           // For Top Info Center Button
 
-          console.log('20180815 - ROUDTED DATA : ', this.routed_data)
+          // console.log('20180815 - ROUDTED DATA : ', this.routed_data)
           this.$store.commit('setNewPlaceInfo', res.data.data)
           // var location = res.data.data.location
           // this.routed_data.location = location
-          console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
+          // console.log('20180802 - IMAGE CHECK : ', res.data.data.admin_photo)
           this.data_image = res.data.data.photos
 
 
@@ -661,12 +653,12 @@ export default {
             this.isOfficer = false
           } else {
             // Are you Admin level to appoint
-            console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
+            // console.log('20180801 - CHECK USER DATA ', this.$store.state.user_junk)
             if(this.$store.state.user_junk != '' ){
               let o = this.$store.state.user_junk.user.roles
               let oSize = Object.keys(o).length
 
-              console.log('20180802 - SUBTRACT SIZE : ', oSize)
+              // console.log('20180802 - SUBTRACT SIZE : ', oSize)
 
               // for(var prop in o) {
               //   console.log('20180802 - KEY VALUE : ', prop,o[prop]);
@@ -675,19 +667,19 @@ export default {
               if(oSize > 1) {
                 var key = "politician";
                 var value = util.getMapValue(o,key);      // value 2
-                console.log('20180802 - CHECK GET LEVEL FROM POLITICIAN TYPE', value)
+                // console.log('20180802 - CHECK GET LEVEL FROM POLITICIAN TYPE', value)
                 // politicalLevel = 5
                 if(value != '') {
                   switch(value){
                     case 'world':
-                    console.log('20180802 - POLITICAL LEVEL  :', politicalLevel)
-                    console.log('20180802 - CASE :', value)
+                    // console.log('20180802 - POLITICAL LEVEL  :', politicalLevel)
+                    // console.log('20180802 - CASE :', value)
                       if(politicalLevel <= 5){
                         this.isOfficer = true
                       }
                     break;
                     case 'country':
-                    console.log('20180802 - CASE :', value)
+                    // console.log('20180802 - CASE :', value)
                       if(politicalLevel <= 4){
                         this.isOfficer = true
                       }
@@ -720,7 +712,7 @@ export default {
             params: {s_rid: getData.s_rid}
           })
           .then(res =>{
-            console.log('20180721 - returned data : ', res.data.data)
+            // console.log('20180721 - returned data : ', res.data.data)
             this.model.lists = res.data.data
             this.getData = this.$store.state.building_name
 

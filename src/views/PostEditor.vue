@@ -109,7 +109,7 @@ export default {
       link_url: '',
       result: '',
       imageData: '',
-      routed_data: '',
+      routed_data: null,
       checkbox: null,
       poll: null,
       pollShow: false,
@@ -128,17 +128,27 @@ export default {
   }, //data
 
   mounted: function() {
-    // this.routed_data = this.$route.params.data
-    this.routed_data = JSON.parse(localStorage.getItem('currentPlace'))
+    this.routed_data = this.$route.params.data
+
+    /*
+    // from main
+    if(true){
+      console.log('PostEditor - routed data data? true : ', this.routed_data)
+
+      // from Space page
+    } else {
+      this.routed_data = JSON.parse(localStorage.getItem('currentPlace'))
+      console.log('PostEditor - routed data data? false :  ', this.routed_data)
+    }
+    */
+
     this.userData = JSON.parse(localStorage.getItem('user'))
     // this.location = JSON.parse(localStorage.getItem('location'))
     // console.log('20180728 - GET ROUTER DATA : ', this.$route.params.data)
     console.log('20180728 - GET ROUTER DATA : ', this.routed_data)
     console.log('20180728 - GET user DATA : ', this.userData)
     // console.log('20180728 - GET location DATA : ', this.location)
-
-
-  },
+  }, // mounted 
 
   methods: {
     addVote(obj){

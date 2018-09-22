@@ -454,12 +454,9 @@ export default {
       let info = JSON.parse(localStorage.getItem('currentPlace'))
       // let info = this.$store.state.current_place
       // console.log('20180914 - STANDARD ADDRESS: ', info)
-      // info.place_name = this.$store.state.current_place.place_name
       // info.photos = this.$store.state.photos
       // info.id = this.$store.state.id
       // info.user_name = this.$store.state.user_name
-      // info.place_name = this.$store.state.current_place.portal_name
-      info.from_type = 'mainInfoTab'
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
       // console.log('20180728 - INFO CENTER CLICKED.........')
@@ -752,7 +749,6 @@ export default {
               _this.markers = []
               // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}
 
-              // console.log('20180728 - MainContainer CHEKC S-RID : ', res.data.data)
               // console.log('20180718 - position type : ', res.data.data[0].location.coordinates[1])
 
 
@@ -764,13 +760,13 @@ export default {
                 obj.position.lat = res.data.data[i].location.coordinates[1]
                 obj.position.lng = res.data.data[i].location.coordinates[0]
                 obj.info.s_rid = res.data.data[i].s_rid
-                obj.info.place_name = res.data.data[i].place_name
                 obj.info.zoom_level = _this.$store.state.zoom_level
 
                 obj.info.creator_id = res.data.data[i].creator_id
                 obj.info.creator_name = _this.$store.state.user_name,
                 obj.info.photos = res.data.data[i].photos
                 obj.info.place_type = res.data.data[i].place_type
+                obj.info.place_name = res.data.data[i].place_name
                 obj.info.sublocality_level_1 = res.data.data[i].sublocality_level_1
                 obj.info.sublocality_level_2 = res.data.data[i].sublocality_level_2
                 obj.info.location = res.data.data[i].location
@@ -969,6 +965,7 @@ export default {
                         }
 
                         _this.postLists = res.data.data
+                        // console.log('20180922 - MainContainer CHEKC place_name of res.data.data : ', res.data.data)
 
                         _this.markers = []
                         // {"@class":"OPoint","coordinates":[126.92354549999997,37.4917879]}

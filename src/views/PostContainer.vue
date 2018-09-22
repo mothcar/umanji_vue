@@ -172,7 +172,6 @@ export default {
     notifications: false,
     sound: true,
     widgets: false,
-    // postLists: [],
     divider: true, inset: true,
     show: false,
     items: [
@@ -200,65 +199,66 @@ export default {
   }),
 
   created: function () {
-    console.log('message length : ', this.postLists.length)
-    for(var i=0; this.postLists.length>i; i++){
-      this.message[i] = '댓글을 입력하세요'
-      // this.reply_number[i] = this.postLists[i].replys
-    }
-    //'댓글을 입력하세요'
-
-    console.log('20180809 - HERE IS PostContainer CREATED', this.postLists)
   }, //created
 
-  methods: {
 
+  methods: {
     spaceRouter: function(idx) {
 
       let info = this.postLists[idx]
-      info.from_type = 'postContainer'
+      if(info.place_type == 'infocenter'){
+          info.from_type = 'postContainer'
+          // info.place_name = info.place_name
+      } else {
+
+      }
+
+      console.log('20180922 PostContainer Post properties 222 : ', info )
 
       this.$router.push({ name: 'spacePage', params:{id: info}})
-      console.log('20180727 - ROUTE DATA FROM POSTContainer PLACE TYPE  ....', info)
+      // console.log('20180727 - ROUTE DATA FROM POSTContainer PLACE TYPE  ....', info)
 
     },
 
     createPost: function() {
       // if(this.$store.state.authenticated == true) {
       let userData = JSON.parse(localStorage.getItem('user'))
+      // console.log('user localStorage contents check : ', userData ) // type object and content is null
       if(userData){
           let userToken = userData.token
           if(userToken != null) {
-            let political_type = this.$store.state.tabState // political_type = sublocality2
-            let portal_name = this.$store.state.currentTabName
-            let queryParams = {
-              portal_name: portal_name+' 정보센터',
-              political_type: political_type
-            }
+            // let political_type = this.$store.state.tabState // political_type = sublocality2
+            // let portal_name = this.$store.state.currentTabName
+            // let queryParams = {
+            //   portal_name: portal_name+' 정보센터',
+            //   political_type: political_type
+            // }
+            //
+            // console.log('20180817 - POSTCONTAINER BTN - get info center param : ', queryParams )
+            //
+            // axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
+            //   params: queryParams
+            // })
+            // .then(res => {
+            //   // upper routed data is not yet complete , right bottom data is this space data
+            //   console.log('20180812 - get data : ', res.data.data )
+            //
+            //   let info = res.data.data
+            //   info.s_rid = res.data.data.id
+            //   // info.place_type = 'infocenter'
+            //   info.photos = this.$store.state.photos
+            //   info.id = this.$store.state.id
+            //   info.user_name = this.$store.state.user_name
+            //   info.place_name = info.portal_name
+            //
+            //   this.$router.push({name: 'postEditor', params: {data: info}})
+            // }) // axios then
 
-            console.log('20180817 - POSTCONTAINER BTN - get info center param : ', queryParams )
-
-            axios.get(p_env.BASE_URL+'/vue/findOndInfoCenter', {
-              params: queryParams
-            })
-            .then(res => {
-              // upper routed data is not yet complete , right bottom data is this space data
-              console.log('20180812 - get data : ', res.data.data )
-
-              // console.log('20180912 - current place data : ', this.$store.state.current_place)
-              let info = res.data.data
-              info.s_rid = res.data.data.id
-              // info.place_type = 'infocenter'
-              // info.place_name = this.$store.state.infocenter_data.place_name
-              info.photos = this.$store.state.photos
-              info.id = this.$store.state.id
-              info.user_name = this.$store.state.user_name
-              info.place_name = info.portal_name
-              console.log("PostContainer : beforORE SEND PARAMS : ", info)
-              this.$router.push({name: 'postEditor', params: {data: info}})
-              // this.$refs.dialogPost.showFlag = true
-              // this.$refs.dialogPost.routed_data = info
-              // console.log("PostContainer : dialog is true")
-            }) // axios then
+            let info = JSON.parse(localStorage.getItem('currentPlace'))
+            info.from_type = 'mainInfoTab'
+            info.place_name = info.portal_name
+            // console.log('20180921 -  PostContainer INFO CENTER Params.........111:', info)
+            this.$router.push({name: 'postEditor', params: {data: info}})
 
           } else {
             this.dialog_login = true
@@ -279,7 +279,7 @@ export default {
     showProfile(idx){
       let info = this.postLists[idx]
       let r_params = {}
-      console.log("20180724 - Store DATA .....", info )
+      // console.log("20180724 - Store DATA .....", info )
       r_params.creator_id = info.creator_id
 
       this.$store.commit('setCreatorId', r_params)
@@ -290,8 +290,8 @@ export default {
 
     create_reply(index) {
       this.message[index]= ''
-      console.log('create reply index : ', index)
-      console.log('create userdata : ', this.$store.state.user_junk.user)
+      // console.log('create reply index : ', index)
+      // console.log('create userdata : ', this.$store.state.user_junk.user)
     },
 
     createReply(index){
@@ -315,7 +315,7 @@ export default {
       }) // axios /v1/auth/signup
       .then(res=>{
           this.repley_clear = true
-          console.log('REPLY retuen data  : ', res.data.data)
+          // console.log('REPLY retuen data  : ', res.data.data)
 
 
           // this.$store.commit('setUserInfo', res.data.data)
@@ -346,11 +346,11 @@ export default {
                 // console.log('GET REPLY new DATA : ', newarr)
             }
             this.replyLists = newarr
-            console.log('GET REPLY new DATA : ', newarr)
+            // console.log('GET REPLY new DATA : ', newarr)
 
 
         })
-        console.log("GET REPLY DATA ")
+        // console.log("GET REPLY DATA ")
     }
 
 
@@ -367,7 +367,7 @@ export default {
         			value:"_blank"
         		},
         		function(urlObj){
-              console.log("PostContainer : url : ", urlObj.encoded)
+              // console.log("PostContainer : url : ", urlObj.encoded)
         			// document.getElementById("urlobj").innerText = JSON.stringify(urlObj,null,4);
         			// if(urlObj.raw === "mylink.com") {
         			// 	return {
@@ -397,10 +397,17 @@ export default {
 
   mounted() {
     console.log('20180809 - HERE IS PostContainer MOUNTED')
+    console.log('20180922 - HERE IS PostContainer message length : ', this.postLists.length)
+    for(var i=0; this.postLists.length>i; i++){
+      this.message[i] = '댓글을 입력하세요'
+      // this.reply_number[i] = this.postLists[i].replys
+    }
+    //'댓글을 입력하세요'
+    console.log('20180922 - HERE IS PostContainer place_name of CREATED', this.postLists)
 
     this.$store.watch(this.$store.getters.getN, aaa => {
 
-      console.log("PostContainer .........When this triggered.........aaa: ", aaa)
+      // console.log("PostContainer .........When this triggered.........aaa: ", aaa)
 
 
     }) // this.$store.watch
